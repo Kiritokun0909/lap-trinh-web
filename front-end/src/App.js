@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 
 import "./styles/App.css";
 import SiteRoute from "./routes/SiteRoute";
+import AccountRoute from "./routes/AccountRoute";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
           >
             <Route path="/account/*" element={<AccountRoute />} />
           </Route> */}
-        <Route path="/account/*" element={<SiteRoute />} />
+        <Route path="/account/*" element={<AccountRoute />} />
 
         {/* admin routes */}
         {/* <Route
