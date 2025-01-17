@@ -1,0 +1,111 @@
+.header {
+  display: flex;
+  flex-direction: column;
+}
+
+.top-header {
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem 1rem;
+    background-color: #343a40;
+    /* border-bottom: 1px solid #e9ecef; */
+}
+
+.logo a{
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+}
+
+.logo a:hover {
+    color: orange;
+}
+
+.search-bar {
+    display: flex;
+    flex: 1;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.search-bar input {
+    width: 100%;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 0 12px;
+    font-size: medium;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: black;
+}
+
+.search-bar button {
+    background-color: #007bff;
+    border-radius: 4px;
+    border: none;
+    padding: 0 10px;
+    color: white;
+    cursor: pointer;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.search-bar button:hover {
+  filter: brightness(80%);
+}
+
+.nav-bar {
+  background-color: #495057;
+}
+
+.nav-bar ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0px;
+  margin: auto;
+}
+
+.nav-bar ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.nav-bar ul li a:hover,
+.nav-bar ul li:hover > a {
+  background-color: #343a40;
+}
+
+.sub-menu {
+  display: flex;
+  flex-wrap: wrap;
+  position: absolute;
+  background-color: #343a40;
+  z-index: 1000;
+  left: 0;
+  width: 100%;
+  border-radius: 4px;
+}
+
+.sub-menu li {
+  text-align: center;
+}
+
+.sub-menu li a {
+  display: block;
+  padding: 10px 20px;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.sub-menu li a:hover {
+  color: orange;
+}
