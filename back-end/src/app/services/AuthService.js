@@ -6,27 +6,34 @@ require('dotenv').config();
 
 class AuthService {
   async login(email, password) {
-    const user = await users.findOne({ where: { email } });
+    try {
+      const user = await users.findOne({ where: { email } });
 
-    if (!user) {
-      throw new Error('User not found');
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const isValidPassword = await comparePassword(password, user.Password);
+
+      if (!isValidPassword) {
+        throw new Error('Invalid password');
+      }
+      const token = jwt.sign({ userId: user.UserId, roleId: user.RoleId }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+      return token;
+    } catch (error) {
+      throw new Error(error);
     }
-
-    const isValidPassword = await comparePassword(password, user.Password);
-
-    if (!isValidPassword) {
-      throw new Error('Invalid password');
-    }
-
-    const token = jwt.sign({ userId: user.UserId, roleId: user.RoleId }, process.env.JWT_SECRET, { expiresIn: '1d' });
-
-    return token;
   }
 
   async resetAllPasswords(newPassword) {
-    const hashedPassword = await hashPassword(newPassword);
+    try {
+      const hashedPassword = await hashPassword(newPassword);
 
-    await users.update({ Password: hashedPassword }, { where: {} });
+      await users.update({ Password: hashedPassword }, { where: {} });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 
