@@ -49,46 +49,24 @@ class MangaService {
       const transformedRows = rows.map((row) => {
         const manga = row.toJSON();
         manga.Genres = manga.GenreId_genres;
-        delete manga.GenreId_genres;
-        return manga;
-      });
-      // if (user && user.RoleId === ROLE_USER) {
-      //   // for each chapter of each manga, check if user has read it
 
-      //   const userChapterHistories = await user_chapter_history.findAll({
-      //     where: {
-      //       UserId: user.UserId,
-      //       ChapterId: {
-      //         [Op.in]: transformedRows.map((row) => row.Chapters.map((chapter) => chapter.ChapterId)).flat(),
-      //       },
-      //     },
-      //   });
+        manga.CreateAt = formatISODate(manga.CreateAt);
+        manga.UpdateAt = formatISODate(manga.UpdateAt);
 
-      //   transformedRows.forEach((manga) => {
-      //     manga.Chapters.forEach((chapter) => {
-      //       const isRead = userChapterHistories.some((history) => history.ChapterId === chapter.ChapterId);
-      //       chapter.IsRead = isRead;
-      //     });
-      //   });
-      // }
-
-      const formattedDateRows = transformedRows.map((row) => {
-        row.CreateAt = formatISODate(row.CreateAt);
-        row.UpdateAt = formatISODate(row.UpdateAt);
-
-        row.Chapters = row.Chapters.map((chapter) => {
+        manga.Chapters = manga.Chapters.map((chapter) => {
           chapter.PublishedDate = formatISODate(chapter.PublishedDate);
           chapter.UpdateAt = formatISODate(chapter.UpdateAt);
           return chapter;
         });
-        return row;
+        delete manga.GenreId_genres;
+        return manga;
       });
 
       return {
         totalItems: count,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
-        items: formattedDateRows,
+        items: transformedRows,
       };
     } catch (error) {
       throw new Error(error);

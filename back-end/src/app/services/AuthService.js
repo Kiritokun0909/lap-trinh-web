@@ -1,28 +1,49 @@
+require('dotenv').config();
 const { users } = require('../../models/init-models')(require('../../configs/DbConfig'));
-
 const jwt = require('jsonwebtoken');
 const { hashPassword, comparePassword } = require('../../utils/BcryptUtil');
-require('dotenv').config();
+const { ROLE_USER } = require('../../utils/HandleCode');
+const Messages = require('../../utils/Messages');
 
 class AuthService {
   async login(email, password) {
     try {
-      const user = await users.findOne({ where: { email } });
+      const user = await users.findOne({ where: { Email: email }, attributes: ['UserId', 'Password', 'RoleId'] });
 
       if (!user) {
-        throw new Error('User not found');
+        throw new Error(JSON.stringify(Messages.ERROR.EMAIL_NOT_FOUND));
       }
 
       const isValidPassword = await comparePassword(password, user.Password);
 
       if (!isValidPassword) {
-        throw new Error('Invalid password');
+        throw new Error(JSON.stringify(Messages.ERROR.INVALID_PASSWORD));
       }
-      const token = jwt.sign({ userId: user.UserId, roleId: user.RoleId }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-      return token;
+      const accessToken = jwt.sign({ userId: user.UserId, roleId: user.RoleId }, process.env.JWT_ACCESS_SECRET, {
+        expiresIn: '15m',
+      });
+
+      const refreshToken = jwt.sign({ userId: user.UserId, roleId: user.RoleId }, process.env.JWT_REFRESH_SECRET, {
+        expiresIn: '7d',
+      });
+
+      return { accessToken, refreshToken };
     } catch (error) {
-      throw new Error(error);
+      throw new Error(error.message);
+    }
+  }
+
+  async refreshToken(refreshToken) {
+    try {
+      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+      const accessToken = jwt.sign({ userId: decoded.userId, roleId: decoded.roleId }, process.env.JWT_ACCESS_SECRET, {
+        expiresIn: '15m',
+      });
+
+      return accessToken;
+    } catch (error) {
+      throw new Error(JSON.stringify(Messages.ERROR.INVALID_TOKEN));
     }
   }
 
@@ -32,7 +53,34 @@ class AuthService {
 
       await users.update({ Password: hashedPassword }, { where: {} });
     } catch (error) {
-      throw new Error(error);
+      throw new Error(error.message);
+    }
+  }
+
+  async checkDuplicateEmail(email) {
+    const existingUser = await users.findOne({ where: { Email: email } });
+    return !!existingUser;
+  }
+
+  async register(email, password, username) {
+    try {
+      const isDuplicateEmail = await this.checkDuplicateEmail(email);
+      if (isDuplicateEmail) {
+        throw new Error(JSON.stringify(Messages.ERROR.EMAIL_ALREADY_IN_USE));
+      }
+
+      const hashedPassword = await hashPassword(password);
+
+      const newUser = await users.create({
+        Email: email,
+        Password: hashedPassword,
+        Username: username,
+        RoleId: ROLE_USER,
+      });
+
+      return newUser;
+    } catch (error) {
+      throw new Error(error.message);
     }
   }
 }

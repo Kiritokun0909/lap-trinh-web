@@ -8,26 +8,28 @@ class TokenUtil {
     }
     return authHeader.split(' ')[1]; // Bearer token
   }
-  getUserIdFromToken(token) {
+
+  decodeToken(token) {
+    console.log('token', token);
     if (!token) {
       return null;
     }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded.UserId;
+    return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
   }
-  getUserRoleFromToken(token) {
-    if (!token) {
-      return null;
-    }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded.RoleId;
-  }
-  getUserFromToken(token) {
-    if (!token) {
-      return null;
-    }
-    return jwt.verify(token, process.env.JWT_SECRET);
-  }
+
+  getUserIdFromToken = (token) => {
+    const decoded = this.decodeToken(token);
+    return decoded ? decoded.userId : null;
+  };
+
+  getUserRoleFromToken = (token) => {
+    const decoded = this.decodeToken(token);
+    return decoded ? decoded.roleId : null;
+  };
+  
+  getUserFromToken = (token) => {
+    return this.decodeToken(token);
+  };
 }
 
 module.exports = new TokenUtil();
