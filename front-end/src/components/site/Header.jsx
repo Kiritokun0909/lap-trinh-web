@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "../../styles/site/Header.css";
 import { useEffect, useRef, useState } from "react";
+import { getListGenres } from "../../api/genreApi";
 
 const useDropdownVisibility = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,13 +33,21 @@ const useDropdownVisibility = () => {
 };
 
 export default function Header() {
-  // const [genres, setGenres] = useState([]);
+  const [genres, setGenres] = useState([]);
   // const { isLoggedIn, roleId, logout } = useContext(AuthContext);
   const [searchContext, setSearchContext] = useState("");
 
   const genresDropdown = useDropdownVisibility();
   const filterDropdown = useDropdownVisibility();
   const accountDropdown = useDropdownVisibility();
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      const data = await getListGenres();
+      setGenres(data);
+    };
+    fetchGenres();
+  }, []);
 
   return (
     <div className="header">
@@ -66,16 +75,16 @@ export default function Header() {
             <Link to="#">Thể loại</Link>
             {genresDropdown.isVisible && (
               <ul className="sub-menu" ref={genresDropdown.subMenuRef}>
-                {/* {genres?.map((genre) => (
-                  <li key={genre.genreId}>
+                {genres?.map((genre) => (
+                  <li key={genre.GenreId}>
                     <Link
-                      to={`/genre?genreId=${genre.genreId}&pageNumber=1`}
+                      to={`/genre?genreId=${genre.GenreId}&pageNumber=1`}
                       className="genre-link"
                     >
-                      {genre.genreName}
+                      {genre.GenreName}
                     </Link>
                   </li>
-                ))} */}
+                ))}
               </ul>
             )}
           </li>
