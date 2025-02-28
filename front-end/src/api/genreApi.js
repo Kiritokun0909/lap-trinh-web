@@ -1,7 +1,7 @@
 import axiosClient from "./axiosClient";
 
-//#region get-list-genre
-export const getListGenres = async () => {
+//#region get-genre
+export const getGenres = async () => {
   try {
     const response = await axiosClient.get(`/genres`);
     return response.data;

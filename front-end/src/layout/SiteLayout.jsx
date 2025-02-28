@@ -7,8 +7,12 @@ export default function SiteLayout() {
   return (
     <>
       <Header />
-      <div className="main-content">
-        <Outlet />
+      <div className="column-item">
+        <div className="column-item__sidebar-one"></div>
+        <div className="column-item__main-column main-container">
+          <Outlet />
+        </div>
+        <div className="column-item__sidebar-two"></div>
       </div>
       <Footer />
     </>

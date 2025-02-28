@@ -1,9 +1,16 @@
 import { Link } from "react-router-dom";
-import "../../styles/site/Header.css";
 import { useEffect, useRef, useState } from "react";
-import { getListGenres } from "../../api/genreApi";
+import { getGenres } from "../../api/genreApi";
+import "../../styles/site/Header.css";
+import "../../styles/App.css";
 
-const useDropdownVisibility = () => {
+const filterOptions = [
+  { name: "Lượt xem", value: "100" },
+  { name: "Đánh giá", value: "200" },
+  { name: "Ngày đăng", value: "300" },
+];
+
+const useDropdownMenu = () => {
   const [isVisible, setIsVisible] = useState(false);
   const buttonRef = useRef(null);
   const subMenuRef = useRef(null);
@@ -32,102 +39,116 @@ const useDropdownVisibility = () => {
   return { isVisible, show, hide, buttonRef, subMenuRef };
 };
 
-export default function Header() {
-  const [genres, setGenres] = useState([]);
-  // const { isLoggedIn, roleId, logout } = useContext(AuthContext);
+function TopHeader() {
   const [searchContext, setSearchContext] = useState("");
 
-  const genresDropdown = useDropdownVisibility();
-  const filterDropdown = useDropdownVisibility();
-  const accountDropdown = useDropdownVisibility();
+  return (
+    <div className="column-item top-header">
+      <div className="column-item__sidebar-one"></div>
+      <div className="column-item__main-column">
+        <div className="top-header-container">
+          <div className="logo">
+            <Link to="/">MReader</Link>
+          </div>
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Tìm kiếm truyện..."
+              value={searchContext}
+              onChange={(e) => setSearchContext(e.target.value)}
+            />
+            <button className="search-button">
+              <img src="search-icon.png" alt="Search" className="search-icon" />
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="column-item__sidebar-two"></div>
+    </div>
+  );
+}
+
+function NavigationBar() {
+  const [genres, setGenres] = useState([]);
 
   useEffect(() => {
     const fetchGenres = async () => {
-      const data = await getListGenres();
+      const data = await getGenres();
       setGenres(data);
     };
     fetchGenres();
   }, []);
 
+  const genresMenu = useDropdownMenu();
+  const filterDropdown = useDropdownMenu();
+  const accountDropdown = useDropdownMenu();
+
+  return (
+    <div className="nav-bar">
+      <div className="column-item__sidebar-one"></div>
+      <div className="column-item__main-column">
+        <div className="nav-bar__container">
+          <ul>
+            <li
+              onMouseEnter={genresMenu.show}
+              onMouseLeave={genresMenu.hide}
+              ref={genresMenu.buttonRef}
+            >
+              <Link to="#">Thể loại</Link>
+              {genresMenu.isVisible && (
+                <div className="sub-menu" ref={genresMenu.subMenuRef}>
+                  {genres?.map((genre) => (
+                    <div className="sub-menu-item" key={genre.GenreId}>
+                      <Link
+                        to={`/genre?genreId=${genre.GenreId}&pageNumber=1`}
+                        className="genre-link"
+                      >
+                        {genre.GenreName}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </li>
+
+            <li
+              onMouseEnter={filterDropdown.show}
+              onMouseLeave={filterDropdown.hide}
+              ref={filterDropdown.buttonRef}
+            >
+              <Link to="#">Xếp hạng</Link>
+              {filterDropdown.isVisible && (
+                <div className="sub-menu" ref={filterDropdown.subMenuRef}>
+                  {filterOptions.map((option) => (
+                    <div className="sub-menu-item" key={option.value}>
+                      <Link
+                        to={`/search?keyword=&pageNumber=1&filter=${option.value}`}
+                      >
+                        {option.name}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </li>
+
+            {/* Account Manager  */}
+            <li>
+              <Link to="/login">Đăng nhập</Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div className="column-item__sidebar-two"></div>
+    </div>
+  );
+}
+
+export default function Header() {
   return (
     <div className="header">
-      <div className="top-header">
-        <div className="logo">
-          <Link to="/">MReader</Link>
-        </div>
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Nhập tên truyện..."
-            value={searchContext}
-            onChange={(e) => setSearchContext(e.target.value)}
-          />
-          <button>Tìm</button>
-        </div>
-      </div>
-      <div className="nav-bar">
-        <ul>
-          <li
-            onMouseEnter={genresDropdown.show}
-            onMouseLeave={genresDropdown.hide}
-            ref={genresDropdown.buttonRef}
-          >
-            <Link to="#">Thể loại</Link>
-            {genresDropdown.isVisible && (
-              <ul className="sub-menu" ref={genresDropdown.subMenuRef}>
-                {genres?.map((genre) => (
-                  <li key={genre.GenreId}>
-                    <Link
-                      to={`/genre?genreId=${genre.GenreId}&pageNumber=1`}
-                      className="genre-link"
-                    >
-                      {genre.GenreName}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-
-          <li
-            onMouseEnter={filterDropdown.show}
-            onMouseLeave={filterDropdown.hide}
-            ref={filterDropdown.buttonRef}
-          >
-            <Link to="#">Lọc truyện</Link>
-            {/* {filterDropdown.isVisible && (
-              <ul className="sub-menu" ref={filterDropdown.subMenuRef}>
-                <li>
-                  <Link
-                    to={`/search?keyword=&pageNumber=1&filter=${HandleCode.FILTER_BY_MANGA_VIEW_DESC}`}
-                  >
-                    Lượt xem
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={`/search?keyword=&pageNumber=1&filter=${HandleCode.FILTER_BY_MANGA_LIKE_DESC}`}
-                  >
-                    Lượt thích
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={`/search?keyword=&pageNumber=1&filter=${HandleCode.FILTER_BY_MANGA_UPDATE_DATE_DESC}`}
-                  >
-                    Ngày cập nhật
-                  </Link>
-                </li>
-              </ul>
-            )} */}
-          </li>
-
-          {/* Account Manager  */}
-          <li>
-            <Link to="/login">Đăng nhập</Link>
-          </li>
-        </ul>
-      </div>
+      <TopHeader />
+      <NavigationBar />
     </div>
   );
 }
