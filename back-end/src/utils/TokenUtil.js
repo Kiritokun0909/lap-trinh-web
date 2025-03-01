@@ -10,7 +10,6 @@ class TokenUtil {
   }
 
   decodeToken(token) {
-    console.log('token', token);
     if (!token) {
       return null;
     }
@@ -26,7 +25,7 @@ class TokenUtil {
     const decoded = this.decodeToken(token);
     return decoded ? decoded.roleId : null;
   };
-  
+
   getUserFromToken = (token) => {
     return this.decodeToken(token);
   };

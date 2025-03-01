@@ -17,6 +17,7 @@ module.exports = {
       code: 3002,
       message: 'Access denied. You do not have permission to access this resource',
     },
+    ACCOUNT_BLOCKED: { code: 3003, message: 'Account is blocked' },
   },
 
   // Success Messages

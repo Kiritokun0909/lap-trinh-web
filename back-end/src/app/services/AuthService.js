@@ -2,16 +2,23 @@ require('dotenv').config();
 const { users } = require('../../models/init-models')(require('../../configs/DbConfig'));
 const jwt = require('jsonwebtoken');
 const { hashPassword, comparePassword } = require('../../utils/BcryptUtil');
-const { ROLE_USER } = require('../../utils/HandleCode');
+const { ROLE_USER, ACCOUNT_STATUS_BLOCKED } = require('../../utils/HandleCode');
 const Messages = require('../../utils/Messages');
 
 class AuthService {
   async login(email, password) {
     try {
-      const user = await users.findOne({ where: { Email: email }, attributes: ['UserId', 'Password', 'RoleId'] });
+      const user = await users.findOne({
+        where: { Email: email },
+        attributes: ['UserId', 'Password', 'Status', 'RoleId'],
+      });
 
       if (!user) {
         throw new Error(JSON.stringify(Messages.ERROR.EMAIL_NOT_FOUND));
+      }
+
+      if (user.Status === ACCOUNT_STATUS_BLOCKED) {
+        throw new Error(JSON.stringify(Messages.ERROR.ACCOUNT_BLOCKED));
       }
 
       const isValidPassword = await comparePassword(password, user.Password);
