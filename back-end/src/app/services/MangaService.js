@@ -4,6 +4,7 @@ const { mangas, chapters, genres, user_chapter_history } = require('../../models
 );
 const { formatISODate } = require('../../utils/DateUtil');
 const { ROLE_ADMIN, ROLE_USER } = require('../../utils/HandleCode');
+const convertKeysToCamelCase = require('../../utils/CamelCaseUtil');
 class MangaService {
   async getAllMangas(search_query, page = 1, limit = 10, user = null) {
     page = parseInt(page);
@@ -58,7 +59,7 @@ class MangaService {
         totalItems: count,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
-        items: transformedRows,
+        items: convertKeysToCamelCase(transformedRows),
       };
     } catch (error) {
       throw new Error(error);
@@ -71,7 +72,6 @@ class MangaService {
       if (user == null || user.roleId !== ROLE_ADMIN) {
         whereClause.IsHide = false;
       }
-      console.log(whereClause);
 
       const manga = await mangas.findOne({
         where: { MangaId: mangaId, ...whereClause },
@@ -89,10 +89,15 @@ class MangaService {
       }
 
       const mangaData = manga.toJSON();
-      mangaData.Genres = manga.GenreId_genres;
+      const mangaGenres = mangaData.GenreId_genres.map((genre) => {
+        delete genre.manga_genres;
+        return genre;
+      });
+      mangaData.Genres = mangaGenres;
       delete mangaData.GenreId_genres;
-
-      return mangaData;
+      mangaData.CreateAt = formatISODate(mangaData.CreateAt);
+      mangaData.UpdateAt = formatISODate(mangaData.UpdateAt);
+      return convertKeysToCamelCase(mangaData);
     } catch (error) {
       throw new Error(error);
     }
@@ -136,14 +141,13 @@ class MangaService {
         })
       );
 
-      return transformedChapterList;
+      return convertKeysToCamelCase(transformedChapterList);
     } catch (error) {
       throw new Error(error);
     }
   }
 
   async getAllChaptersOfManga(mangaId, user) {
-    console.log(user);
     if (user) {
       return await this.getAllChaptersOfMangaForUser(mangaId, user);
     } else {

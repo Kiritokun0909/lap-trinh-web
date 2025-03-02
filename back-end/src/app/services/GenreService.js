@@ -1,12 +1,13 @@
 const { genres } = require('../../models/init-models')(require('../../configs/DbConfig'));
-
+const convertKeysToCamelCase = require('../../utils/CamelCaseUtil');
 class GenreService {
   async getAllGenres() {
     try {
       const genresList = await genres.findAll({
         order: [['GenreName', 'ASC']],
       });
-      return genresList;
+      const plainGenresList = genresList.map((genre) => genre.toJSON());
+      return convertKeysToCamelCase(plainGenresList);
     } catch (error) {
       throw new Error(error.message);
     }
@@ -15,7 +16,7 @@ class GenreService {
   async isGenreExist(genreName) {
     try {
       const genre = await genres.findOne({ where: { GenreName: genreName } });
-      return genre;
+      return genre ? true : false;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -24,7 +25,7 @@ class GenreService {
   async addGenre(genreData) {
     try {
       const genre = await genres.create(genreData);
-      return genre;
+      return convertKeysToCamelCase(genre.toJSON());
     } catch (error) {
       throw new Error(error.message);
     }
@@ -36,7 +37,7 @@ class GenreService {
         return null;
       }
       await genre.update(genreData);
-      return genre;
+      return convertKeysToCamelCase(genre.toJSON());
     } catch (error) {
       throw new Error(error.message);
     }
