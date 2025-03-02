@@ -3,7 +3,8 @@
 }
 
 .main-container {
-  height: 80vh;
+  min-height: 80vh;
+  padding: 12px;
 }
 
 .column-item__sidebar-one,
@@ -13,7 +14,7 @@
 }
 
 .column-item__main-column {
-  flex: 4;
+  flex: 3;
   border-radius: 4px;
 }
 

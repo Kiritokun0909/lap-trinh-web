@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 
 import SiteLayout from "../layout/SiteLayout";
-import HomePage from "../pages/site/HomePage";
+import HomePage from "../pages/site/HomePage.tsx";
 import NotFoundPage from "../pages/site/NotFoundPage";
 import PrivacyPage from "../pages/site/PrivacyPage";
 import AboutPage from "../pages/site/AboutPage";

@@ -113,7 +113,7 @@
   width: 100%;
   /* border: 1px solid red; */
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 16px;
 }
 
@@ -124,7 +124,6 @@
 }
 
 .sub-menu-item a {
-  /* display: block; */
   color: white;
   text-decoration: none;
   transition: background-color 0.3s ease;

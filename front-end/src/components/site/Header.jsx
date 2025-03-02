@@ -81,7 +81,7 @@ function NavigationBar() {
 
   const genresMenu = useDropdownMenu();
   const filterDropdown = useDropdownMenu();
-  const accountDropdown = useDropdownMenu();
+  // const accountDropdown = useDropdownMenu();
 
   return (
     <div className="nav-bar">
