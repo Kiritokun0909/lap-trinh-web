@@ -4,6 +4,7 @@ const { mangas, chapters, genres, user_chapter_history } = require('../../models
 );
 const { formatISODate } = require('../../utils/DateUtil');
 const { ROLE_ADMIN, ROLE_USER } = require('../../utils/HandleCode');
+const convertKeysToCamelCase = require('../../utils/CamelCaseUtil');
 class MangaService {
   async getAllMangas(search_query, page = 1, limit = 10, user = null) {
     page = parseInt(page);
@@ -27,7 +28,7 @@ class MangaService {
     try {
       const { count, rows } = await mangas.findAndCountAll({
         where: whereClause,
-        attributes: { exclude: ['AuthorId'] },
+        attributes: ['MangaId', 'MangaName', 'CoverImageUrl', 'NumViews', 'NumLikes', 'NumFollows'],
         include: [
           {
             model: chapters,
@@ -35,11 +36,6 @@ class MangaService {
             limit: 3,
             order: [['PublishedDate', 'DESC']],
             attributes: { exclude: ['MangaId'] },
-          },
-          {
-            model: genres,
-            as: 'GenreId_genres',
-            through: { attributes: [] },
           },
         ],
         offset,
@@ -49,9 +45,6 @@ class MangaService {
       const transformedRows = rows.map((row) => {
         const manga = row.toJSON();
         manga.Genres = manga.GenreId_genres;
-
-        manga.CreateAt = formatISODate(manga.CreateAt);
-        manga.UpdateAt = formatISODate(manga.UpdateAt);
 
         manga.Chapters = manga.Chapters.map((chapter) => {
           chapter.PublishedDate = formatISODate(chapter.PublishedDate);
@@ -66,10 +59,99 @@ class MangaService {
         totalItems: count,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
-        items: transformedRows,
+        items: convertKeysToCamelCase(transformedRows),
       };
     } catch (error) {
       throw new Error(error);
+    }
+  }
+
+  async getMangaById(mangaId, user) {
+    try {
+      const whereClause = {};
+      if (user == null || user.roleId !== ROLE_ADMIN) {
+        whereClause.IsHide = false;
+      }
+
+      const manga = await mangas.findOne({
+        where: { MangaId: mangaId, ...whereClause },
+        include: [
+          {
+            model: genres,
+            as: 'GenreId_genres',
+            attributes: ['GenreId', 'GenreName'],
+          },
+        ],
+      });
+
+      if (!manga) {
+        return null;
+      }
+
+      const mangaData = manga.toJSON();
+      const mangaGenres = mangaData.GenreId_genres.map((genre) => {
+        delete genre.manga_genres;
+        return genre;
+      });
+      mangaData.Genres = mangaGenres;
+      delete mangaData.GenreId_genres;
+      mangaData.CreateAt = formatISODate(mangaData.CreateAt);
+      mangaData.UpdateAt = formatISODate(mangaData.UpdateAt);
+      return convertKeysToCamelCase(mangaData);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getAllChaptersOfMangaForUser(mangaId, user) {
+    try {
+      const chapterList = await this.getAllChaptersOfMangaPublic(mangaId);
+      const readingHistory = await user_chapter_history.findAll({
+        where: { UserId: user.userId },
+      });
+      const transformedChapterList = await Promise.all(
+        chapterList.map(async (chapterData) => {
+          // const chapterData = chapter.toJSON();
+          chapterData.IsRead = readingHistory.some((history) => history.ChapterId === chapterData.ChapterId);
+
+          return chapterData;
+        })
+      );
+      return transformedChapterList;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getAllChaptersOfMangaPublic(mangaId) {
+    try {
+      const chapterList = await chapters.findAll({
+        where: { MangaId: mangaId },
+        attributes: { exclude: ['MangaId'] },
+        order: [['PublishedDate', 'DESC']],
+      });
+
+      const transformedChapterList = await Promise.all(
+        chapterList.map(async (chapter) => {
+          const chapterData = chapter.toJSON();
+          chapterData.PublishedDate = formatISODate(chapterData.PublishedDate);
+          chapterData.UpdateAt = formatISODate(chapterData.UpdateAt);
+
+          return chapterData;
+        })
+      );
+
+      return convertKeysToCamelCase(transformedChapterList);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getAllChaptersOfManga(mangaId, user) {
+    if (user) {
+      return await this.getAllChaptersOfMangaForUser(mangaId, user);
+    } else {
+      return await this.getAllChaptersOfMangaPublic(mangaId);
     }
   }
 }

@@ -5,6 +5,7 @@ const testRouter = require('./TestRoute.js');
 const authRouter = require('./AuthRoute.js');
 
 const mangaRouter = require('./MangaRoute.js');
+const chapterRouter = require('./ChapterRoute.js');
 const genreRouter = require('./GenreRoute.js');
 
 function route(app) {
@@ -15,6 +16,7 @@ function route(app) {
   app.use('/auth', authRouter);
 
   app.use('/mangas', mangaRouter);
+  app.use('/chapters', chapterRouter);
   app.use('/genres', genreRouter);
 }
 
