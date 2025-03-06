@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getGenres } from "../../api/genreApi";
 import "../../styles/site/Header.css";
 import "../../styles/App.css";
@@ -98,12 +98,12 @@ function NavigationBar() {
               {genresMenu.isVisible && (
                 <div className="sub-menu" ref={genresMenu.subMenuRef}>
                   {genres?.map((genre) => (
-                    <div className="sub-menu-item" key={genre.GenreId}>
+                    <div className="sub-menu-item" key={genre.genreId}>
                       <Link
-                        to={`/genre?genreId=${genre.GenreId}&pageNumber=1`}
+                        to={`/genre?genreId=${genre.genreId}&pageNumber=1`}
                         className="genre-link"
                       >
-                        {genre.GenreName}
+                        {genre.genreName}
                       </Link>
                     </div>
                   ))}

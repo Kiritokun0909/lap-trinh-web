@@ -1,0 +1,45 @@
+
+.manga-item {
+  width: 158px;
+  text-align: center;
+}
+
+.manga-item img {
+  width: 158px;
+  height: 216px;
+  border-radius: 4px;
+}
+
+.manga-item a {
+  display: flex;
+  flex-direction: column;
+  width: 158px;
+
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+}
+
+.manga-item a:hover {
+  color: orange;
+}
+
+.manga-item a span {
+  width: 158px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.manga-chapter a {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: small;
+  font-weight: 400;
+}
+
+.chapter-time span {
+  font-style: italic;
+  color: darkgrey;
+}

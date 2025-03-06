@@ -8,11 +8,11 @@ export default function SiteLayout() {
     <>
       <Header />
       <div className="column-item">
-        <div className="column-item__sidebar-one"></div>
+        <div className="column-item__sidebar-one sidebar"></div>
         <div className="column-item__main-column main-container">
           <Outlet />
         </div>
-        <div className="column-item__sidebar-two"></div>
+        <div className="column-item__sidebar-two sidebar"></div>
       </div>
       <Footer />
     </>

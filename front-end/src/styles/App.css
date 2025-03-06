@@ -14,7 +14,7 @@
 }
 
 .column-item__main-column {
-  flex: 3;
+  flex: 2;
   border-radius: 4px;
 }
 
@@ -23,9 +23,14 @@
   .column-item__sidebar-two {
     display: none;
   }
-
+  
   .column-item__main-column {
     border-radius: 0px;
     flex: 2;
   }
+}
+
+.sidebar {
+  background-color: #ebebeb;
+
 }
