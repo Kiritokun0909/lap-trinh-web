@@ -37,9 +37,28 @@
   justify-content: space-between;
   font-size: small;
   font-weight: 400;
+  margin: 4px 0px;
+  color: black;
+}
+
+.chapter-number span:hover {
+  color: orange;
 }
 
 .chapter-time span {
   font-style: italic;
   color: darkgrey;
+}
+
+.dark-mode a {
+  color: #ddd;
+}
+
+.dark-mode .chapter-number span,
+.dark-mode .chapter-time span {
+  color: #ddd;
+}
+
+.dark-mode .chapter-number span:hover {
+  color: orange;
 }

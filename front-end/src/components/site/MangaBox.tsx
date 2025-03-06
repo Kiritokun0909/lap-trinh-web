@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../../styles/component/MangaBox.css";
 import { formatDate } from "../../utils/utils";
+import { useDarkMode } from "../../context/DarkModeContext.tsx";
 
 export interface MangaBoxProps {
   mangaId: number;
@@ -24,11 +25,16 @@ export default function MangaBox({
   manga: MangaBoxProps;
   showChapter: boolean;
 }) {
+  const { darkMode } = useDarkMode();
   const chapters = manga.chapters;
 
   return (
     <>
-      <div className="manga-item" key={manga.mangaId} title={manga.mangaName}>
+      <div
+        className={`manga-item ${darkMode ? "dark-mode" : ""}`}
+        key={manga.mangaId}
+        title={manga.mangaName}
+      >
         <Link to={`/manga/${manga.mangaId}`}>
           <img src={manga.coverImageUrl} alt={manga.mangaName} />
           <span>{manga.mangaName}</span>

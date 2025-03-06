@@ -1,3 +1,14 @@
+body {
+  background-color: white;
+  color:  black;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dark-mode {
+  background-color: #1a1a1a;
+  color: white;
+}
+
 .column-item {
   display: flex;
 }
@@ -32,5 +43,38 @@
 
 .sidebar {
   background-color: #ebebeb;
+}
 
+.dark-mode .sidebar {
+  background-color: #1a1a1a;
+}
+
+.function-bar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dark-mode-toggle {
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px 8px 4px 8px;
+}
+
+.up-button button {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  z-index: 1000;
+  background-color: black;
+  opacity: 80%;
+  color: white;
+  padding: 8px 8px 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.up-button button:hover {
+  filter: brightness(80%);
 }

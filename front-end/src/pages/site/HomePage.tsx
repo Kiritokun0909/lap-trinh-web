@@ -9,7 +9,7 @@ import { Autoplay } from "swiper/modules";
 
 const HOME_PAGE_TITLE = "Manga Reader - HomePage";
 const NUMBER_OF_TOP_MANGAS = 8;
-const NUMBER_OF_NEW_UPDATES = 10;
+const NUMBER_OF_NEW_UPDATES = 20;
 
 function TopMangas({ topMangas }) {
   return (
@@ -60,7 +60,7 @@ export default function HomePage() {
   const fetchTopMangas = async () => {
     try {
       const response = await getMangas(1, NUMBER_OF_TOP_MANGAS);
-      console.log("Top mangas: ", response.items);
+      // console.log("Top mangas: ", response.items);
       setTopMangas(response.items);
     } catch (error) {
       console.error("Failed to fetch list manga: ", error);
