@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import "./styles/App.css";
 import SiteRoute from "./routes/SiteRoute";
 import AccountRoute from "./routes/AccountRoute";
+import AdminRoute from "./routes/AdminRoute";
 
 function App() {
   return (
@@ -25,7 +26,8 @@ function App() {
             element={<ProtectedRoute allowedRoles={[HandleCode.ROLE_ADMIN]} />}
           >
             <Route path="/admin/*" element={<AdminRoute />} />
-          </Route> */}
+            </Route> */}
+        <Route path="/admin/*" element={<AdminRoute />} />
       </Routes>
     </div>
   );

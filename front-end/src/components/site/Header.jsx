@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { getGenres } from "../../api/genreApi";
 import "../../styles/site/Header.css";
 import "../../styles/App.css";
+import { useAuth } from "../../context/AuthContext.tsx";
 
 const filterOptions = [
   { name: "Lượt xem", value: "100" },
@@ -58,7 +59,11 @@ function TopHeader() {
               onChange={(e) => setSearchContext(e.target.value)}
             />
             <button className="search-button">
-              <img src="search-icon.png" alt="Search" className="search-icon" />
+              <img
+                src="/icon/search-icon.png"
+                alt="Search"
+                className="search-icon"
+              />
             </button>
           </div>
         </div>
@@ -69,6 +74,7 @@ function TopHeader() {
 }
 
 function NavigationBar() {
+  const AuthContext = useAuth();
   const [genres, setGenres] = useState([]);
 
   useEffect(() => {
@@ -134,7 +140,11 @@ function NavigationBar() {
 
             {/* Account Manager  */}
             <li>
-              <Link to="/login">Đăng nhập</Link>
+              {AuthContext.isAuthenticated ? (
+                <Link to="/account">Tài khoản</Link>
+              ) : (
+                <Link to="/login">Đăng nhập</Link>
+              )}
             </li>
           </ul>
         </div>

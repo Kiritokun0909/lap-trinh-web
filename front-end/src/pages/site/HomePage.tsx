@@ -14,7 +14,7 @@ const NUMBER_OF_NEW_UPDATES = 20;
 function TopMangas({ topMangas }) {
   return (
     <div>
-      <h2>Top Manga</h2>
+      <h2>Được yêu thích</h2>
       <Swiper
         className="swiper-container"
         modules={[Autoplay]}
@@ -37,7 +37,7 @@ function TopMangas({ topMangas }) {
 function NewUpdates({ newUpdates }) {
   return (
     <div>
-      <h2>New Updates</h2>
+      <h2>Mới cập nhật</h2>
       <div className="list-manga-item">
         {newUpdates.map((manga) => (
           <MangaBox key={manga.mangaId} manga={manga} showChapter={true} />

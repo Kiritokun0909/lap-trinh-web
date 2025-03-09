@@ -1,0 +1,155 @@
+.genres-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 16px;
+}
+
+.search-input {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.search-input input {
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-size: 16px;
+}
+
+.search-input input:focus {
+  outline: none;
+  border: 1px solid blue;
+}
+
+.add-button {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.add-button:hover {
+  filter: brightness(85%);
+}
+
+.add-button-icon {
+  font-size: 24px;
+  margin-right: 5px;
+}
+
+.delete-section {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.list-genres {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.genre-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.genre-table th,
+.genre-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 16px;
+}
+
+.genre-table th:nth-child(2), /* Genre Name Column */
+.genre-table td:nth-child(2) {
+  width: 200px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.genre-table th {
+  background-color: #f4f4f4;
+}
+
+.genre-row td {
+  text-align: left;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.edit-button,
+.delete-button,
+.finish-button {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  gap: 5px;
+}
+
+.edit-button {
+  background-color: #bfb417;
+  color: white;
+  margin-right: 5px;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.finish-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.edit-button:hover,
+.delete-button:hover,
+.finish-button:hover {
+  filter: brightness(80%);
+}
+
+.edit-input {
+  border: 1px solid #ddd;
+  padding: 6px;
+  font-size: 16px;
+  border-radius: 4px;
+  width: 150px;
+}
+
+.bulk-delete-button {
+  margin-top: 10px;
+  background-color: #d9534f;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.bulk-delete-button:hover {
+  filter: brightness(85%);
+}

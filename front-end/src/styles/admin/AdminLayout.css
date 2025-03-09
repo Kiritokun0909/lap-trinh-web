@@ -1,0 +1,33 @@
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-header {
+  background-color: #333;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.admin-header a {
+  color: white;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.admin-header a:hover {
+  color: orange;
+}
+
+.admin-container {
+  min-height: 85vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 0px 24px;
+}

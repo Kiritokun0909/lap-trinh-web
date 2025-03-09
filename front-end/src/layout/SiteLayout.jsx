@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
 import Header from "../components/site/Header";
 import Footer from "../components/site/Footer";
-import "../styles/App.css";
 import { FaArrowUp } from "react-icons/fa6";
 import { MdOutlineLightMode, MdOutlineDarkMode } from "react-icons/md";
 import { useState } from "react";
 import { useDarkMode } from "../context/DarkModeContext.tsx";
+import "../styles/App.css";
 
 function ScrollToTop() {
   const [showScrollToTop, setShowScrollToTop] = useState(false);
