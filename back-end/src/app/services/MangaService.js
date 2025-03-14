@@ -1,10 +1,9 @@
-const { Op } = require('sequelize');
-const { mangas, chapters, genres, user_chapter_history } = require('../../models/init-models')(
-  require('../../configs/DbConfig')
-);
-const { formatISODate } = require('../../utils/DateUtil');
-const { ROLE_ADMIN, ROLE_USER } = require('../../utils/HandleCode');
-const convertKeysToCamelCase = require('../../utils/CamelCaseUtil');
+const { Op } = require("sequelize");
+const { mangas, chapters, genres, user_chapter_history } =
+  require("../../models/init-models")(require("../../configs/DbConfig"));
+const { formatISODate } = require("../../utils/DateUtil");
+const { ROLE_ADMIN, ROLE_USER } = require("../../utils/HandleCode");
+const convertKeysToCamelCase = require("../../utils/CamelCaseUtil");
 class MangaService {
   async getAllMangas(search_query, page = 1, limit = 10, user = null) {
     page = parseInt(page);
@@ -19,23 +18,33 @@ class MangaService {
     }
 
     if (search_query) {
-      const keywords = search_query.split(' ').map((keyword) => `%${keyword}%`);
+      const keywords = search_query.split(" ").map((keyword) => `%${keyword}%`);
       whereClause[Op.and] = keywords.map((keyword) => ({
-        [Op.or]: [{ MangaName: { [Op.like]: keyword } }, { OtherName: { [Op.like]: keyword } }],
+        [Op.or]: [
+          { MangaName: { [Op.like]: keyword } },
+          { OtherName: { [Op.like]: keyword } },
+        ],
       }));
     }
 
     try {
       const { count, rows } = await mangas.findAndCountAll({
         where: whereClause,
-        attributes: ['MangaId', 'MangaName', 'CoverImageUrl', 'NumViews', 'NumLikes', 'NumFollows'],
+        attributes: [
+          "MangaId",
+          "MangaName",
+          "CoverImageUrl",
+          "NumViews",
+          "NumLikes",
+          "NumFollows",
+        ],
         include: [
           {
             model: chapters,
-            as: 'Chapters',
+            as: "Chapters",
             limit: 3,
-            order: [['PublishedDate', 'DESC']],
-            attributes: { exclude: ['MangaId'] },
+            order: [["PublishedDate", "DESC"]],
+            attributes: { exclude: ["MangaId"] },
           },
         ],
         offset,
@@ -78,8 +87,8 @@ class MangaService {
         include: [
           {
             model: genres,
-            as: 'GenreId_genres',
-            attributes: ['GenreId', 'GenreName'],
+            as: "GenreId_genres",
+            attributes: ["GenreId", "GenreName"],
           },
         ],
       });
@@ -112,7 +121,9 @@ class MangaService {
       const transformedChapterList = await Promise.all(
         chapterList.map(async (chapterData) => {
           // const chapterData = chapter.toJSON();
-          chapterData.IsRead = readingHistory.some((history) => history.ChapterId === chapterData.ChapterId);
+          chapterData.IsRead = readingHistory.some(
+            (history) => history.ChapterId === chapterData.ChapterId
+          );
 
           return chapterData;
         })
@@ -127,8 +138,8 @@ class MangaService {
     try {
       const chapterList = await chapters.findAll({
         where: { MangaId: mangaId },
-        attributes: { exclude: ['MangaId'] },
-        order: [['PublishedDate', 'DESC']],
+        attributes: { exclude: ["MangaId"] },
+        order: [["PublishedDate", "DESC"]],
       });
 
       const transformedChapterList = await Promise.all(

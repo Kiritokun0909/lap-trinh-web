@@ -1,16 +1,18 @@
-require('dotenv').config();
-const { users } = require('../../models/init-models')(require('../../configs/DbConfig'));
-const jwt = require('jsonwebtoken');
-const { hashPassword, comparePassword } = require('../../utils/BcryptUtil');
-const { ROLE_USER, ACCOUNT_STATUS_BLOCKED } = require('../../utils/HandleCode');
-const Messages = require('../../utils/Messages');
+require("dotenv").config();
+const { users } = require("../../models/init-models")(
+  require("../../configs/DbConfig")
+);
+const jwt = require("jsonwebtoken");
+const { hashPassword, comparePassword } = require("../../utils/BcryptUtil");
+const { ROLE_USER, ACCOUNT_STATUS_BLOCKED } = require("../../utils/HandleCode");
+const Messages = require("../../utils/Messages");
 
 class AuthService {
   async login(email, password) {
     try {
       const user = await users.findOne({
         where: { Email: email },
-        attributes: ['UserId', 'Password', 'Status', 'RoleId'],
+        attributes: ["UserId", "Password", "Status", "RoleId"],
       });
 
       if (!user) {
@@ -27,15 +29,25 @@ class AuthService {
         throw new Error(JSON.stringify(Messages.ERROR.INVALID_PASSWORD));
       }
 
-      const accessToken = jwt.sign({ userId: user.UserId, roleId: user.RoleId }, process.env.JWT_ACCESS_SECRET, {
-        expiresIn: '15m',
-      });
+      const accessToken = jwt.sign(
+        { userId: user.UserId, roleId: user.RoleId },
+        process.env.JWT_ACCESS_SECRET,
+        {
+          expiresIn: "1000",
+        }
+      );
 
-      const refreshToken = jwt.sign({ userId: user.UserId, roleId: user.RoleId }, process.env.JWT_REFRESH_SECRET, {
-        expiresIn: '7d',
-      });
+      const refreshToken = jwt.sign(
+        { userId: user.UserId, roleId: user.RoleId },
+        process.env.JWT_REFRESH_SECRET,
+        {
+          expiresIn: "7d",
+        }
+      );
 
-      return { accessToken, refreshToken };
+      const roleId = user.RoleId;
+
+      return { accessToken, refreshToken, roleId };
     } catch (error) {
       throw new Error(error.message);
     }
@@ -44,9 +56,13 @@ class AuthService {
   async refreshToken(refreshToken) {
     try {
       const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-      const accessToken = jwt.sign({ userId: decoded.userId, roleId: decoded.roleId }, process.env.JWT_ACCESS_SECRET, {
-        expiresIn: '15m',
-      });
+      const accessToken = jwt.sign(
+        { userId: decoded.userId, roleId: decoded.roleId },
+        process.env.JWT_ACCESS_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
 
       return accessToken;
     } catch (error) {
@@ -71,11 +87,6 @@ class AuthService {
 
   async register(email, password, username) {
     try {
-      const isDuplicateEmail = await this.checkDuplicateEmail(email);
-      if (isDuplicateEmail) {
-        throw new Error(JSON.stringify(Messages.ERROR.EMAIL_ALREADY_IN_USE));
-      }
-
       const hashedPassword = await hashPassword(password);
 
       const newUser = await users.create({

@@ -1,17 +1,17 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const app = express();
 
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
-const route = require('./routes/index.js');
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const route = require("./routes/index.js");
 
-require('dotenv').config(); // Load environment variables
+require("dotenv").config(); // Load environment variables
 
 // Middleware for parsing JSON
 app.use(bodyParser.json());
-app.use(morgan('combined'));
+app.use(morgan("combined"));
 
 // Middleware for parsing cookies
 app.use(cookieParser());
@@ -19,7 +19,8 @@ app.use(cookieParser());
 // Allow all requests from anywhere
 app.use(
   cors({
-    origin: '*',
+    origin: "http://localhost:3000", // Change to your frontend URL
+    credentials: true, // Allow sending cookies
   })
 );
 
