@@ -1,10 +1,12 @@
-import { Outlet } from "react-router-dom";
-import Header from "../components/site/Header";
-import Footer from "../components/site/Footer";
-import { FaArrowUp } from "react-icons/fa6";
-import { MdOutlineLightMode, MdOutlineDarkMode } from "react-icons/md";
 import { useState } from "react";
-import { useDarkMode } from "../context/DarkModeContext.tsx";
+import { Outlet } from "react-router-dom";
+import { MdOutlineLightMode, MdOutlineDarkMode } from "react-icons/md";
+import { FaArrowUp } from "react-icons/fa6";
+
+import Header from "../components/site/Header/Header";
+import Footer from "../components/site/Footer";
+import { useDarkMode } from "../context/DarkModeContext";
+
 import "../styles/App.css";
 
 function ScrollToTop() {

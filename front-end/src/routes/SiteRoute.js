@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 
-import SiteLayout from "../layout/SiteLayout";
-import HomePage from "../pages/site/HomePage.tsx";
+import SiteLayout from "../layouts/SiteLayout";
+import HomePage from "../pages/site/HomePage";
 import NotFoundPage from "../pages/site/NotFoundPage";
 import PrivacyPage from "../pages/site/PrivacyPage";
 import AboutPage from "../pages/site/AboutPage";
-import { LoginPage } from "../pages/site/LoginPage.tsx";
+import { LoginPage } from "../pages/site/LoginPage/LoginPage";
 
 export default function SiteRoute() {
   return (

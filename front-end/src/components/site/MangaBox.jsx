@@ -1,30 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../../styles/component/MangaBox.css";
-import { formatDate } from "../../utils/utils";
-import { useDarkMode } from "../../context/DarkModeContext.tsx";
+import { formatDate } from "../../utils/utils.js";
+import { useDarkMode } from "../../context/DarkModeContext";
 
-export interface MangaBoxProps {
-  mangaId: number;
-  mangaName: string;
-  coverImageUrl: string;
-  chapters: [] | undefined;
-}
-
-export interface Chapter {
-  chapterId: number;
-  chapterNumber: number;
-  publishedDate: string;
-  updateAt: string;
-}
-
-export default function MangaBox({
-  manga,
-  showChapter = false,
-}: {
-  manga: MangaBoxProps;
-  showChapter: boolean;
-}) {
+export default function MangaBox({ manga, showChapter = false }) {
   const { darkMode } = useDarkMode();
   const chapters = manga.chapters;
 
@@ -42,7 +22,7 @@ export default function MangaBox({
         <div className="manga-chapter">
           {showChapter &&
             chapters &&
-            chapters.map((chapter: Chapter) => (
+            chapters.map((chapter) => (
               <Link
                 key={chapter.chapterId}
                 to={`/manga/${manga.mangaId}/chapter/${chapter.chapterId}`}

@@ -1,7 +1,9 @@
 import { Outlet } from "react-router-dom";
+
 import Footer from "../components/site/Footer";
-import AdminSidebar from "../components/admin/AdminSidebar";
+import AdminSidebar from "../components/admin/AdminSidebar/AdminSidebar";
 import AdminHeader from "../components/admin/AdminHeader";
+
 import "../styles/App.css";
 import "../styles/admin/AdminLayout.css";
 

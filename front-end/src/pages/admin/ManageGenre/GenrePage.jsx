@@ -1,48 +1,68 @@
 import React, { useEffect, useState } from "react";
-import { Genre } from "../../../types/GenreType.tsx";
-import { getGenres } from "../../../api/genreApi";
+import { getGenres } from "../../../api/genreApi.js";
 import { MdOutlineAdd, MdEdit, MdDelete, MdCheck } from "react-icons/md";
 import "./GenrePage.css";
 
 const PAGE_TITLE = "Quản lý thể loại";
 
-export default function GenrePage() {
-  const [genres, setGenres] = useState<Genre[]>([]);
-  const [searchName, setSearchName] = useState<string>("");
+function SearchInput({ searchName, setSearchName }) {
+  return (
+    <div className="search-input">
+      <input
+        type="text"
+        value={searchName}
+        onChange={(e) => setSearchName(e.target.value)}
+        placeholder="Nhập thể loại muốn tìm..."
+        className="search-input"
+      />
 
-  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+      <button className="add-button">
+        <MdOutlineAdd className="add-button-icon" />
+        <span>Thêm</span>
+      </button>
+    </div>
+  );
+}
 
-  const [editingGenreId, setEditingGenreId] = useState<number | null>(null);
-  const [editedGenreName, setEditedGenreName] = useState<string>("");
+function GenreTable({ genres, setGenres, searchName }) {
+  const [selectedGenres, setSelectedGenres] = useState([]);
 
-  useEffect(() => {
-    document.title = PAGE_TITLE;
-    fetchGenres();
-  }, []);
-
-  const fetchGenres = async () => {
-    const data = await getGenres();
-    setGenres(data);
-  };
+  const [editingGenreId, setEditingGenreId] = useState(null);
+  const [editedGenreName, setEditedGenreName] = useState("");
 
   const filteredGenres = genres.filter((genre) =>
     genre.genreName.toLowerCase().includes(searchName.toLowerCase())
   );
 
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedGenres(genres.map((genre) => genre.genreId));
+      setSelectedGenres(filteredGenres.map((genre) => genre.genreId));
     } else {
       setSelectedGenres([]);
     }
   };
 
-  const handleSelectGenre = (genreId: number) => {
+  const handleSelectGenre = (genreId) => {
     setSelectedGenres((prev) =>
       prev.includes(genreId)
         ? prev.filter((id) => id !== genreId)
         : [...prev, genreId]
     );
+  };
+  const handleEdit = (genre) => {
+    setEditingGenreId(genre.genreId);
+    setEditedGenreName(genre.genreName);
+  };
+
+  const handleSaveEdit = (genreId) => {
+    setGenres(
+      genres.map((genre) =>
+        genre.genreId === genreId
+          ? { ...genre, genreName: editedGenreName }
+          : genre
+      )
+    );
+    setEditingGenreId(null);
   };
 
   const handleBulkDelete = () => {
@@ -54,41 +74,8 @@ export default function GenrePage() {
     setSelectedGenres([]);
   };
 
-  const handleEdit = (genre: Genre) => {
-    setEditingGenreId(genre.genreId);
-    setEditedGenreName(genre.genreName);
-  };
-
-  const handleSaveEdit = (genreId: number) => {
-    setGenres(
-      genres.map((genre) =>
-        genre.genreId === genreId
-          ? { ...genre, genreName: editedGenreName }
-          : genre
-      )
-    );
-    setEditingGenreId(null);
-  };
-
   return (
-    <div className="genres-container">
-      <h1>{PAGE_TITLE}</h1>
-
-      <div className="search-input">
-        <input
-          type="text"
-          value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
-          placeholder="Nhập thể loại muốn tìm..."
-          className="search-input"
-        />
-
-        <button className="add-button">
-          <MdOutlineAdd className="add-button-icon" />
-          <span>Thêm</span>
-        </button>
-      </div>
-
+    <>
       <div className="delete-section">
         <div>
           <button className="bulk-delete-button" onClick={handleBulkDelete}>
@@ -96,7 +83,6 @@ export default function GenrePage() {
           </button>
         </div>
       </div>
-
       <div className="list-genres">
         <table className="genre-table">
           <thead>
@@ -174,6 +160,35 @@ export default function GenrePage() {
           </tbody>
         </table>
       </div>
+    </>
+  );
+}
+
+export default function GenrePage() {
+  const [genres, setGenres] = useState([]);
+  const [searchName, setSearchName] = useState("");
+
+  useEffect(() => {
+    document.title = PAGE_TITLE;
+    fetchGenres();
+  }, []);
+
+  const fetchGenres = async () => {
+    const data = await getGenres();
+    setGenres(data);
+  };
+
+  return (
+    <div className="genres-container">
+      <h1>{PAGE_TITLE}</h1>
+
+      <SearchInput searchName={searchName} setSearchName={setSearchName} />
+
+      <GenreTable
+        genres={genres}
+        setGenres={setGenres}
+        searchName={searchName}
+      />
     </div>
   );
 }

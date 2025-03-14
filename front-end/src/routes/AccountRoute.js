@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import HomePage from "../pages/site/HomePage.tsx";
-import SiteLayout from "../layout/SiteLayout";
+import HomePage from "../pages/site/HomePage";
+import SiteLayout from "../layouts/SiteLayout";
 import NotFoundPage from "../pages/site/NotFoundPage";
 
 export default function AccountRoute() {

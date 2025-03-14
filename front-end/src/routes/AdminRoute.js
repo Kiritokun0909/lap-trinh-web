@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
-import ManageMangaPage from "../pages/admin/ManageMangasPage.tsx";
-import GenrePage from "../pages/admin/ManageGenre/GenrePage.tsx";
-import AdminLayout from "../layout/AdminLayout.jsx";
+import ManageMangaPage from "../pages/admin/ManageMangasPage";
+import GenrePage from "../pages/admin/ManageGenre/GenrePage";
+import AdminLayout from "../layouts/AdminLayout.jsx";
 
 export default function AdminRoute() {
   return (

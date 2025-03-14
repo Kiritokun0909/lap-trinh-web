@@ -1,9 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
-import { getGenres } from "../../api/genreApi";
-import "../../styles/site/Header.css";
-import "../../styles/App.css";
-import { useAuth } from "../../context/AuthContext.tsx";
+import { toast } from "react-toastify";
+
+import { getGenres } from "../../../api/genreApi";
+import { useAuth } from "../../../context/AuthContext";
+
+import "../../../styles/App.css";
+import "./Header.css";
 
 const filterOptions = [
   { name: "Lượt xem", value: "100" },
@@ -74,20 +77,29 @@ function TopHeader() {
 }
 
 function NavigationBar() {
-  const AuthContext = useAuth();
   const [genres, setGenres] = useState([]);
+  const { isLoggedIn, removeCredentials } = useAuth();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGenres = async () => {
       const data = await getGenres();
       setGenres(data);
     };
+
     fetchGenres();
   }, []);
 
   const genresMenu = useDropdownMenu();
   const filterDropdown = useDropdownMenu();
   // const accountDropdown = useDropdownMenu();
+
+  const handleLogout = () => {
+    removeCredentials();
+    toast.success("Đang xuất thành công!");
+    navigate("/");
+  };
 
   return (
     <div className="nav-bar">
@@ -140,8 +152,10 @@ function NavigationBar() {
 
             {/* Account Manager  */}
             <li>
-              {AuthContext.isAuthenticated ? (
-                <Link to="/account">Tài khoản</Link>
+              {isLoggedIn ? (
+                <Link to="/account" onClick={handleLogout}>
+                  Đăng xuất
+                </Link>
               ) : (
                 <Link to="/login">Đăng nhập</Link>
               )}

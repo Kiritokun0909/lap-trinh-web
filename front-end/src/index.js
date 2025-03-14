@@ -4,9 +4,9 @@ import { BrowserRouter } from "react-router-dom";
 
 import "./styles/index.css";
 import App from "./App";
-import { DarkModeProvider } from "./context/DarkModeContext.tsx";
+import { DarkModeProvider } from "./context/DarkModeContext";
 import { ToastContainer } from "react-toastify";
-import { AuthProvider } from "./context/AuthContext.tsx";
+import { AuthProvider } from "./context/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -20,7 +20,7 @@ root.render(
             autoClose={5000}
             hideProgressBar={false}
             newestOnTop={false}
-            closeOnClick={false}
+            closeOnClick={true}
             rtl={false}
             pauseOnFocusLoss
             pauseOnHover

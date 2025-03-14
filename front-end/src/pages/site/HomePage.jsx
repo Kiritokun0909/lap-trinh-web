@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { getMangas } from "../../api/mangaApi";
+import { getMangas } from "../../api/mangaApi.js";
 import "../../styles/site/HomePage.css";
-import MangaBox, { MangaBoxProps } from "../../components/site/MangaBox.tsx";
+import MangaBox from "../../components/site/MangaBox";
 
 import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 
-const HOME_PAGE_TITLE = "Manga Reader - HomePage";
+const HOME_PAGE_TITLE = "Trang chủ";
 const NUMBER_OF_TOP_MANGAS = 8;
 const NUMBER_OF_NEW_UPDATES = 20;
 
@@ -48,8 +48,8 @@ function NewUpdates({ newUpdates }) {
 }
 
 export default function HomePage() {
-  const [topMangas, setTopMangas] = useState<MangaBoxProps[]>([]);
-  const [mangas, setMangas] = useState<MangaBoxProps[]>([]);
+  const [topMangas, setTopMangas] = useState([]);
+  const [mangas, setMangas] = useState([]);
 
   useEffect(() => {
     document.title = HOME_PAGE_TITLE;
