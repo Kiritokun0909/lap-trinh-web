@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { getGenres } from "../../../api/genreApi.js";
 import { MdOutlineAdd, MdEdit, MdDelete, MdCheck } from "react-icons/md";
+import { IoMdTrash } from "react-icons/io";
+import { toast } from "react-toastify";
+
+import {
+  getGenres,
+  addGenre,
+  deleteGenre,
+  updateGenre,
+} from "../../../api/genreApi.js";
+import GenreModal from "../../../modals/GenreModal/GenreModal.jsx";
+import { capitalizeFirstLetter } from "../../../utils/utils.js";
+
 import "./GenrePage.css";
 
 const PAGE_TITLE = "Quản lý thể loại";
@@ -15,16 +26,11 @@ function SearchInput({ searchName, setSearchName }) {
         placeholder="Nhập thể loại muốn tìm..."
         className="search-input"
       />
-
-      <button className="add-button">
-        <MdOutlineAdd className="add-button-icon" />
-        <span>Thêm</span>
-      </button>
     </div>
   );
 }
 
-function GenreTable({ genres, setGenres, searchName }) {
+function GenreTable({ genres, searchName, onUpdate, onDelete, openModal }) {
   const [selectedGenres, setSelectedGenres] = useState([]);
 
   const [editingGenreId, setEditingGenreId] = useState(null);
@@ -49,40 +55,38 @@ function GenreTable({ genres, setGenres, searchName }) {
         : [...prev, genreId]
     );
   };
+
   const handleEdit = (genre) => {
     setEditingGenreId(genre.genreId);
     setEditedGenreName(genre.genreName);
   };
 
   const handleSaveEdit = (genreId) => {
-    setGenres(
-      genres.map((genre) =>
-        genre.genreId === genreId
-          ? { ...genre, genreName: editedGenreName }
-          : genre
-      )
-    );
+    onUpdate(genreId, editedGenreName);
     setEditingGenreId(null);
   };
 
   const handleBulkDelete = () => {
     if (selectedGenres.length === 0) return;
-    const updatedGenres = genres.filter(
-      (genre) => !selectedGenres.includes(genre.genreId)
-    );
-    setGenres(updatedGenres);
-    setSelectedGenres([]);
+    onDelete(selectedGenres);
   };
 
   return (
     <>
-      <div className="delete-section">
-        <div>
-          <button className="bulk-delete-button" onClick={handleBulkDelete}>
-            Xóa tất cả đã chọn ({selectedGenres.length})
-          </button>
-        </div>
+      <div className="buttons-section">
+        <button
+          className="function-button delete-all-button"
+          onClick={handleBulkDelete}
+        >
+          <IoMdTrash className="add-button-icon" />
+          Xóa tất cả đã chọn ({selectedGenres.length})
+        </button>
+        <button className="function-button add-button" onClick={openModal}>
+          <MdOutlineAdd className="add-button-icon" />
+          <span>Thêm</span>
+        </button>
       </div>
+
       <div className="list-genres">
         <table className="genre-table">
           <thead>
@@ -143,11 +147,7 @@ function GenreTable({ genres, setGenres, searchName }) {
                       </button>
                       <button
                         className="delete-button"
-                        onClick={() =>
-                          setGenres(
-                            genres.filter((g) => g.genreId !== genre.genreId)
-                          )
-                        }
+                        onClick={() => onDelete([genre.genreId])}
                       >
                         <MdDelete />
                         Xóa
@@ -167,6 +167,7 @@ function GenreTable({ genres, setGenres, searchName }) {
 export default function GenrePage() {
   const [genres, setGenres] = useState([]);
   const [searchName, setSearchName] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     document.title = PAGE_TITLE;
@@ -178,16 +179,71 @@ export default function GenrePage() {
     setGenres(data);
   };
 
+  const validateGenreName = (name) => {
+    if (name === "") {
+      toast.error("Vui lòng không để trống tên thể loại!");
+      return false;
+    }
+    return true;
+  };
+
+  const addNewGenre = async (genreName) => {
+    if (!validateGenreName(genreName)) {
+      return;
+    }
+
+    try {
+      await addGenre(capitalizeFirstLetter(genreName));
+      toast.success("Thêm thể loại mới thành công!");
+      setShowModal(false);
+
+      fetchGenres();
+    } catch (err) {
+      // console.log(">>err ", err);
+      toast.error(err.message);
+    }
+  };
+
+  const updateSelectedGenre = async (genreId, editedGenreName) => {
+    try {
+      await updateGenre(genreId, capitalizeFirstLetter(editedGenreName));
+      toast.success("Cập nhật tên thể loại thành công!");
+
+      fetchGenres();
+    } catch (err) {
+      // console.log(">>err ", err);
+      toast.error(err.message);
+    }
+  };
+
+  const deleteSelectedGenre = async (genreIds) => {
+    try {
+      await deleteGenre(genreIds);
+      toast.success("Xoá thể loại thành công!");
+
+      fetchGenres();
+    } catch (err) {
+      // console.log(">>err ", err);
+      toast.error(err.message);
+    }
+  };
+
   return (
     <div className="genres-container">
+      {showModal && (
+        <GenreModal onSave={addNewGenre} onClose={() => setShowModal(false)} />
+      )}
+
       <h1>{PAGE_TITLE}</h1>
 
       <SearchInput searchName={searchName} setSearchName={setSearchName} />
 
       <GenreTable
         genres={genres}
-        setGenres={setGenres}
         searchName={searchName}
+        onUpdate={updateSelectedGenre}
+        onDelete={deleteSelectedGenre}
+        openModal={() => setShowModal(true)}
       />
     </div>
   );
