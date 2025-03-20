@@ -1,8 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import "../../styles/component/MangaBox.css";
-import { formatDate } from "../../utils/utils.js";
-import { useDarkMode } from "../../context/DarkModeContext";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './MangaBox.css';
+import { formatDate } from '../../../utils/utils.js';
+import { useDarkMode } from '../../../context/DarkModeContext.js';
 
 export default function MangaBox({ manga, showChapter = false }) {
   const { darkMode } = useDarkMode();
@@ -11,7 +11,7 @@ export default function MangaBox({ manga, showChapter = false }) {
   return (
     <>
       <div
-        className={`manga-item ${darkMode ? "dark-mode" : ""}`}
+        className={`manga-item ${darkMode ? 'dark-mode' : ''}`}
         key={manga.mangaId}
         title={manga.mangaName}
       >
@@ -19,7 +19,7 @@ export default function MangaBox({ manga, showChapter = false }) {
           <img src={manga.coverImageUrl} alt={manga.mangaName} />
           <span>{manga.mangaName}</span>
         </Link>
-        <div className="manga-chapter">
+        <div className='manga-chapter'>
           {showChapter &&
             chapters &&
             chapters.map((chapter) => (
@@ -27,10 +27,10 @@ export default function MangaBox({ manga, showChapter = false }) {
                 key={chapter.chapterId}
                 to={`/manga/${manga.mangaId}/chapter/${chapter.chapterId}`}
               >
-                <div className="chapter-number">
+                <div className='chapter-number'>
                   <span>Chap {chapter.chapterNumber}</span>
                 </div>
-                <div className="chapter-time">
+                <div className='chapter-time'>
                   <span>{formatDate(chapter.updateAt)}</span>
                 </div>
               </Link>

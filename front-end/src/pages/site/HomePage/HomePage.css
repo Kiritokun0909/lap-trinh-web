@@ -1,0 +1,7 @@
+.list-manga-item {
+  display: grid;
+  /* border: 1px solid red; */
+  grid-template-columns: repeat(auto-fit, 158px);
+  gap: 16px;
+  justify-content: center;
+}

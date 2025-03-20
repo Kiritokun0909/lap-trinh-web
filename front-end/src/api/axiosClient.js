@@ -1,8 +1,8 @@
-import axios from "axios";
-import { toast } from "react-toastify";
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-const API_BASE_URL = "http://localhost:5000";
-const REFRESH_TOKEN_URL = "http://localhost:5000/auth/refresh-token";
+const API_BASE_URL = 'http://192.168.0.108:5000';
+const REFRESH_TOKEN_URL = API_BASE_URL + '/auth/refresh-token';
 
 const axiosClient = axios.create({
   baseURL: API_BASE_URL,
@@ -12,7 +12,7 @@ const axiosClient = axios.create({
 // Add accessToken to api call
 axiosClient.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -32,13 +32,13 @@ const refreshAccessToken = async () => {
     );
     return response.data.accessToken;
   } catch (error) {
-    console.error("Failed to refresh token", error);
+    console.error('Failed to refresh token', error);
 
-    localStorage.removeItem("accessToken");
-    toast.warn("Hết phiên đăng nhập, vui lòng đăng nhập lại.");
+    localStorage.removeItem('accessToken');
+    toast.warn('Hết phiên đăng nhập, vui lòng đăng nhập lại.');
 
     setTimeout(() => {
-      window.location.href = "/login";
+      window.location.href = '/login';
     }, 1000);
 
     return null;
@@ -53,7 +53,7 @@ axiosClient.interceptors.response.use(
 
     if (
       error.response?.status === 401 &&
-      originalRequest.url.includes("/login")
+      originalRequest.url.includes('/login')
     ) {
       return Promise.reject(error);
     }
@@ -63,9 +63,9 @@ axiosClient.interceptors.response.use(
 
       const newAccessToken = await refreshAccessToken();
       if (newAccessToken) {
-        localStorage.setItem("accessToken", newAccessToken);
+        localStorage.setItem('accessToken', newAccessToken);
         axiosClient.defaults.headers.common[
-          "Authorization"
+          'Authorization'
         ] = `Bearer ${newAccessToken}`;
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axiosClient(originalRequest); // Retry the failed request

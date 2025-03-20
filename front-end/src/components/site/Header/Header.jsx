@@ -97,7 +97,7 @@ function NavigationBar() {
 
   const handleLogout = () => {
     removeCredentials();
-    toast.success("Đang xuất thành công!");
+    toast.success("Đăng xuất thành công!");
     navigate("/");
   };
 

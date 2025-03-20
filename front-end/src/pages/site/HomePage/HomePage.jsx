@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { getMangas } from "../../api/mangaApi.js";
-import "../../styles/site/HomePage.css";
-import MangaBox from "../../components/site/MangaBox";
+import React, { useEffect, useState } from 'react';
 
-import "swiper/css";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { getMangas } from '../../../api/mangaApi';
+import MangaBox from '../../../components/site/MangaBox/MangaBox';
+import './HomePage.css';
 
-const HOME_PAGE_TITLE = "Trang chủ";
-const NUMBER_OF_TOP_MANGAS = 8;
+import 'swiper/css';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { toast } from 'react-toastify';
+
+const HOME_PAGE_TITLE = 'Trang chủ';
+const NUMBER_OF_TOP_MANGAS = 20;
 const NUMBER_OF_NEW_UPDATES = 20;
 
 function TopMangas({ topMangas }) {
@@ -16,13 +18,25 @@ function TopMangas({ topMangas }) {
     <div>
       <h2>Được yêu thích</h2>
       <Swiper
-        className="swiper-container"
-        modules={[Autoplay]}
-        slidesPerView="auto"
+        modules={[Navigation, Pagination, Autoplay]}
+        slidesPerView={2}
         centeredSlides={true}
-        spaceBetween={16}
-        autoplay={{ delay: 2000 }}
-        loop={true}
+        breakpoints={{
+          0: {
+            slidesPerView: 2,
+            spaceBetween: 8,
+          },
+          768: {
+            slidesPerView: 4,
+            spaceBetween: 16,
+          },
+          1024: {
+            slidesPerView: 6,
+            spaceBetween: 0,
+          },
+        }}
+        autoplay={{ delay: 3000 }}
+        loop
       >
         {topMangas.map((manga) => (
           <SwiperSlide key={manga.mangaId}>
@@ -38,7 +52,7 @@ function NewUpdates({ newUpdates }) {
   return (
     <div>
       <h2>Mới cập nhật</h2>
-      <div className="list-manga-item">
+      <div className='list-manga-item'>
         {newUpdates.map((manga) => (
           <MangaBox key={manga.mangaId} manga={manga} showChapter={true} />
         ))}
@@ -63,7 +77,8 @@ export default function HomePage() {
       // console.log("Top mangas: ", response.items);
       setTopMangas(response.items);
     } catch (error) {
-      console.error("Failed to fetch list manga: ", error);
+      toast.error(error.message);
+      console.error('Failed to fetch list manga: ', error);
     }
   };
 
@@ -72,7 +87,7 @@ export default function HomePage() {
       const response = await getMangas(1, NUMBER_OF_NEW_UPDATES);
       setMangas(response.items);
     } catch (error) {
-      console.error("Failed to fetch list manga: ", error);
+      console.error('Failed to fetch list manga: ', error);
     }
   };
 
