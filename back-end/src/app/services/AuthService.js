@@ -1,18 +1,18 @@
-require("dotenv").config();
-const { users } = require("../../models/init-models")(
-  require("../../configs/DbConfig")
+require('dotenv').config();
+const { users } = require('../../models/init-models')(
+  require('../../configs/DbConfig')
 );
-const jwt = require("jsonwebtoken");
-const { hashPassword, comparePassword } = require("../../utils/BcryptUtil");
-const { ROLE_USER, ACCOUNT_STATUS_BLOCKED } = require("../../utils/HandleCode");
-const Messages = require("../../utils/Messages");
+const jwt = require('jsonwebtoken');
+const { hashPassword, comparePassword } = require('../../utils/BcryptUtil');
+const { ROLE_USER, ACCOUNT_STATUS_BLOCKED } = require('../../utils/HandleCode');
+const Messages = require('../../utils/Messages');
 
 class AuthService {
   async login(email, password) {
     try {
       const user = await users.findOne({
         where: { Email: email },
-        attributes: ["UserId", "Password", "Status", "RoleId"],
+        attributes: ['UserId', 'Password', 'Status', 'RoleId'],
       });
 
       if (!user) {
@@ -33,7 +33,7 @@ class AuthService {
         { userId: user.UserId, roleId: user.RoleId },
         process.env.JWT_ACCESS_SECRET,
         {
-          expiresIn: "1000",
+          expiresIn: '15m',
         }
       );
 
@@ -41,7 +41,7 @@ class AuthService {
         { userId: user.UserId, roleId: user.RoleId },
         process.env.JWT_REFRESH_SECRET,
         {
-          expiresIn: "7d",
+          expiresIn: '7d',
         }
       );
 
@@ -60,7 +60,7 @@ class AuthService {
         { userId: decoded.userId, roleId: decoded.roleId },
         process.env.JWT_ACCESS_SECRET,
         {
-          expiresIn: "15m",
+          expiresIn: '15m',
         }
       );
 

@@ -1,14 +1,12 @@
-const MangaService = require("../services/MangaService");
-const { StatusCodes, ReasonPhrases } = require("http-status-codes");
-const { getHeaderToken, getUserFromToken } = require("../../utils/TokenUtil");
-const Messages = require("../../utils/Messages");
+const MangaService = require('../services/MangaService');
+const { StatusCodes, ReasonPhrases } = require('http-status-codes');
+const { getHeaderToken, getUserFromToken } = require('../../utils/TokenUtil');
+const Messages = require('../../utils/Messages');
 class MangaController {
   async getAllMangas(req, res) {
     try {
       const { search_query, page, limit } = req.query;
       const user = getUserFromToken(getHeaderToken(req));
-
-      console.log(">> here");
 
       const mangaList = await MangaService.getAllMangas(
         search_query,
@@ -19,11 +17,11 @@ class MangaController {
 
       return res.status(StatusCodes.OK).json(mangaList);
     } catch (error) {
-      if (error.name === "TokenExpiredError") {
+      if (error.name === 'TokenExpiredError') {
         return res
           .status(StatusCodes.UNAUTHORIZED)
           .send(Messages.ERROR.TOKEN_EXPIRED);
-      } else if (error.name === "JsonWebTokenError") {
+      } else if (error.name === 'JsonWebTokenError') {
         return res
           .status(StatusCodes.UNAUTHORIZED)
           .send(Messages.ERROR.TOKEN_INVALID);
@@ -36,6 +34,7 @@ class MangaController {
     try {
       const { mangaId } = req.params;
       const user = getUserFromToken(getHeaderToken(req));
+
       const manga = await MangaService.getMangaById(mangaId, user);
       if (!manga) {
         return res
