@@ -113,8 +113,9 @@
   width: 100%;
   /* border: 1px solid red; */
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  gap: 24px;
+  padding: 16px 12px 24px;
 }
 
 @media screen and (max-width: 768px) {

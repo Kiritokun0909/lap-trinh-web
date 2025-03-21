@@ -2,18 +2,27 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { getMangaById } from '../../../api/mangaApi';
-import MangaDetail from '../../../components/MangaDetail/MangaDetail';
 import './MangaPage.css';
-import { ChapterList } from '../../../components/ChapterList/ChapterList';
-import MangaDescription from '../../../components/MangaDescription/MangaDescription';
+
+import { getMangaById } from '../../../api/mangaApi';
 import { getListChapterByMangaId } from '../../../api/chapterApi';
+
+import MangaDetail from '../../../components/MangaDetail/MangaDetail';
+import ChapterList from '../../../components/ChapterList/ChapterList';
+import MangaDescription from '../../../components/MangaDescription/MangaDescription';
 import Comments from '../../../components/Comment/Comments';
+import {
+  LikeButton,
+  FollowButton,
+} from '../../../components/LikeFollowButton/LikeFollowButton';
 
 export default function MangaPage() {
   const mangaId = useParams().mangaId;
   const [manga, setManga] = useState();
   const [chapters, setChapters] = useState([]);
+
+  const [isLiked, setIsLiked] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
 
   const navigate = useNavigate();
 
@@ -35,7 +44,9 @@ export default function MangaPage() {
     const fetchChapters = async () => {
       try {
         const data = await getListChapterByMangaId(mangaId);
-        setChapters(data);
+        setTimeout(() => {
+          setChapters(data);
+        }, 1000);
       } catch (err) {
         toast.error(err.message);
         navigate('/');
@@ -48,11 +59,18 @@ export default function MangaPage() {
   }, [mangaId, navigate]);
 
   return (
-    <>
+    <div className='manga-page'>
       <MangaDetail manga={manga} />
+      <div className='manga-page__btn-group'>
+        <LikeButton isLiked={isLiked} onChange={() => setIsLiked(!isLiked)} />
+        <FollowButton
+          isFollowed={isFollowed}
+          onChange={() => setIsFollowed(!isFollowed)}
+        />
+      </div>
       <MangaDescription manga={manga} />
       <ChapterList chapters={chapters} />
       <Comments />
-    </>
+    </div>
   );
 }

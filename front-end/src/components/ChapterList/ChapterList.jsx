@@ -2,9 +2,10 @@ import { FaList } from 'react-icons/fa';
 
 import '../MangaDescription/MangaDescription.css';
 import './ChapterList.css';
-import { formatDate } from '../../utils/utils';
+import { Link } from 'react-router-dom';
+import { formatFullDate } from '../../utils/utils';
 
-export const ChapterList = ({ chapters }) => {
+export default function ChapterList({ chapters }) {
   return (
     <>
       <div className='manga-description chapter-title'>
@@ -15,19 +16,21 @@ export const ChapterList = ({ chapters }) => {
           <span>Danh sách chương</span>
         </h3>
       </div>
-      <div className='chapter-list'>
+      <div className='list-chapter'>
         {chapters &&
           chapters.map((chapter) => (
-            <div key={chapter.chapterId} className='chapter-item'>
-              <div className='chapter-number'>
-                <span>Chap {chapter.chapterNumber}</span>
+            <div key={chapter.chapterId} className='chapter-row'>
+              <div className='chapter-name'>
+                <Link to={`/chapter/${chapter.chapterId}`}>
+                  Chapter {chapter.chapterNumber}
+                </Link>
               </div>
-              <div className='chapter-time'>
-                <span>{chapter.updateAt}</span>
+              <div className='chapter-name'>
+                <i>{formatFullDate(chapter.updateAt)}</i>
               </div>
             </div>
           ))}
       </div>
     </>
   );
-};
+}

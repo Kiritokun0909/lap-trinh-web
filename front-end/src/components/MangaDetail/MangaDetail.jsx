@@ -3,10 +3,13 @@ import {
   FaUser,
   FaRss,
   FaExclamationTriangle,
-  FaHeart,
+  FaThumbsUp,
   FaTags,
+  FaHeart,
 } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import { GrView } from 'react-icons/gr';
+
 import { DEFAULT_COVER_IMAGE_URL, formatDate } from '../../utils/utils';
 import './MangaDetail.css';
 
@@ -18,6 +21,29 @@ function MangaInfoRow({ icon, label, value }) {
         {label && <label>{label}</label>}
       </div>
       <span className='info-value'> {value}</span>
+    </div>
+  );
+}
+
+function MangaGenres({ genres }) {
+  return (
+    <div className='info-row'>
+      <div className='info-label'>
+        <div className='info-icon'>{<FaTags /> || ''}</div>
+        <label>Thể loại</label>
+      </div>
+      <div className='genre-list'>
+        {genres &&
+          genres.map((genre) => (
+            <Link
+              key={genre.genreId}
+              to={`/genres/${genre.genreId}`}
+              className='genre-button'
+            >
+              {genre.genreName}
+            </Link>
+          ))}
+      </div>
     </div>
   );
 }
@@ -38,8 +64,12 @@ export default function MangaDetail({ manga }) {
           value={manga.numViews + ' lượt xem' || 0}
         />
         <MangaInfoRow
-          icon={<FaHeart />}
+          icon={<FaThumbsUp />}
           value={manga.numLikes + ' lượt thích' || 0}
+        />
+        <MangaInfoRow
+          icon={<FaHeart />}
+          value={manga.numFollows + ' lượt theo dõi' || 0}
         />
         <MangaInfoRow
           value={
@@ -77,20 +107,7 @@ export default function MangaDetail({ manga }) {
             label={'Nội dung'}
             value={manga.ageLimit + '+' || 'N/A'}
           />
-          <div className='info-row'>
-            <div className='info-label'>
-              <div className='info-icon'>{<FaTags /> || ''}</div>
-              <label>Thể loại</label>
-            </div>
-            <div>
-              {manga.genres &&
-                manga.genres.map((genre) => (
-                  <span key={genre.genreId} className='info-value'>
-                    {genre.genreName}
-                  </span>
-                ))}
-            </div>
-          </div>
+          <MangaGenres genres={manga.genres || []} />
         </div>
       </div>
     </>

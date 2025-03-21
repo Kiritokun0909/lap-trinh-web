@@ -1,0 +1,19 @@
+.manga-page {
+  padding: 0 16px;
+}
+
+.manga-page__btn-group {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin: 4px 0px;
+  justify-content: flex-start;
+  margin-left: 6px;
+}
+
+@media (max-width: 600px) {
+  .manga-page__btn-group {
+    justify-content: center;
+    margin-left: 0px;
+  }
+}

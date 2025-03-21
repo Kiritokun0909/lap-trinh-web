@@ -20,7 +20,6 @@ function TopMangas({ topMangas }) {
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         slidesPerView={2}
-        centeredSlides={true}
         breakpoints={{
           0: {
             slidesPerView: 2,

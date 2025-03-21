@@ -1,4 +1,4 @@
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, format } from 'date-fns';
 import vi from 'date-fns/locale/vi';
 
 export const DEFAULT_COVER_IMAGE_URL =
@@ -6,6 +6,10 @@ export const DEFAULT_COVER_IMAGE_URL =
 
 export const formatDate = (date) => {
   return formatDistanceToNow(new Date(date), { addSuffix: true, locale: vi });
+};
+
+export const formatFullDate = (date) => {
+  return format(new Date(date), 'dd/MM/yyyy', { locale: vi });
 };
 
 export const capitalizeFirstLetter = (string) => {
