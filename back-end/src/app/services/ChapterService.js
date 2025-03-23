@@ -1,4 +1,6 @@
-const { chapters, chapter_images } = require('../../models/init-models')(require('../../configs/DbConfig'));
+const { chapters, chapter_images } = require('../../models/init-models')(
+  require('../../configs/DbConfig')
+);
 
 class ChapterService {
   async setUserIsReadChapter(chapterId, userId) {
@@ -23,7 +25,7 @@ class ChapterService {
     }
   }
 
-  getAllChaptersImagesOfChapter = async (chapterId, user = null) => {
+  async getImagesByChapterId(chapterId, user = null) {
     try {
       const chapterImagesList = await chapter_images.findAll({
         where: { ChapterId: chapterId },
@@ -42,5 +44,7 @@ class ChapterService {
     } catch (error) {
       throw new Error(error.message);
     }
-  };
+  }
 }
+
+module.exports = new ChapterService();
