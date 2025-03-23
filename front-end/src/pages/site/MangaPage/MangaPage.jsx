@@ -30,9 +30,7 @@ export default function MangaPage() {
     const fetchManga = async () => {
       try {
         const data = await getMangaById(mangaId);
-        setTimeout(() => {
-          setManga(data);
-        }, 1000);
+        setManga(data);
         document.title = data.mangaName;
       } catch (err) {
         toast.error(err.message);
@@ -44,9 +42,7 @@ export default function MangaPage() {
     const fetchChapters = async () => {
       try {
         const data = await getListChapterByMangaId(mangaId);
-        setTimeout(() => {
-          setChapters(data);
-        }, 1000);
+        setChapters(data);
       } catch (err) {
         toast.error(err.message);
         navigate('/');

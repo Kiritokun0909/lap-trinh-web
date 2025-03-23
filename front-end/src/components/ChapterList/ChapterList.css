@@ -1,11 +1,7 @@
-.chapter-title {
-  margin-top: 24px !important;
-}
-
 .list-chapter {
-  border: 1px solid #eee;
+  border: 1px solid gray;
   border-radius: 8px;
-  padding: 4px 16px 8px;
+  padding: 4px 12px 8px;
   max-height: 250px;
   overflow: auto;
   min-height: 100px;
@@ -15,10 +11,11 @@
 .chapter-row {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid gray;
 }
 
 .chapter-row a {
+  margin-left: 4px;
   color: black;
   text-decoration: none;
   cursor: pointer;

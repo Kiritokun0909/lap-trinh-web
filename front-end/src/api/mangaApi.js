@@ -1,10 +1,10 @@
 import axiosClient from './axiosClient';
 
 //#region get-list-manga
-export const getMangas = async (page, limit) => {
+export const getMangas = async (page, limit, keyword = '') => {
   try {
     const response = await axiosClient.get(
-      `/mangas?page=${page}&limit=${limit}`
+      `/mangas?page=${page}&limit=${limit}&search_query=${keyword}`
     );
 
     return response.data;

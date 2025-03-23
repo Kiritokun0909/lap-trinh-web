@@ -11,7 +11,7 @@ export default function MangaBox({ manga, showChapter = false }) {
   return (
     <>
       <div
-        className={`manga-item ${darkMode ? 'dark-mode' : ''}`}
+        className={`manga-box__container ${darkMode ? 'dark-mode' : ''}`}
         key={manga.mangaId}
         title={manga.mangaName}
       >
@@ -19,7 +19,7 @@ export default function MangaBox({ manga, showChapter = false }) {
           <img src={manga.coverImageUrl} alt={manga.mangaName} />
           <span>{manga.mangaName}</span>
         </Link>
-        <div className='manga-chapter'>
+        <div className='manga-box__chapters'>
           {showChapter &&
             chapters &&
             chapters.map((chapter) => (

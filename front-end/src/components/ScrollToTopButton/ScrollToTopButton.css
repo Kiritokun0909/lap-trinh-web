@@ -1,0 +1,23 @@
+.btn-scroll-top button {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  z-index: 1000;
+  background-color: black;
+  opacity: 80%;
+  color: white;
+  padding: 8px 8px 2px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.btn-scroll-top button:hover {
+  filter: brightness(80%);
+}
+
+.dark-mode .btn-scroll-top button {
+  background-color: white;
+  color: black;
+}

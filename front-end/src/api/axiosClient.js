@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const API_BASE_URL = 'http://192.168.0.108:5000';
+const API_BASE_URL = 'http://localhost:5000';
 const REFRESH_TOKEN_URL = API_BASE_URL + '/auth/refresh-token';
 
 const axiosClient = axios.create({

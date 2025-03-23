@@ -1,0 +1,81 @@
+.nav-bar__container {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.nav-bar__function {
+  display: flex;
+}
+
+.nav-bar__item a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid gray;
+  box-sizing: border-box;
+}
+
+.nav-bar-icon {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+}
+
+.nav-bar__item a:hover {
+  color: orange;
+}
+
+.item--genres__title {
+  padding-right: 6px !important;
+  display: flex;
+}
+
+.item--genres__list {
+  background-color: #343a40;
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  width: 100%;
+  padding: 6px 12px 12px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.item--genres__list a {
+  border: none !important;
+  font-size: 16px;
+}
+
+.item--accounts {
+  position: relative;
+  width: 130px;
+}
+
+.item--account__title {
+  display: flex;
+  justify-content: center;
+  padding-right: 6px !important;
+  border-right: none !important;
+}
+
+.item--account__list {
+  background-color: #343a40;
+  position: absolute;
+  z-index: 10;
+  box-sizing: border-box;
+  width: 100%;
+  padding-bottom: 12px;
+}
+
+.item--account__list a {
+  border: none !important;
+  font-size: 16px;
+  width: 100%;
+  border-bottom: 1px solid gray;
+}

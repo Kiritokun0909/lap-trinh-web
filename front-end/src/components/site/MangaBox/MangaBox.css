@@ -1,16 +1,15 @@
-
-.manga-item {
+.manga-box__container {
   width: 158px;
   text-align: center;
 }
 
-.manga-item img {
+.manga-box__container img {
   width: 158px;
   height: 216px;
   border-radius: 4px;
 }
 
-.manga-item a {
+.manga-box__container a {
   display: flex;
   flex-direction: column;
   width: 158px;
@@ -20,18 +19,26 @@
   font-weight: 500;
 }
 
-.manga-item a:hover {
+.manga-box__container a:hover {
   color: orange;
 }
 
-.manga-item a span {
+.dark-mode .manga-box__container a:hover {
+  color: orange;
+}
+
+.dark-mode .manga-box__container a {
+  color: white;
+}
+
+.manga-box__container a span {
   width: 158px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.manga-chapter a {
+.manga-box__chapters a {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -41,22 +48,18 @@
   color: black;
 }
 
-.chapter-number span:hover {
-  color: orange;
-}
-
 .chapter-time span {
   font-style: italic;
   color: darkgrey;
 }
 
-.dark-mode a {
-  color: #ddd;
-}
-
 .dark-mode .chapter-number span,
 .dark-mode .chapter-time span {
   color: #ddd;
+}
+
+.chapter-number span:hover {
+  color: orange;
 }
 
 .dark-mode .chapter-number span:hover {

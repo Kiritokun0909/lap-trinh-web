@@ -5,132 +5,15 @@
 
 .top-header {
   background-color: #343a40;
-  padding: 10px 10px;
-}
-
-.top-header-container {
   display: flex;
-  align-items: center;
-}
-
-.logo a {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
-  text-decoration: none;
-}
-
-.logo a:hover {
-  color: orange;
-}
-
-.search-bar {
-  display: flex;
-  flex: 1;
-  gap: 0.5rem;
-  margin-left: 1rem;
-}
-
-.search-bar input {
-  width: 100%;
-  border: 2px solid;
-  border-radius: 4px;
-  padding: 10px 12px;
-  font-size: medium;
-}
-
-.search-bar input:focus {
-  outline: none;
-  border: 2px solid orange;
-}
-
-.search-bar button {
-  background-color: #007bff;
-  border-radius: 4px;
-  border: none;
-  padding: 0 12px;
-  color: white;
-  cursor: pointer;
-  font-size: medium;
-  font-weight: bold;
-}
-
-.search-bar button:hover {
-  filter: brightness(80%);
-}
-
-.search-icon {
-  width: 20px;
-  height: 20px;
 }
 
 .nav-bar {
   background-color: #495057;
-  display: flex;
 }
 
-.nav-bar__container {
-  display: flex;
-  position: relative;
-}
-
-.nav-bar__container ul {
-  list-style: none;
-  display: flex;
-  margin: 0;
-  width: 100%;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  gap: 1.5rem;
-}
-
-.nav-bar__container ul li a {
-  color: white;
-  text-decoration: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  position: relative;
-  transition: background-color 0.3s ease;
-}
-
-.nav-bar__container ul li a:hover,
-.nav-bar__container ul li:hover > a {
-  background-color: #343a40;
-}
-
-.sub-menu {
-  margin-top: 4px;
-  position: absolute;
-  background-color: #343a40;
-  z-index: 10;
-  left: 0;
-  border-radius: 4px;
-  padding: 16px 0px;
-  /* display: flex;
-  flex-wrap: wrap;
-  gap: 8px; */
-
-  width: 100%;
-  /* border: 1px solid red; */
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
-  gap: 24px;
-  padding: 16px 12px 24px;
-}
-
-@media screen and (max-width: 768px) {
-  .sub-menu {
-    padding-left: 24px;
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 600px) {
+  .nav-bar {
+    display: none;
   }
-}
-
-.sub-menu-item a {
-  color: white;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-}
-
-.sub-menu-item a:hover {
-  color: orange;
 }

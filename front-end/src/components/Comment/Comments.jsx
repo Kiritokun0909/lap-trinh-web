@@ -1,7 +1,8 @@
-import { FaComment } from 'react-icons/fa';
+import { FaComment, FaPaperPlane } from 'react-icons/fa';
 
 import '../MangaDescription/MangaDescription.css';
 import '../ChapterList/ChapterList.css';
+import './Comments.css';
 
 export default function Comments() {
   return (
@@ -14,6 +15,17 @@ export default function Comments() {
           <span>Bình luận</span>
         </h3>
       </div>
+      <div className='user-comment'>
+        <textarea
+          className='comment-textarea'
+          placeholder='Viết bình luận...'
+        ></textarea>
+        <button className='comment-btn'>
+          <FaPaperPlane />
+          <span>Gửi</span>
+        </button>
+      </div>
+      <div className='list-comment'></div>
     </>
   );
 }

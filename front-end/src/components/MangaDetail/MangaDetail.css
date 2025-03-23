@@ -2,7 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .manga-title h1 {
@@ -13,7 +13,7 @@
   display: flex;
   flex-direction: row;
   gap: 24px;
-  padding: 12px;
+  padding: 6px 12px;
   justify-content: flex-start;
 }
 
@@ -78,6 +78,7 @@
   margin-top: 0px;
   display: flex;
   flex-wrap: wrap;
+  gap: 8px;
 }
 
 .genre-list a {
@@ -90,7 +91,6 @@
   padding: 4px 8px;
   font-size: medium;
   font-weight: 600;
-  margin: 4px 8px 4px 0px;
 }
 
 .genre-list a:hover {

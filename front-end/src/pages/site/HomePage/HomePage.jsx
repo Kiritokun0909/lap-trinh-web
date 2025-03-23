@@ -10,31 +10,18 @@ import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { toast } from 'react-toastify';
 
 const HOME_PAGE_TITLE = 'Trang chủ';
-const NUMBER_OF_TOP_MANGAS = 20;
-const NUMBER_OF_NEW_UPDATES = 20;
+const NUMBER_OF_TOP_MANGAS = 10;
+const NUMBER_OF_NEW_UPDATES = 12;
 
 function TopMangas({ topMangas }) {
   return (
-    <div>
+    <div className='top-mangas__container'>
       <h2>Được yêu thích</h2>
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
-        slidesPerView={2}
-        breakpoints={{
-          0: {
-            slidesPerView: 2,
-            spaceBetween: 8,
-          },
-          768: {
-            slidesPerView: 4,
-            spaceBetween: 16,
-          },
-          1024: {
-            slidesPerView: 6,
-            spaceBetween: 0,
-          },
-        }}
+        slidesPerView='auto'
         autoplay={{ delay: 3000 }}
+        spaceBetween={16}
         loop
       >
         {topMangas.map((manga) => (
@@ -94,7 +81,9 @@ export default function HomePage() {
     <>
       <TopMangas topMangas={topMangas} />
 
-      <NewUpdates newUpdates={mangas} />
+      <div className='new-updates__container'>
+        <NewUpdates newUpdates={mangas} />
+      </div>
     </>
   );
 }
