@@ -25,7 +25,7 @@ export default function MangaBox({ manga, showChapter = false }) {
             chapters.map((chapter) => (
               <Link
                 key={chapter.chapterId}
-                to={`/manga/${manga.mangaId}/chapter/${chapter.chapterId}`}
+                to={`/chapter/${chapter.chapterId}`}
               >
                 <div className='chapter-number'>
                   <span>Chap {chapter.chapterNumber}</span>

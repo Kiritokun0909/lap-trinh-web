@@ -9,7 +9,7 @@ export const formatDate = (date) => {
 };
 
 export const formatFullDate = (date) => {
-  return format(new Date(date), 'dd/MM/yyyy', { locale: vi });
+  return format(new Date(date), 'dd/MM/yyyy HH:mm', { locale: vi });
 };
 
 export const capitalizeFirstLetter = (string) => {

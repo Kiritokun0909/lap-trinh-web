@@ -100,7 +100,7 @@ export default function NavigationBar() {
           )}
         </div>
 
-        <NavbarItem link='/' label={'TÌM TRUYỆN'} />
+        <NavbarItem link='/search' label={'TÌM TRUYỆN'} />
       </div>
 
       <div className='nav-bar__account'>

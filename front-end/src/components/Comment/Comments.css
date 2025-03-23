@@ -9,10 +9,10 @@
   padding: 16px 12px 16px 20px;
   width: 100%;
   resize: none;
-  height: 120px;
+  height: 70px;
   box-sizing: border-box;
   border-radius: 6px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .comment-btn {
