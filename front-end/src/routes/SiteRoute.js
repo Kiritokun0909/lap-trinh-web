@@ -7,6 +7,7 @@ import PrivacyPage from '../pages/site/PrivacyPage';
 import AboutPage from '../pages/site/AboutPage';
 import { LoginPage } from '../pages/site/LoginPage/LoginPage';
 import MangaPage from '../pages/site/MangaPage/MangaPage';
+import ChapterPage from '../pages/site/ChapterPage/ChapterPage';
 
 export default function SiteRoute() {
   return (
@@ -17,6 +18,7 @@ export default function SiteRoute() {
         <Route path='/privacy' element={<PrivacyPage />} />
         <Route path='/about' element={<AboutPage />} />
         <Route path='/manga/:mangaId' element={<MangaPage />} />
+        <Route path='/chapter/:chapterId' element={<ChapterPage />} />
         <Route path='/*' element={<NotFoundPage />} />
       </Route>
     </Routes>
