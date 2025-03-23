@@ -5,15 +5,22 @@ const {
   getUserFromToken,
   getUserIdFromToken,
 } = require('../../utils/TokenUtil');
+const { parse } = require('dotenv');
 class ChapterController {
   async getChapterImages(req, res) {
     try {
       const { chapterId } = req.params;
       const userId = getUserIdFromToken(getHeaderToken(req));
       const chapterImagesList = await ChapterService.getImagesByChapterId(
-        chapterId,
+        parseInt(chapterId),
         userId
       );
+
+      if (!chapterImagesList) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ message: 'Chapter not found' });
+      }
 
       return res.status(StatusCodes.OK).json(chapterImagesList);
     } catch (error) {
