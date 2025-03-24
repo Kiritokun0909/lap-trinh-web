@@ -14,7 +14,9 @@
 }
 
 .btn-icon {
-  padding-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .follow {

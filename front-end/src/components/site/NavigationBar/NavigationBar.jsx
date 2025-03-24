@@ -77,8 +77,8 @@ export default function NavigationBar() {
     <div className='nav-bar__container'>
       <div className='nav-bar__function'>
         <NavbarItem link='/' icon={<FaHome />} />
-        <NavbarItem link='/' label={'HOT'} />
-        <NavbarItem link='/' label={'MỚI CẬP NHẬT'} />
+        <NavbarItem link='/search?filterId=1' label={'HOT'} />
+        <NavbarItem link='/search?filterId=2' label={'MỚI CẬP NHẬT'} />
 
         <div
           className='nav-bar__item item--genres'
@@ -86,13 +86,16 @@ export default function NavigationBar() {
           onMouseLeave={genresMenu.hide}
           ref={genresMenu.buttonRef}
         >
-          <Link className='item--genres__title' to='/'>
+          <Link className='item--genres__title' to='/search'>
             THỂ LOẠI <FaCaretDown />
           </Link>
           {genresMenu.isVisible && (
             <div className='item--genres__list' ref={genresMenu.subMenuRef}>
               {genres?.map((genre) => (
-                <Link key={genre.genreId} to={`/genres/${genre.genreId}`}>
+                <Link
+                  key={genre.genreId}
+                  to={`/search?genreId=${genre.genreId}`}
+                >
                   {genre.genreName}
                 </Link>
               ))}

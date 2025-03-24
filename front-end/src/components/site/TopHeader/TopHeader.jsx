@@ -109,6 +109,10 @@ export default function TopHeader() {
 
   const handleCloseSidebarMenu = () => setShowMenu(false);
 
+  const handleClickSearchButton = () => {
+    navigate(`/search?keyword=${searchContext}`);
+  };
+
   return (
     <div className='top-header__container'>
       <div className='top-header__logo'>
@@ -121,7 +125,7 @@ export default function TopHeader() {
           searchResult={searchResult}
         />
         <div className='search-bar__btn-search'>
-          <button>
+          <button onClick={handleClickSearchButton}>
             <img
               src='/icon/search-icon.png'
               alt='Search'
@@ -156,9 +160,20 @@ export default function TopHeader() {
                 />
                 <SidebarMenuLink
                   to='/search'
+                  label='HOT'
+                  onClick={handleCloseSidebarMenu}
+                />
+                <SidebarMenuLink
+                  to='/search'
+                  label='MỚI CẬP NHẬT'
+                  onClick={handleCloseSidebarMenu}
+                />
+                <SidebarMenuLink
+                  to='/search'
                   label='TÌM KIẾM'
                   onClick={handleCloseSidebarMenu}
                 />
+
                 {isLoggedIn ? (
                   <>
                     <SidebarMenuLink

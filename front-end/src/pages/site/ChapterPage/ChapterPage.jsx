@@ -11,37 +11,25 @@ import Comments from '../../../components/Comment/Comments';
 function ChapterNavigation({ chapter }) {
   return (
     <div className='chapter-navigate' style={{ marginTop: `0px` }}>
-      {chapter?.prevChapterId ? (
-        <Link to={`/chapter/${chapter?.prevChapterId}`}>
-          <div className='navigate-icon'>
-            <FaArrowLeft />
-          </div>
-          Chap trước
-        </Link>
-      ) : (
-        <Link to='#' className='nav-disable'>
-          <div className='navigate-icon'>
-            <FaArrowLeft />
-          </div>
-          Chap trước
-        </Link>
-      )}
+      <Link
+        to={chapter?.prevChapterId ? `/chapter/${chapter?.prevChapterId}` : '#'}
+        className={chapter?.prevChapterId ? '' : 'nav-disable'}
+      >
+        <div className='navigate-icon'>
+          <FaArrowLeft />
+        </div>
+        Chap trước
+      </Link>
 
-      {chapter?.nextChapterId ? (
-        <Link to={`/chapter/${chapter?.nextChapterId}`}>
-          Chap sau
-          <div className='navigate-icon'>
-            <FaArrowRight />
-          </div>
-        </Link>
-      ) : (
-        <Link to='#' className='nav-disable'>
-          Chap sau
-          <div className='navigate-icon'>
-            <FaArrowRight />
-          </div>
-        </Link>
-      )}
+      <Link
+        to={chapter?.nextChapterId ? `/chapter/${chapter?.nextChapterId}` : '#'}
+        className={chapter?.nextChapterId ? '' : 'nav-disable'}
+      >
+        Chap sau
+        <div className='navigate-icon'>
+          <FaArrowRight />
+        </div>
+      </Link>
     </div>
   );
 }
@@ -66,6 +54,7 @@ export default function ChapterPage() {
     };
 
     fetchChapterImages();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [chapterId, navigate]);
 
   return (
