@@ -3,11 +3,12 @@ module.exports = {
   ERROR: {
     EMAIL_ALREADY_IN_USE: { code: 1001, message: 'Email already in use' },
     EMAIL_NOT_FOUND: { code: 1002, message: 'Email not found' },
-    USER_NOT_FOUND: { code: 1003, message: 'User not found' },
-    INVALID_CREDENTIALS: { code: 1004, message: 'Invalid credentials' },
-    INVALID_PASSWORD: { code: 1005, message: 'Invalid password' },
-    INVALID_TOKEN: { code: 1006, message: 'Invalid token' },
-    PASSWORDS_DO_NOT_MATCH: { code: 1007, message: 'Passwords do not match' },
+    EMAIL_REQUIRED: { code: 1003, message: 'Email is required' },
+    USER_NOT_FOUND: { code: 1004, message: 'User not found' },
+    INVALID_CREDENTIALS: { code: 1005, message: 'Invalid credentials' },
+    INVALID_PASSWORD: { code: 1006, message: 'Invalid password' },
+    INVALID_TOKEN: { code: 1007, message: 'Invalid token' },
+    PASSWORDS_DO_NOT_MATCH: { code: 1008, message: 'Passwords do not match' },
     TOKEN_EXPIRED: { code: 2001, message: 'Token expired' },
     TOKEN_INVALID: { code: 2002, message: 'Invalid token' },
     TOKEN_REQUIRED: { code: 2003, message: 'Token is required' },
@@ -18,6 +19,9 @@ module.exports = {
       message: 'Access denied. You do not have permission to access this resource',
     },
     ACCOUNT_BLOCKED: { code: 3003, message: 'Account is blocked' },
+    OTP_NOT_FOUND: { code: 3004, message: 'OTP not found' },
+    OTP_NOT_MATCHED: { code: 3005, message: 'OTP not matched' },
+    OTP_EXPIRED: { code: 3006, message: 'OTP expired' },
   },
 
   // Success Messages

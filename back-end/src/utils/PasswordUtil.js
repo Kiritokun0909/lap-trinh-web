@@ -1,7 +1,7 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 
-class BcryptUtil {
+class PasswordUtil {
   async hashPassword(password) {
     password = String(password);
     const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS);
@@ -13,6 +13,10 @@ class BcryptUtil {
     password = String(password);
     return bcrypt.compare(password, hash);
   }
+  async generateRandomPassword() {
+    const randomPassword = Math.random().toString(36).slice(-8);
+    return randomPassword;
+  }
 }
 
-module.exports = new BcryptUtil();
+module.exports = new PasswordUtil();
