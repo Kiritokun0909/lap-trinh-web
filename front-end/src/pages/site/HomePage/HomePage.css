@@ -1,0 +1,24 @@
+.list-manga-item {
+  display: grid;
+  /* border: 1px solid red; */
+  grid-template-columns: repeat(auto-fit, 158px);
+  gap: 16px;
+  justify-content: center;
+}
+
+.top-mangas__container {
+  position: relative;
+}
+
+.swiper {
+  position: absolute !important;
+  width: 100%;
+}
+
+.swiper-slide {
+  width: 158px !important;
+}
+
+.new-updates__container {
+  margin-top: 275px;
+}

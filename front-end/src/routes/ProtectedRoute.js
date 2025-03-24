@@ -8,7 +8,7 @@ const ProtectedRoute = ({ allowedRoles }) => {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  console.log(">>> routes: ", currentPath);
+  // console.log(">>> routes: ", currentPath);
   if (currentPath === "/login" && accessToken) {
     return <Navigate to="/" />;
   }

@@ -1,0 +1,88 @@
+.chapter__container {
+  padding: 12px 12px;
+}
+
+.chapter-images__container {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  margin-bottom: 24px;
+}
+
+.chapter-image__row {
+  display: flex;
+  justify-content: center;
+}
+
+.chapter-image__row img {
+  max-width: 650px;
+  width: 100%;
+}
+
+.chapter__title {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0px;
+}
+
+.chapter__title a {
+  text-decoration: none;
+  color: black;
+}
+
+.chapter__title a:hover {
+  color: orange;
+}
+
+.chapter__title h2 {
+  margin: 0px;
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.dark-mode .chapter__title a {
+  color: white;
+}
+
+.dark-mode .chapter__title a:hover {
+  color: orange;
+}
+
+.chapter-navigate {
+  margin-bottom: 12px;
+  margin-top: 12px;
+
+  display: flex;
+  justify-content: center;
+}
+
+.chapter-navigate a {
+  border-radius: 4px;
+  background-color: #5bc0de;
+  color: white;
+  text-decoration: none;
+  padding: 4px 6px;
+  margin: 0px 2px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.navigate-icon {
+  padding-top: 2px;
+  font-size: 12px;
+}
+
+.chapter-navigate a:hover {
+  filter: brightness(80%);
+}
+
+.nav-disable {
+  background-color: grey !important;
+  cursor: not-allowed !important;
+}

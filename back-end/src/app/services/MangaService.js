@@ -1,9 +1,11 @@
 const { Op } = require('sequelize');
+const db = require('../../configs/DbPoolConfig');
 const { mangas, chapters, genres, user_chapter_history } =
   require('../../models/init-models')(require('../../configs/DbConfig'));
 const { formatISODate } = require('../../utils/DateUtil');
 const { ROLE_ADMIN, ROLE_USER } = require('../../utils/HandleCode');
 const convertKeysToCamelCase = require('../../utils/CamelCaseUtil');
+const HandleCode = require('../../utils/HandleCode');
 class MangaService {
   async getAllMangas(search_query, page = 1, limit = 10, user = null) {
     page = parseInt(page);
@@ -33,10 +35,13 @@ class MangaService {
         attributes: [
           'MangaId',
           'MangaName',
+          'OtherName',
           'CoverImageUrl',
           'NumViews',
           'NumLikes',
           'NumFollows',
+          'PublishedYear',
+          'UpdateAt',
         ],
         include: [
           {
@@ -60,6 +65,8 @@ class MangaService {
           chapter.UpdateAt = formatISODate(chapter.UpdateAt);
           return chapter;
         });
+
+        manga.UpdateAt = formatISODate(manga.UpdateAt);
         delete manga.GenreId_genres;
         return manga;
       });
@@ -163,6 +170,31 @@ class MangaService {
       return await this.getAllChaptersOfMangaForUser(mangaId, user);
     } else {
       return await this.getAllChaptersOfMangaPublic(mangaId);
+    }
+  }
+
+  async updateMangaLikeFollow(mangaId, type = 'like') {
+    try {
+      const table = type === 'like' ? 'Favorites' : 'Following';
+      const field = type === 'like' ? 'NumLikes' : 'NumFollows';
+
+      // Count the total number of rows in the relevant table for the given mangaId
+      const [[{ count }]] = await db.query(
+        `SELECT COUNT(*) AS count FROM ${table} WHERE MangaId = ?`,
+        [mangaId]
+      );
+
+      // Update the field in the mangas table with the new count
+      const [rows] = await db.query(
+        `UPDATE mangas SET ${field} = ? WHERE MangaId = ?`,
+        [count, mangaId]
+      );
+
+      if (rows.affectedRows === 0) {
+        return { code: HandleCode.NOT_FOUND };
+      }
+    } catch (err) {
+      throw err;
     }
   }
 }
