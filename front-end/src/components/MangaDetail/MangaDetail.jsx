@@ -6,6 +6,7 @@ import {
   FaThumbsUp,
   FaTags,
   FaHeart,
+  FaClock,
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { GrView } from 'react-icons/gr';
@@ -37,7 +38,7 @@ function MangaGenres({ genres }) {
           genres.map((genre) => (
             <Link
               key={genre.genreId}
-              to={`/genres/${genre.genreId}`}
+              to={`/search?genreId=${genre.genreId}`}
               className='genre-button'
             >
               {genre.genreName}
@@ -72,11 +73,8 @@ export default function MangaDetail({ manga }) {
           value={manga.numFollows + ' lượt theo dõi' || 0}
         />
         <MangaInfoRow
-          value={
-            manga.updateAt
-              ? '(Cập nhật khoảng: ' + formatDate(manga.updateAt) + ')'
-              : ''
-          }
+          icon={<FaClock />}
+          value={formatDate(manga.updateAt) || ''}
         />
       </div>
       <div className='manga-detail'>

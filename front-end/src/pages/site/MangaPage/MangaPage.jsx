@@ -15,9 +15,18 @@ import {
   LikeButton,
   FollowButton,
 } from '../../../components/LikeFollowButton/LikeFollowButton';
+import { useAuth } from '../../../context/AuthContext';
+import {
+  checkUserLikeFollowManga,
+  likeFollowManga,
+  unlikeUnfollowManga,
+} from '../../../api/userApi';
 
 export default function MangaPage() {
   const mangaId = useParams().mangaId;
+
+  const { isLoggedIn } = useAuth();
+
   const [manga, setManga] = useState();
   const [chapters, setChapters] = useState([]);
 
@@ -50,18 +59,60 @@ export default function MangaPage() {
       }
     };
 
+    const fetchUserLikeFollowManga = async () => {
+      try {
+        const likeData = await checkUserLikeFollowManga(mangaId, 'like');
+        const followData = await checkUserLikeFollowManga(mangaId, 'follow');
+        setIsLiked(likeData.isLikeFollow);
+        setIsFollowed(followData.isLikeFollow);
+      } catch (err) {
+        console.error('Failed to check user like manga: ', err);
+      }
+    };
+
     fetchManga();
     fetchChapters();
+    fetchUserLikeFollowManga();
   }, [mangaId, navigate]);
+
+  const handleLikeFollow = (type) => async () => {
+    if (!isLoggedIn) {
+      toast.error('Vui lòng đăng nhập để sử dụng chức năng này.');
+      return;
+    }
+
+    try {
+      if (type === 'follow' && isFollowed) {
+        await unlikeUnfollowManga(mangaId, 'follow');
+        toast.success('Huỷ theo dõi truyện thành công.');
+        setIsFollowed(false);
+      } else if (type === 'follow' && !isFollowed) {
+        await likeFollowManga(mangaId, 'follow');
+        toast.success('Theo dõi truyện thành công.');
+        setIsFollowed(true);
+      } else if (type === 'like' && isLiked) {
+        await unlikeUnfollowManga(mangaId, 'like');
+        toast.success('Huỷ thích truyện thành công.');
+        setIsLiked(false);
+      } else if (type === 'like' && !isLiked) {
+        await likeFollowManga(mangaId, 'like');
+        toast.success('Thích truyện thành công.');
+        setIsLiked(true);
+      }
+    } catch (err) {
+      toast.error(err.message);
+      console.error('Failed to like follow manga: ', err);
+    }
+  };
 
   return (
     <div className='manga-page'>
       <MangaDetail manga={manga} />
       <div className='manga-page__btn-group'>
-        <LikeButton isLiked={isLiked} onChange={() => setIsLiked(!isLiked)} />
+        <LikeButton isLiked={isLiked} onChange={handleLikeFollow('like')} />
         <FollowButton
           isFollowed={isFollowed}
-          onChange={() => setIsFollowed(!isFollowed)}
+          onChange={handleLikeFollow('follow')}
         />
       </div>
       <MangaDescription manga={manga} />

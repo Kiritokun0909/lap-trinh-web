@@ -7,6 +7,7 @@ import './NavigationBar.css';
 import { useAuth } from '../../../context/AuthContext';
 import { getGenres } from '../../../api/genreApi';
 import { toast } from 'react-toastify';
+import HandleCode from '../../../utils/HandleCode';
 
 const useDropdownMenu = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -77,8 +78,14 @@ export default function NavigationBar() {
     <div className='nav-bar__container'>
       <div className='nav-bar__function'>
         <NavbarItem link='/' icon={<FaHome />} />
-        <NavbarItem link='/search?filterId=1' label={'HOT'} />
-        <NavbarItem link='/search?filterId=2' label={'MỚI CẬP NHẬT'} />
+        <NavbarItem
+          link={`/search?filterId=${HandleCode.FILTER_BY_MANGA_NUM_FOLLOWS_DESC}`}
+          label={'HOT'}
+        />
+        <NavbarItem
+          link={`/search?filterId=${HandleCode.FILTER_BY_MANGA_UPDATE_AT_DESC}`}
+          label={'MỚI CẬP NHẬT'}
+        />
 
         <div
           className='nav-bar__item item--genres'
@@ -125,12 +132,12 @@ export default function NavigationBar() {
             </Link>
             {accountMenu.isVisible && (
               <div className='item--account__list' ref={accountMenu.subMenuRef}>
-                <Link to='#'>Thông báo</Link>
-                <Link to='#'>Yêu thích</Link>
-                <Link to='#'>Theo dõi</Link>
-                <Link to='#'>Lịch sử</Link>
-                <Link to='#'>Đổi thông tin</Link>
-                <Link to='#'>Đổi mật khẩu</Link>
+                <Link to='/account/notifications'>Thông báo</Link>
+                <Link to='/account/likes'>Yêu thích</Link>
+                <Link to='/account/follows'>Theo dõi</Link>
+                <Link to='/account/histories'>Lịch sử</Link>
+                <Link to='/account/account'>Đổi thông tin</Link>
+                <Link to='/account/password'>Đổi mật khẩu</Link>
                 <Link to='#' onClick={handleLogout}>
                   Đăng xuất
                 </Link>

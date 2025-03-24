@@ -24,7 +24,7 @@ export const LikeButton = ({ isLiked, onChange }) => {
       <div className='btn-icon'>
         {isLiked ? <FaThumbsDown /> : <FaThumbsUp />}
       </div>
-      <span>{isLiked ? 'Huỷ yêu thích' : 'Yêu thích'}</span>
+      <span>{isLiked ? 'Huỷ thích' : 'Thích'}</span>
     </button>
   );
 };

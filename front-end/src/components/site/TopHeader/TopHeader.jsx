@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaList } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import { FaClock } from 'react-icons/fa';
 
 import { getMangas } from '../../../api/mangaApi';
-import './TopHeader.css';
 import DarkModeButton from '../../DarkModeButton/DarkModeButton';
 import { useAuth } from '../../../context/AuthContext';
-import { toast } from 'react-toastify';
+import { formatDate } from '../../../utils/utils';
+
+import './TopHeader.css';
+import HandleCode from '../../../utils/HandleCode';
 
 const MAX_RESULT = 10;
 
@@ -52,7 +56,16 @@ function SearchInput({
                   className='search-item__cover'
                 />
                 <div className='search-item__info'>
-                  <span>{manga.mangaName}</span>
+                  <div className='search-item__info-row'>{manga.mangaName}</div>
+                  <div className='search-item__info-row search-item__info-row--secondary'>
+                    {manga.otherName}
+                  </div>
+                  <div className='search-item__info-row search-item__info-row--secondary'>
+                    <div className='btn-icon'>
+                      <FaClock />
+                      {formatDate(manga.updateAt)}
+                    </div>
+                  </div>
                 </div>
               </div>
             </Link>
@@ -89,9 +102,7 @@ export default function TopHeader() {
 
       try {
         const data = await getMangas(1, MAX_RESULT, searchContext);
-        setTimeout(() => {
-          setSearchResult(data.items);
-        }, 1000);
+        setSearchResult(data.items);
       } catch (error) {
         console.log(error);
       }
@@ -159,12 +170,12 @@ export default function TopHeader() {
                   onClick={handleCloseSidebarMenu}
                 />
                 <SidebarMenuLink
-                  to='/search'
+                  to={`/search?filterId=${HandleCode.FILTER_BY_MANGA_NUM_FOLLOWS_DESC}`}
                   label='HOT'
                   onClick={handleCloseSidebarMenu}
                 />
                 <SidebarMenuLink
-                  to='/search'
+                  to={`/search?filterId=${HandleCode.FILTER_BY_MANGA_UPDATE_AT_DESC}`}
                   label='MỚI CẬP NHẬT'
                   onClick={handleCloseSidebarMenu}
                 />
@@ -177,32 +188,32 @@ export default function TopHeader() {
                 {isLoggedIn ? (
                   <>
                     <SidebarMenuLink
-                      to='/notification'
+                      to='/account/notifications'
                       label='THÔNG BÁO'
                       onClick={handleCloseSidebarMenu}
                     />
                     <SidebarMenuLink
-                      to='/like-list'
+                      to='/account/likes'
                       label='YÊU THÍCH'
                       onClick={handleCloseSidebarMenu}
                     />
                     <SidebarMenuLink
-                      to='/follow-list'
+                      to='/account/follows'
                       label='THEO DÕI'
                       onClick={handleCloseSidebarMenu}
                     />
                     <SidebarMenuLink
-                      to='/history'
+                      to='/account/histories'
                       label='LỊCH SỬ'
                       onClick={handleCloseSidebarMenu}
                     />
                     <SidebarMenuLink
-                      to='/account'
+                      to='/account/info'
                       label='ĐỔI THÔNG TIN'
                       onClick={handleCloseSidebarMenu}
                     />
                     <SidebarMenuLink
-                      to='/password'
+                      to='/account/password'
                       label='ĐỔI MẬT KHẨU'
                       onClick={handleCloseSidebarMenu}
                     />

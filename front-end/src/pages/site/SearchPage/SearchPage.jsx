@@ -7,15 +7,25 @@ import { getMangas } from '../../../api/mangaApi';
 import { getGenres } from '../../../api/genreApi';
 
 import MangaBox from '../../../components/site/MangaBox/MangaBox';
+import HandleCode from '../../../utils/HandleCode';
 import './SearchPage.css';
 
 const SEARCH_PAGE_TITLE = 'Tìm kiếm';
 
 const filterList = [
-  { id: 1, name: 'Tìm kiếm theo tài khoản' },
-  { id: 2, name: 'Tìm kiếm theo truyện' },
-  { id: 3, name: 'Tìm kiếm theo thư viện' },
-  { id: 4, name: 'Tìm kiếm theo thể loại' },
+  {
+    id: HandleCode.FILTER_BY_MANGA_UPDATE_AT_DESC,
+    name: 'Mới cập nhật',
+  },
+  { id: HandleCode.FILTER_BY_MANGA_NUM_VIEWS_DESC, name: 'Xem nhiều nhất' },
+  {
+    id: HandleCode.FILTER_BY_MANGA_NUM_LIKES_DESC,
+    name: 'Lượt yêu thích cao nhất',
+  },
+  {
+    id: HandleCode.FILTER_BY_MANGA_NUM_FOLLOWS_DESC,
+    name: 'Lượt theo dõi cao nhất',
+  },
 ];
 
 function SearchMangaResults({ results }) {
@@ -130,7 +140,7 @@ export default function SearchPage() {
   const [searchName, setSearchName] = useState('');
   const [publishedYear, setPublishedYear] = useState('');
   const [selectedGenreId, setSelectedGenreId] = useState('');
-  const [selectedFilterId, setSelectedFilterId] = useState(1);
+  const [selectedFilterId, setSelectedFilterId] = useState('');
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -157,7 +167,9 @@ export default function SearchPage() {
     setSearchName(searchParams.get('keyword') || '');
     setPublishedYear(searchParams.get('year') || '');
     setSelectedGenreId(searchParams.get('genreId') || '');
-    setSelectedFilterId(parseInt(searchParams.get('filterId')) || 1);
+    setSelectedFilterId(
+      searchParams.get('filterId') || HandleCode.FILTER_BY_MANGA_UPDATE_AT_DESC
+    );
 
     // Fetch mangas
     fetchMangas();
