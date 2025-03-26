@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 const sendMail = async (to, subject, text) => {
   try {
     const mailOptions = {
-      from: EMAIL_USER,
+      from: `Manga Website ${EMAIL_USER}`,
       to,
       subject,
       text,
@@ -20,12 +20,9 @@ const sendMail = async (to, subject, text) => {
 
     await transporter.sendMail(mailOptions);
     console.log('Email sent');
-    
-  }
-  catch (error) {
+  } catch (error) {
     throw new Error(error.message);
-
   }
-}
+};
 
 module.exports = { sendMail };

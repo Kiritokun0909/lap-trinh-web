@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './MangaBox.css';
-import { formatDate } from '../../../utils/utils.js';
-import { useDarkMode } from '../../../context/DarkModeContext.js';
+import { formatDate } from '../../utils/utils.js';
+import { useDarkMode } from '../../context/DarkModeContext.js';
 
 export default function MangaBox({ manga, showChapter = false }) {
   const { darkMode } = useDarkMode();

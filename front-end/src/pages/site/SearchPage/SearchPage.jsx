@@ -6,9 +6,9 @@ import { FaSearch } from 'react-icons/fa';
 import { getMangas } from '../../../api/mangaApi';
 import { getGenres } from '../../../api/genreApi';
 
-import MangaBox from '../../../components/site/MangaBox/MangaBox';
 import HandleCode from '../../../utils/HandleCode';
 import './SearchPage.css';
+import MangaList from '../../../components/MangaList/MangaList';
 
 const SEARCH_PAGE_TITLE = 'Tìm kiếm';
 
@@ -27,19 +27,6 @@ const filterList = [
     name: 'Lượt theo dõi cao nhất',
   },
 ];
-
-function SearchMangaResults({ results }) {
-  return (
-    <div>
-      <div className='list-manga-item'>
-        {results?.length > 0 &&
-          results?.map((manga) => (
-            <MangaBox key={manga.mangaId} manga={manga} showChapter={true} />
-          ))}
-      </div>
-    </div>
-  );
-}
 
 function SearchInput({
   searchName,
@@ -192,7 +179,8 @@ export default function SearchPage() {
         selectedFilterId={selectedFilterId}
         setSelectedFilterId={setSelectedFilterId}
       />
-      <SearchMangaResults results={searchResults} />
+
+      {searchResults.length > 0 && <MangaList mangas={searchResults} />}
     </div>
   );
 }

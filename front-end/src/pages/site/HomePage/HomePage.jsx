@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
 import { getMangas } from '../../../api/mangaApi';
-import MangaBox from '../../../components/site/MangaBox/MangaBox';
+import MangaBox from '../../../components/MangaBox/MangaBox';
 import './HomePage.css';
 
 import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { toast } from 'react-toastify';
+import MangaList from '../../../components/MangaList/MangaList';
 
 const HOME_PAGE_TITLE = 'Trang chủ';
 const NUMBER_OF_TOP_MANGAS = 10;
@@ -38,11 +39,7 @@ function NewUpdates({ newUpdates }) {
   return (
     <div>
       <h2>Mới cập nhật</h2>
-      <div className='list-manga-item'>
-        {newUpdates.map((manga) => (
-          <MangaBox key={manga.mangaId} manga={manga} showChapter={true} />
-        ))}
-      </div>
+      <MangaList mangas={newUpdates} />
     </div>
   );
 }

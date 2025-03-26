@@ -8,6 +8,7 @@ class OtpUtil {
     }
     return OTP;
   }
+
   async saveOtp(email, otp, expriesIn = 5 * 60 * 1000) {
     otpStore[email] = { otp, expriesAt: Date.now() + expriesIn };
     setTimeout(() => {
@@ -15,6 +16,7 @@ class OtpUtil {
     }, expriesIn);
     console.log(otpStore);
   }
+
   async verifyOtp(email, otp) {
     const storedOtp = otpStore[email];
     if (!storedOtp) {

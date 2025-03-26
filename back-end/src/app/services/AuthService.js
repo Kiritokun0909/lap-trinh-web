@@ -1,5 +1,7 @@
 require('dotenv').config();
-const { users } = require('../../models/init-models')(require('../../configs/DbConfig'));
+const { users } = require('../../models/init-models')(
+  require('../../configs/DbConfig')
+);
 const jwt = require('jsonwebtoken');
 const { hashPassword, comparePassword } = require('../../utils/PasswordUtil');
 const { ROLE_USER, ACCOUNT_STATUS_BLOCKED } = require('../../utils/HandleCode');
@@ -105,13 +107,14 @@ class AuthService {
   async sendOtp(email) {
     try {
       const otp = await OtpUtil.generateOtp();
-      await sendMail(email, 'OTP', `Your OTP is ${otp}`);
+      await sendMail(email, 'Reset password OTP', `Your OTP is ${otp}`);
       await OtpUtil.saveOtp(email, otp);
       return true;
     } catch (error) {
       throw new Error(error.message);
     }
   }
+
   async resetPasswordWithOtp(email, otp) {
     try {
       const savedOtp = await OtpUtil.getOtp(email);
@@ -127,9 +130,16 @@ class AuthService {
       }
       const newPassword = await PasswordUtil.generateRandomPassword();
       const hashedPassword = await PasswordUtil.hashPassword(newPassword);
-      await users.update({ Password: hashedPassword }, { where: { Email: email } });
+      await users.update(
+        { Password: hashedPassword },
+        { where: { Email: email } }
+      );
       console.log('New password', newPassword);
-      await sendMail(email, 'Reset Password', `Your new password is ${newPassword}`);
+      await sendMail(
+        email,
+        'Reset Password',
+        `Your new password is ${newPassword}`
+      );
       await OtpUtil.deleteOtp(email);
       return true;
     } catch (error) {

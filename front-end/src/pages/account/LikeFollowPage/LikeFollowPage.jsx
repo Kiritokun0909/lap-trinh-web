@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 
 import './LikeFollowPage.css';
-import { getListLikeFollowManga } from '../../api/userApi';
-import HandleCode from '../../utils/HandleCode';
+import { getListLikeFollowManga } from '../../../api/userApi';
+import HandleCode from '../../../utils/HandleCode';
 import { toast } from 'react-toastify';
-import MangaBox from '../../components/site/MangaBox/MangaBox';
+import MangaList from '../../../components/MangaList/MangaList';
+
+const LIKE_PAGE_TITLE = 'Danh sách yêu thích';
+const FOLLOW_PAGE_TITLE = 'Danh sách theo dõi';
 
 export default function LikeFollowPage({ pageType = 'like' }) {
   const [keyword] = useState('');
@@ -30,6 +33,7 @@ export default function LikeFollowPage({ pageType = 'like' }) {
       }
     };
 
+    document.title = pageType === 'like' ? LIKE_PAGE_TITLE : FOLLOW_PAGE_TITLE;
     fetchMangas();
   }, [keyword, filterCode, pageType]);
 
@@ -41,12 +45,7 @@ export default function LikeFollowPage({ pageType = 'like' }) {
         </h2>
       </div>
 
-      <div className='list-manga-item'>
-        {mangas?.length > 0 &&
-          mangas?.map((manga) => (
-            <MangaBox key={manga.mangaId} manga={manga} showChapter={true} />
-          ))}
-      </div>
+      <MangaList mangas={mangas} />
     </div>
   );
 }
