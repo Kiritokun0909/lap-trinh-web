@@ -99,10 +99,7 @@ export default function NavigationBar() {
           {genresMenu.isVisible && (
             <div className='item--genres__list' ref={genresMenu.subMenuRef}>
               {genres?.map((genre) => (
-                <Link
-                  key={genre.genreId}
-                  to={`/search?genreId=${genre.genreId}`}
-                >
+                <Link key={genre.genreId} to={`/search?genreId=${genre.genreId}`}>
                   {genre.genreName}
                 </Link>
               ))}
@@ -136,7 +133,7 @@ export default function NavigationBar() {
                 <Link to='/account/likes'>Yêu thích</Link>
                 <Link to='/account/follows'>Theo dõi</Link>
                 <Link to='/account/histories'>Lịch sử</Link>
-                <Link to='/account/account'>Đổi thông tin</Link>
+                <Link to='/account/info'>Đổi thông tin</Link>
                 <Link to='/account/password'>Đổi mật khẩu</Link>
                 <Link to='#' onClick={handleLogout}>
                   Đăng xuất

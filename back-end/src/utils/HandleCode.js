@@ -3,6 +3,13 @@
 const { NOT_FOUND } = require('http-status-codes');
 
 module.exports = {
+  // Path to save file to Firebase storage
+  FB_AUTHOR_AVATAR_FOLDER_PATH: 'author_avatar',
+  FB_USER_AVATAR_FOLDER_PATH: 'user_avatar',
+  FB_COVER_IMAGE_FOLDER_PATH: 'cover_image',
+  FB_CHAPTER_IMAGE_FOLDER_PATH: 'chapter_image',
+  FB_UPLOAD_FILE_PATH: 'images',
+
   NOT_FOUND: 404,
 
   //ROLE ENUM
@@ -30,4 +37,9 @@ module.exports = {
 
   FILTER_BY_USER_LIKE_FOLLOW_DATE_DESC: 'FILTER_BY_USER_LIKE_FOLLOW_DATE_DESC',
   FILTER_BY_USER_LIKE_FOLLOW_DATE_ASC: 'FILTER_BY_USER_LIKE_FOLLOW_DATE_ASC',
+
+  //UPDATE CODE ENUM
+  NO_FIELDS_TO_UPDATE: 'NO_FIELDS_TO_UPDATE',
+  EMAIL_EXIST: 'EMAIL_EXIST',
+  PASSWORD_NOT_MATCH: 'PASSWORD_NOT_MATCH',
 };

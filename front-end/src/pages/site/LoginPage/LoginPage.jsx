@@ -7,6 +7,7 @@ import { useAuth } from '../../../context/AuthContext';
 import HandleCode from '../../../utils/HandleCode';
 
 import './LoginPage.css';
+import FormInput from '../../../components/FormInput/FormInput';
 
 const PAGE_TITLE = 'Trang đăng nhập';
 const LOGIN_HEADER = 'Đăng nhập';
@@ -44,7 +45,7 @@ function LoginForm() {
 
   const register = async () => {
     if (password !== confirmPassword) {
-      toast.error('Mật khẩu không trùng khóp');
+      toast.error('Mật khẩu không trùng khớp');
       return;
     }
 
@@ -71,63 +72,50 @@ function LoginForm() {
   };
 
   return (
-    <div className='login-box'>
-      <div className='title'>
+    <div className='box__container'>
+      <div className='box__container--header'>
         <span>{isLogin ? LOGIN_HEADER : REGISTER_HEADER}</span>
       </div>
 
-      <form onSubmit={handleSubmitForm}>
-        <div className='account'>
-          <div className='email'>
-            <input
-              type='email'
-              placeholder='Email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+      <form onSubmit={handleSubmitForm} className='box__container--form'>
+        <FormInput
+          type='email'
+          placeholder='Email'
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        {!isLogin && (
+          <FormInput
+            type='text'
+            placeholder='Username'
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        )}
+        <FormInput
+          type='password'
+          placeholder='Mật khẩu'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        {!isLogin && (
+          <FormInput
+            type='password'
+            placeholder='Nhập lại mật khẩu'
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+        )}
 
-          {!isLogin && (
-            <div className='username'>
-              <input
-                type='text'
-                placeholder='Username'
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-          )}
-
-          <div className='password'>
-            <input
-              type='password'
-              placeholder='Mật khẩu'
-              autoComplete='true'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          {!isLogin && (
-            <div className='password'>
-              <input
-                type='password'
-                placeholder='Nhập lại mật khẩu'
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
-          )}
-
-          <button type='submit' className='submit-btn'>
-            {isLogin ? LOGIN_HEADER : REGISTER_HEADER}
-          </button>
-        </div>
+        <button type='submit' className='submit-btn'>
+          {isLogin ? LOGIN_HEADER : REGISTER_HEADER}
+        </button>
       </form>
+
       <div className='other-functions'>
         <div className='switch-btn-container'>
           <button className='switch-btn' onClick={() => setIsLogin(!isLogin)}>
@@ -152,10 +140,8 @@ export const LoginPage = () => {
   }, []);
 
   return (
-    <>
-      <div className='login-container'>
-        <LoginForm />
-      </div>
-    </>
+    <div className='login-page__container'>
+      <LoginForm />
+    </div>
   );
 };

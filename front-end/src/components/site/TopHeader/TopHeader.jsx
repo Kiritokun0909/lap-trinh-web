@@ -14,12 +14,7 @@ import HandleCode from '../../../utils/HandleCode';
 
 const MAX_RESULT = 10;
 
-function SearchInput({
-  searchContext,
-  setSearchContext,
-  searchResult,
-  closeMenu,
-}) {
+function SearchInput({ searchContext, setSearchContext, searchResult, closeMenu }) {
   const [isSearching, setIsSearching] = useState(false);
   const inputRef = useRef();
 
@@ -137,11 +132,7 @@ export default function TopHeader() {
         />
         <div className='search-bar__btn-search'>
           <button onClick={handleClickSearchButton}>
-            <img
-              src='/icon/search-icon.png'
-              alt='Search'
-              className='search-icon'
-            />
+            <img src='/icon/search-icon.png' alt='Search' className='search-icon' />
           </button>
         </div>
       </div>
@@ -164,11 +155,7 @@ export default function TopHeader() {
                     closeMenu={handleCloseSidebarMenu}
                   />
                 </div>
-                <SidebarMenuLink
-                  to='/'
-                  label='TRANG CHỦ'
-                  onClick={handleCloseSidebarMenu}
-                />
+                <SidebarMenuLink to='/' label='TRANG CHỦ' onClick={handleCloseSidebarMenu} />
                 <SidebarMenuLink
                   to={`/search?filterId=${HandleCode.FILTER_BY_MANGA_NUM_FOLLOWS_DESC}`}
                   label='HOT'
@@ -179,11 +166,7 @@ export default function TopHeader() {
                   label='MỚI CẬP NHẬT'
                   onClick={handleCloseSidebarMenu}
                 />
-                <SidebarMenuLink
-                  to='/search'
-                  label='TÌM KIẾM'
-                  onClick={handleCloseSidebarMenu}
-                />
+                <SidebarMenuLink to='/search' label='TÌM KIẾM' onClick={handleCloseSidebarMenu} />
 
                 {isLoggedIn ? (
                   <>
@@ -217,18 +200,10 @@ export default function TopHeader() {
                       label='ĐỔI MẬT KHẨU'
                       onClick={handleCloseSidebarMenu}
                     />
-                    <SidebarMenuLink
-                      to='/#'
-                      label='ĐĂNG XUẤT'
-                      onClick={handleLogout}
-                    />
+                    <SidebarMenuLink to='/#' label='ĐĂNG XUẤT' onClick={handleLogout} />
                   </>
                 ) : (
-                  <SidebarMenuLink
-                    to='/login'
-                    label='ĐĂNG NHẬP'
-                    onClick={handleCloseSidebarMenu}
-                  />
+                  <SidebarMenuLink to='/login' label='ĐĂNG NHẬP' onClick={handleCloseSidebarMenu} />
                 )}
               </div>
             )}

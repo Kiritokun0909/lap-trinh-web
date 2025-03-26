@@ -16,7 +16,7 @@ export default function AccountRoute() {
         <Route path='/notifications' element={<NotificationPage />} />
         <Route path='/notifications' element={<NotificationPage />} />
         <Route path='/notifications' element={<NotificationPage />} />
-        <Route path='/account' element={<AccountPage />} />
+        <Route path='/info' element={<AccountPage />} />
         <Route path='/password' element={<PasswordPage />} />
       </Route>
     </Routes>

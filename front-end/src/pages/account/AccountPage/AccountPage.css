@@ -1,0 +1,28 @@
+.avatar {
+  width: 9rem;
+  height: 9rem;
+  border-radius: 6px;
+}
+
+.change-image {
+  border: none;
+  padding: 8px 16px;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 300ms;
+  margin-bottom: 8px;
+}
+
+.change-image:hover {
+  background-color: #2563eb; /* hover:bg-blue-600 */
+}
+
+.loading-spinner {
+  font-size: 16px;
+  color: #007bff;
+  text-align: center;
+  margin: 10px 0;
+}

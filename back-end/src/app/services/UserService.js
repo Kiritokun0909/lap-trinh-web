@@ -2,15 +2,102 @@ const db = require('../../configs/DbPoolConfig');
 const MangaService = require('./MangaService');
 const convertKeysToCamelCase = require('../../utils/CamelCaseUtil');
 const HandleCode = require('../../utils/HandleCode');
+const { hashPassword, comparePassword } = require('../../utils/PasswordUtil');
 class UserService {
+  //#region get-info
+  async getUserInfoById(userId) {
+    try {
+      const [rows] = await db.query(`SELECT username, email, avatar FROM users WHERE userId = ?`, [userId]);
+      if (rows.length === 0) {
+        return { code: HandleCode.NOT_FOUND };
+      }
+
+      return { userInfo: rows[0] };
+    } catch (err) {
+      throw err;
+    }
+  }
+  //#endregion
+
+  //#region update-info
+  async updateUserInfo(userId, username = '', avatar = '') {
+    try {
+      const fields = [];
+      const values = [];
+
+      if (username && username.trim().length > 0) {
+        fields.push('Username = ?');
+        values.push(username);
+      }
+      if (avatar && avatar.trim().length > 0) {
+        fields.push('Avatar = ?');
+        values.push(avatar);
+      }
+
+      if (fields.length === 0) {
+        return { code: HandleCode.NO_FIELDS_TO_UPDATE };
+      }
+
+      values.push(userId);
+      const query = `UPDATE users SET ${fields.join(', ')} WHERE UserId = ?`;
+      const [rows] = await db.query(query, values);
+
+      if (rows.affectedRows === 0) {
+        return { code: HandleCode.NOT_FOUND };
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+  //#endregion
+
+  //#region update-email
+  async updateUserEmail(userId, email) {
+    try {
+      const [rows] = await db.query(`UPDATE users SET Email = ? WHERE UserId = ?`, [email, userId]);
+
+      if (rows.affectedRows === 0) {
+        return { code: HandleCode.NOT_FOUND };
+      }
+    } catch (err) {
+      if (err.code === 'ER_DUP_ENTRY') {
+        return { code: HandleCode.EMAIL_EXIST };
+      }
+
+      throw err;
+    }
+  }
+  //#endregion
+
+  //#region update-password
+  async updateUserPassword(userId, oldPassword, newPassword) {
+    try {
+      const [row] = await db.query(`SELECT Password FROM users WHERE UserId = ?`, [userId]);
+
+      if (row.length === 0) {
+        return { code: HandleCode.NOT_FOUND };
+      }
+
+      const storedPassword = row[0].Password;
+      const isMatch = await comparePassword(oldPassword, storedPassword);
+
+      if (!isMatch) {
+        return { code: HandleCode.PASSWORD_NOT_MATCH };
+      }
+
+      const hashedPassword = await hashPassword(newPassword);
+      const [] = await db.query(`UPDATE users SET Password = ? WHERE UserId = ?`, [hashedPassword, userId]);
+    } catch (err) {
+      throw err;
+    }
+  }
+  //#endregion
+
   //#region check like-follow
   async isLikeFollowManga(mangaId, userId, type = 'like') {
     try {
       const table = type === 'like' ? 'favorites' : 'following';
-      const [rows] = await db.query(
-        `SELECT * FROM ${table} WHERE mangaId = ? AND userId = ?`,
-        [mangaId, userId]
-      );
+      const [rows] = await db.query(`SELECT * FROM ${table} WHERE mangaId = ? AND userId = ?`, [mangaId, userId]);
       if (rows.length === 0) {
         return { code: HandleCode.NOT_FOUND };
       }
@@ -24,10 +111,7 @@ class UserService {
   async likeFollowManga(mangaId, userId, type = 'like') {
     try {
       const table = type === 'like' ? 'favorites' : 'following';
-      const [rows] = await db.query(
-        `INSERT INTO ${table} (mangaId, userId) VALUES (?, ?)`,
-        [mangaId, userId]
-      );
+      const [rows] = await db.query(`INSERT INTO ${table} (mangaId, userId) VALUES (?, ?)`, [mangaId, userId]);
       await MangaService.updateMangaLikeFollow(mangaId, type);
     } catch (err) {
       if (err.code === 'ER_DUP_ENTRY') {
@@ -45,10 +129,7 @@ class UserService {
   async unLikeFollowManga(mangaId, userId, type = 'like') {
     try {
       const table = type === 'like' ? 'favorites' : 'following';
-      const [rows] = await db.query(
-        `DELETE FROM ${table} WHERE mangaId = ? AND userId = ?`,
-        [mangaId, userId]
-      );
+      const [rows] = await db.query(`DELETE FROM ${table} WHERE mangaId = ? AND userId = ?`, [mangaId, userId]);
       if (rows.affectedRows === 0) {
         return { code: HandleCode.NOT_FOUND };
       }

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+
+import HandleCode from '../../../utils/HandleCode';
+import { getListLikeFollowManga } from '../../../api/userApi';
+
+import MangaList from '../../../components/MangaList/MangaList';
 
 import './LikeFollowPage.css';
-import { getListLikeFollowManga } from '../../../api/userApi';
-import HandleCode from '../../../utils/HandleCode';
-import { toast } from 'react-toastify';
-import MangaList from '../../../components/MangaList/MangaList';
 
 const LIKE_PAGE_TITLE = 'Danh sách yêu thích';
 const FOLLOW_PAGE_TITLE = 'Danh sách theo dõi';

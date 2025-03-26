@@ -4,16 +4,137 @@ const Messages = require('../../utils/Messages');
 const { getUserFromToken, getHeaderToken } = require('../../utils/TokenUtil');
 const HandleCode = require('../../utils/HandleCode');
 
+class UserController {
+  //#region get-info
+  async getUserInfo(req, res) {
+    const userId = req?.user.userId;
+    try {
+      const result = await UserService.getUserInfoById(userId);
+      if (result.code == HandleCode.NOT_FOUND) {
+        return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found.' });
+      }
+
+      return res.status(StatusCodes.OK).json(result.userInfo);
+    } catch (err) {
+      console.log('Failed to get user info:', err);
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to get user info. Please try again later.' });
+    }
+  }
+  //#endregion
+
+  //#region update-info
+  async updateUserInfo(req, res) {
+    const { username, avatar } = req.body;
+    const userId = req?.user.userId;
+    try {
+      const result = await UserService.updateUserInfo(userId, username, avatar);
+      if (result && result.code == HandleCode.NOT_FOUND) {
+        return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found.' });
+      }
+
+      return res.status(200).json({ message: 'Update info successfully.' });
+    } catch (err) {
+      console.log('Failed to update user info:', err);
+      return res.status(500).json({ message: 'Failed to update info. Please try again later.' });
+    }
+  }
+  //#endregion
+
+  //#region change-mail
+  async changeUserEmail(req, res) {
+    const { email } = req.body;
+    const userId = req?.user.userId;
+    try {
+      const result = await UserService.updateUserEmail(userId, email);
+
+      if (result && result.code == HandleCode.NOT_FOUND) {
+        return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found.' });
+      }
+
+      if (result && result.code == HandleCode.EMAIL_EXIST) {
+        return res
+          .status(StatusCodes.CONFLICT)
+          .json({ message: 'Email is already existed. Try another email.' });
+      }
+
+      return res.status(StatusCodes.OK).json({ message: 'Change email successfully.' });
+    } catch (err) {
+      console.log('Failed to change user email:', err);
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to change email. Please try again later.' });
+    }
+  }
+  //#endregion
+
+  //#region change-pwd
+  async changeUserPassword(req, res) {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req?.user.userId;
+    try {
+      const result = await UserService.updateUserPassword(userId, oldPassword, newPassword);
+
+      if (result && result.code == HandleCode.NOT_FOUND) {
+        return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found.' });
+      }
+
+      if (result && result.code == HandleCode.PASSWORD_NOT_MATCH) {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: 'Old password is not correct.' });
+      }
+
+      return res.status(StatusCodes.OK).json({ message: 'Change password successfully.' });
+    } catch (err) {
+      console.log('Failed to change user password:', err);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Failed to change password. Please try again later.',
+      });
+    }
+  }
+  //#endregion
+
+  async checkUserLikeManga(req, res) {
+    await checkUserLikeFollowManga(req, res, 'like');
+  }
+
+  async checkUserFollowManga(req, res) {
+    await checkUserLikeFollowManga(req, res, 'follow');
+  }
+
+  async likeManga(req, res) {
+    await likeFollowManga(req, res, 'like');
+  }
+
+  async followManga(req, res) {
+    await likeFollowManga(req, res, 'follow');
+  }
+
+  async unlikeManga(req, res) {
+    await unLikeFollowManga(req, res, 'like');
+  }
+
+  async unfollowManga(req, res) {
+    await unLikeFollowManga(req, res, 'follow');
+  }
+
+  async getListLikeManga(req, res) {
+    await getListLikeFollowManga(req, res, 'like');
+  }
+
+  async getListFollowManga(req, res) {
+    await getListLikeFollowManga(req, res, 'follow');
+  }
+}
+
 const checkUserLikeFollowManga = async (req, res, type = 'like') => {
   const { mangaId } = req.params;
   const userId = req.user?.userId;
 
   try {
-    const result = await UserService.isLikeFollowManga(
-      parseInt(mangaId),
-      parseInt(userId),
-      type
-    );
+    const result = await UserService.isLikeFollowManga(parseInt(mangaId), parseInt(userId), type);
 
     if (result && result.code === HandleCode.NOT_FOUND) {
       return res.status(StatusCodes.OK).json({ isLikeFollow: false });
@@ -23,8 +144,7 @@ const checkUserLikeFollowManga = async (req, res, type = 'like') => {
   } catch (err) {
     console.error('Failed to check user like/follow manga:', err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message:
-        'Failed to check user like/follow manga. Please try again later.',
+      message: 'Failed to check user like/follow manga. Please try again later.',
     });
   }
 };
@@ -35,19 +155,13 @@ const likeFollowManga = async (req, res, type = 'like') => {
   const userId = req.user?.userId;
 
   try {
-    const result = await UserService.likeFollowManga(
-      parseInt(mangaId),
-      parseInt(userId),
-      type
-    );
+    const result = await UserService.likeFollowManga(parseInt(mangaId), parseInt(userId), type);
     if (result && result.code == HandleCode.NOT_FOUND) {
       res.status(StatusCodes.NOT_FOUND).json({ message: 'Manga not found.' });
       return;
     }
     if (result && result.code == HandleCode.USER_ALREADY_LIKE) {
-      res
-        .status(StatusCodes.CONFLICT)
-        .json({ message: 'User already like this manga.' });
+      res.status(StatusCodes.CONFLICT).json({ message: 'User already like this manga.' });
       return;
     }
     res.status(StatusCodes.OK).json(result);
@@ -64,11 +178,7 @@ const unLikeFollowManga = async (req, res, type = 'like') => {
   const userId = req.user?.userId;
 
   try {
-    const result = await UserService.unLikeFollowManga(
-      parseInt(mangaId),
-      parseInt(userId),
-      type
-    );
+    const result = await UserService.unLikeFollowManga(parseInt(mangaId), parseInt(userId), type);
     if (result && result.code == HandleCode.NOT_FOUND) {
       res.status(StatusCodes.BAD_REQUEST).json({
         message: 'Manga not found or user already unlike/unfollow this manga.',
@@ -105,39 +215,5 @@ const getListLikeFollowManga = async (req, res, type) => {
     });
   }
 };
-
-class UserController {
-  async checkUserLikeManga(req, res) {
-    await checkUserLikeFollowManga(req, res, 'like');
-  }
-
-  async checkUserFollowManga(req, res) {
-    await checkUserLikeFollowManga(req, res, 'follow');
-  }
-
-  async likeManga(req, res) {
-    await likeFollowManga(req, res, 'like');
-  }
-
-  async followManga(req, res) {
-    await likeFollowManga(req, res, 'follow');
-  }
-
-  async unlikeManga(req, res) {
-    await unLikeFollowManga(req, res, 'like');
-  }
-
-  async unfollowManga(req, res) {
-    await unLikeFollowManga(req, res, 'follow');
-  }
-
-  async getListLikeManga(req, res) {
-    await getListLikeFollowManga(req, res, 'like');
-  }
-
-  async getListFollowManga(req, res) {
-    await getListLikeFollowManga(req, res, 'follow');
-  }
-}
 
 module.exports = new UserController();
