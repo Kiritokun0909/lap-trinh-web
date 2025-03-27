@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { changeUserEmail, changeUserInfo, getUserInfo, uploadAvatar } from '../../../api/userApi';
+import {
+  changeUserEmail,
+  changeUserInfo,
+  getUserInfo,
+  uploadAvatar,
+} from '../../../api/userApi';
 
 import FormInput from '../../../components/FormInput/FormInput';
 
 import '../../site/LoginPage/LoginPage.css';
 import './AccountPage.css';
+import { DEFAULT_AUTHOR_IMAGE_URL } from '../../../utils/utils';
 
 const PAGE_TITLE = 'Thông tin tài khoản';
 
@@ -92,7 +98,7 @@ function AccountForm({ account }) {
         {loading ? (
           <div className='loading-spinner'>Đang tải lên...</div>
         ) : (
-          <img className='avatar' src={avatar} alt='Avatar' />
+          <img className='avatar' src={avatar || DEFAULT_AUTHOR_IMAGE_URL} alt='Avatar' />
         )}
 
         <input

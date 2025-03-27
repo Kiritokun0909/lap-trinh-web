@@ -1,0 +1,49 @@
+.author-box__container {
+  text-align: center;
+}
+
+.author-box__container img {
+  width: 12rem;
+  height: 12rem;
+  border-radius: 6px;
+}
+
+.author-box__container a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+}
+
+.author-box__container a:hover {
+  color: orange;
+}
+
+.dark-mode .author-box__container a:hover {
+  color: orange;
+}
+
+.dark-mode .author-box__container a {
+  color: white;
+}
+
+.author-box__container a span {
+  width: 158px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.author-box__chapters a {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: small;
+  font-weight: 400;
+  margin: 4px 0px;
+  color: black;
+}

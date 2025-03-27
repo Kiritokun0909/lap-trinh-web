@@ -1,4 +1,4 @@
-.genre-modal {
+.modal-box {
   position: fixed;
   z-index: 10;
   top: 0;
@@ -12,13 +12,14 @@
   align-items: center;
 }
 
-.genre-form {
+.modal-form {
   border: 1px solid gray;
   border-radius: 8px;
   padding: 12px;
   background-color: white;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 8px;
 }
 
@@ -33,12 +34,31 @@
   font-weight: 600;
 }
 
-.genre-modal input {
-  width: 300px;
+.modal-form .avatar {
+  width: 9rem;
+  height: 9rem;
+  border-radius: 6px;
+}
+
+.modal-form input {
+  min-width: 400px;
+  width: 100%;
   padding: 10px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
   color: black;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.modal-form textarea {
+  padding: 10px 12px;
+  width: 100%;
+  resize: none;
+  height: 120px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 6px;
   font-size: 16px;
 }
 

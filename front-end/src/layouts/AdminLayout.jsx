@@ -5,7 +5,7 @@ import AdminSidebar from '../components/admin/AdminSidebar/AdminSidebar';
 import AdminHeader from '../components/admin/AdminHeader';
 
 import '../styles/App.css';
-import '../styles/admin/AdminLayout.css';
+import './AdminLayout.css';
 
 export default function AdminLayout() {
   return (
