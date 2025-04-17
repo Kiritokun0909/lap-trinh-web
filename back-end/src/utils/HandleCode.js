@@ -4,6 +4,7 @@ const { NOT_FOUND } = require('http-status-codes');
 
 module.exports = {
   NOT_FOUND: 404,
+  SUCCESS: 200,
 
   //ROLE ENUM
   ROLE_ADMIN: 1,
