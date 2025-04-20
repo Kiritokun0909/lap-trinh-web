@@ -2,17 +2,20 @@ const db = require('../../configs/DbPoolConfig');
 const MangaService = require('./MangaService');
 const convertKeysToCamelCase = require('../../utils/CamelCaseUtil');
 const HandleCode = require('../../utils/HandleCode');
-<<<<<<< HEAD
+
 const { hashPassword, comparePassword } = require('../../utils/PasswordUtil');
-=======
+
 const { users } = require('../../models/init-models')(require('../../configs/DbConfig'));
 const { Op } = require('sequelize');
->>>>>>> origin/back-end
+
 class UserService {
   //#region get-info
   async getUserInfoById(userId) {
     try {
-      const [rows] = await db.query(`SELECT username, email, avatar FROM users WHERE userId = ?`, [userId]);
+      const [rows] = await db.query(
+        `SELECT username, email, avatar FROM users WHERE userId = ?`,
+        [userId]
+      );
       if (rows.length === 0) {
         return { code: HandleCode.NOT_FOUND };
       }
@@ -59,7 +62,10 @@ class UserService {
   //#region update-email
   async updateUserEmail(userId, email) {
     try {
-      const [rows] = await db.query(`UPDATE users SET Email = ? WHERE UserId = ?`, [email, userId]);
+      const [rows] = await db.query(`UPDATE users SET Email = ? WHERE UserId = ?`, [
+        email,
+        userId,
+      ]);
 
       if (rows.affectedRows === 0) {
         return { code: HandleCode.NOT_FOUND };
@@ -77,7 +83,9 @@ class UserService {
   //#region update-password
   async updateUserPassword(userId, oldPassword, newPassword) {
     try {
-      const [row] = await db.query(`SELECT Password FROM users WHERE UserId = ?`, [userId]);
+      const [row] = await db.query(`SELECT Password FROM users WHERE UserId = ?`, [
+        userId,
+      ]);
 
       if (row.length === 0) {
         return { code: HandleCode.NOT_FOUND };
@@ -91,7 +99,10 @@ class UserService {
       }
 
       const hashedPassword = await hashPassword(newPassword);
-      const [] = await db.query(`UPDATE users SET Password = ? WHERE UserId = ?`, [hashedPassword, userId]);
+      const [] = await db.query(`UPDATE users SET Password = ? WHERE UserId = ?`, [
+        hashedPassword,
+        userId,
+      ]);
     } catch (err) {
       throw err;
     }
@@ -102,7 +113,10 @@ class UserService {
   async isLikeFollowManga(mangaId, userId, type = 'like') {
     try {
       const table = type === 'like' ? 'favorites' : 'following';
-      const [rows] = await db.query(`SELECT * FROM ${table} WHERE mangaId = ? AND userId = ?`, [mangaId, userId]);
+      const [rows] = await db.query(
+        `SELECT * FROM ${table} WHERE mangaId = ? AND userId = ?`,
+        [mangaId, userId]
+      );
       if (rows.length === 0) {
         return { code: HandleCode.NOT_FOUND };
       }
@@ -116,7 +130,10 @@ class UserService {
   async likeFollowManga(mangaId, userId, type = 'like') {
     try {
       const table = type === 'like' ? 'favorites' : 'following';
-      const [rows] = await db.query(`INSERT INTO ${table} (mangaId, userId) VALUES (?, ?)`, [mangaId, userId]);
+      const [rows] = await db.query(
+        `INSERT INTO ${table} (mangaId, userId) VALUES (?, ?)`,
+        [mangaId, userId]
+      );
       await MangaService.updateMangaLikeFollow(mangaId, type);
     } catch (err) {
       if (err.code === 'ER_DUP_ENTRY') {
@@ -134,7 +151,10 @@ class UserService {
   async unLikeFollowManga(mangaId, userId, type = 'like') {
     try {
       const table = type === 'like' ? 'favorites' : 'following';
-      const [rows] = await db.query(`DELETE FROM ${table} WHERE mangaId = ? AND userId = ?`, [mangaId, userId]);
+      const [rows] = await db.query(
+        `DELETE FROM ${table} WHERE mangaId = ? AND userId = ?`,
+        [mangaId, userId]
+      );
       if (rows.affectedRows === 0) {
         return { code: HandleCode.NOT_FOUND };
       }
@@ -218,16 +238,23 @@ class UserService {
   }
   //#endregion
 
+  //#region get-users
   getUsers = async (page = 1, limit = 1, search_query, is_blocked) => {
     try {
       const offset = (page - 1) * limit;
       const whereClause = {
-        [Op.or]: [{ UserName: { [Op.like]: `%${search_query}%` } }, { Email: { [Op.like]: `%${search_query}%` } }],
+        [Op.or]: [
+          { UserName: { [Op.like]: `%${search_query}%` } },
+          { Email: { [Op.like]: `%${search_query}%` } },
+        ],
       };
       console.log('is_blocked', is_blocked);
       if (is_blocked) {
         console.log('is_blocked', is_blocked);
-        whereClause.Status = is_blocked == 1 ? HandleCode.ACCOUNT_STATUS_BLOCKED : HandleCode.ACCOUNT_STATUS_ACTIVE;
+        whereClause.Status =
+          is_blocked == 1
+            ? HandleCode.ACCOUNT_STATUS_BLOCKED
+            : HandleCode.ACCOUNT_STATUS_ACTIVE;
       }
       const { count, rows } = await users.findAndCountAll({
         where: whereClause,
@@ -251,7 +278,9 @@ class UserService {
       throw err;
     }
   };
+  //#endregion
 
+  //#region toggle-block
   toggleBlockUser = async (userId) => {
     try {
       // console.log('userId', userId);
@@ -270,6 +299,7 @@ class UserService {
       throw err;
     }
   };
+  //#endregion
 }
 
 module.exports = new UserService();
