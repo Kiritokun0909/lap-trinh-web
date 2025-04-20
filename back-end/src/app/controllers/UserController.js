@@ -167,9 +167,7 @@ const likeFollowManga = async (req, res, type = 'like') => {
     res.status(StatusCodes.OK).json(result);
   } catch (err) {
     console.log('Failed to like manga:', err);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: 'Failed to like manga. Please try again later.' });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to like manga. Please try again later.' });
   }
 };
 
@@ -216,4 +214,75 @@ const getListLikeFollowManga = async (req, res, type) => {
   }
 };
 
+<<<<<<< HEAD
+=======
+class UserController {
+  async checkUserLikeManga(req, res) {
+    await checkUserLikeFollowManga(req, res, 'like');
+  }
+
+  async checkUserFollowManga(req, res) {
+    await checkUserLikeFollowManga(req, res, 'follow');
+  }
+
+  async likeManga(req, res) {
+    await likeFollowManga(req, res, 'like');
+  }
+
+  async followManga(req, res) {
+    await likeFollowManga(req, res, 'follow');
+  }
+
+  async unlikeManga(req, res) {
+    await unLikeFollowManga(req, res, 'like');
+  }
+
+  async unfollowManga(req, res) {
+    await unLikeFollowManga(req, res, 'follow');
+  }
+
+  async getListLikeManga(req, res) {
+    await getListLikeFollowManga(req, res, 'like');
+  }
+
+  async getListFollowManga(req, res) {
+    await getListLikeFollowManga(req, res, 'follow');
+  }
+  async getUsers(req, res) {
+    try {
+      const { page, limit, search_query, is_blocked } = req.query;
+      const users = await UserService.getUsers(
+        parseInt(page) || 1,
+        parseInt(limit) || 10,
+        search_query || '',
+        is_blocked || ''
+      );
+      return res.status(StatusCodes.OK).json(users);
+    } catch (error) {
+      console.error('Failed to get users:', error);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to get users' });
+    }
+  }
+  async toggleBlockUser(req, res) {
+    try {
+      const { userId } = req.params;
+      if (!userId) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: 'User ID is required' });
+      }
+      const isToggleBlockUser = await UserService.toggleBlockUser(parseInt(userId));
+      if (isToggleBlockUser && isToggleBlockUser.code === HandleCode.NOT_FOUND) {
+        return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found' });
+      }
+      if (isToggleBlockUser && isToggleBlockUser.code === HandleCode.SUCCESS) {
+        return res.status(StatusCodes.OK).json({ message: 'User status updated successfully' });
+      }
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to update user status' });
+    } catch (error) {
+      console.error('Failed to block/unblock user:', error);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to block/unblock user' });
+    }
+  }
+}
+
+>>>>>>> origin/back-end
 module.exports = new UserController();

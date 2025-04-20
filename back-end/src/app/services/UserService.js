@@ -2,7 +2,12 @@ const db = require('../../configs/DbPoolConfig');
 const MangaService = require('./MangaService');
 const convertKeysToCamelCase = require('../../utils/CamelCaseUtil');
 const HandleCode = require('../../utils/HandleCode');
+<<<<<<< HEAD
 const { hashPassword, comparePassword } = require('../../utils/PasswordUtil');
+=======
+const { users } = require('../../models/init-models')(require('../../configs/DbConfig'));
+const { Op } = require('sequelize');
+>>>>>>> origin/back-end
 class UserService {
   //#region get-info
   async getUserInfoById(userId) {
@@ -212,6 +217,59 @@ class UserService {
     }
   }
   //#endregion
+
+  getUsers = async (page = 1, limit = 1, search_query, is_blocked) => {
+    try {
+      const offset = (page - 1) * limit;
+      const whereClause = {
+        [Op.or]: [{ UserName: { [Op.like]: `%${search_query}%` } }, { Email: { [Op.like]: `%${search_query}%` } }],
+      };
+      console.log('is_blocked', is_blocked);
+      if (is_blocked) {
+        console.log('is_blocked', is_blocked);
+        whereClause.Status = is_blocked == 1 ? HandleCode.ACCOUNT_STATUS_BLOCKED : HandleCode.ACCOUNT_STATUS_ACTIVE;
+      }
+      const { count, rows } = await users.findAndCountAll({
+        where: whereClause,
+        attributes: ['UserId', 'UserName', 'Email', 'Avatar', 'Status'],
+
+        offset,
+        limit,
+      });
+      const transformedRows = rows.map((row) => {
+        const user = row.toJSON();
+        //user.Avatar = user.Avatar ? `${process.env.BASE_URL}/images/${user.Avatar}` : null;
+        return user;
+      });
+      return {
+        totalItems: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+        items: convertKeysToCamelCase(transformedRows),
+      };
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  toggleBlockUser = async (userId) => {
+    try {
+      // console.log('userId', userId);
+      const user = await users.findOne({ where: { UserId: userId } });
+      if (!user) {
+        return { code: HandleCode.NOT_FOUND };
+      }
+      const newStatus =
+        user.Status === HandleCode.ACCOUNT_STATUS_ACTIVE
+          ? HandleCode.ACCOUNT_STATUS_BLOCKED
+          : HandleCode.ACCOUNT_STATUS_ACTIVE;
+
+      await users.update({ Status: newStatus }, { where: { UserId: userId } });
+      return { code: HandleCode.SUCCESS, message: 'User status updated successfully.' };
+    } catch (err) {
+      throw err;
+    }
+  };
 }
 
 module.exports = new UserService();
