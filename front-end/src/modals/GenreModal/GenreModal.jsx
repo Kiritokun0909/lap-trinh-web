@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import './GenreModal.css';
+
+import '../Modal.css';
 
 export default function GenreModal({ onSave, onClose }) {
   const [genreName, setGenreName] = useState('');

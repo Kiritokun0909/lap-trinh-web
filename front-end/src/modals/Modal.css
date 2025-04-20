@@ -40,6 +40,13 @@
   border-radius: 6px;
 }
 
+.modal-form__input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* width: 100%; */
+}
+
 .modal-form input {
   min-width: 400px;
   width: 100%;
@@ -63,35 +70,55 @@
 }
 
 .modal-button {
+  width: 100%;
   margin-top: 8px;
   display: flex;
   justify-content: flex-end;
   gap: 4px;
 }
 
-.accept-button {
+.modal-button button {
   padding: 8px 12px;
   border: none;
-  background-color: green;
+  background-color: rgb(174, 60, 223);
   color: white;
   cursor: pointer;
   border-radius: 4px;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.accept-button {
+  background-color: green !important;
+}
+
+.delete-button {
+  background-color: red !important;
 }
 
 .cancel-button {
-  padding: 8px 12px;
-  border: none;
-  background-color: red;
-  color: white;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 500;
+  background-color: rgb(174, 60, 223) !important;
 }
 
 .accept-button:hover,
-.cancel-button:hover {
+.cancel-button:hover,
+.delete-button:hover {
   filter: brightness(80%);
+}
+
+.change-image-btn {
+  border: none;
+  padding: 8px 16px;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 300ms;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.change-image-btn:hover {
+  background-color: #2563eb; /* hover:bg-blue-600 */
 }

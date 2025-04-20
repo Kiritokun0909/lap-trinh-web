@@ -1,0 +1,44 @@
+.manga-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-input-image__row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.form-input__row {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  gap: 10px;
+}
+
+.form-input__row textarea {
+  padding: 10px 12px;
+  width: 100%;
+  resize: none;
+  height: 90px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+}
+
+.form-input__row textarea:focus {
+  outline: none;
+  border-color: orange;
+}
+
+.search-result__author {
+  max-height: 250px;
+}
+
+.manga-genres__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

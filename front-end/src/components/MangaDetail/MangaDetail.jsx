@@ -60,22 +60,13 @@ export default function MangaDetail({ manga }) {
         <h1>{manga.mangaName || 'N/A'}</h1>
       </div>
       <div className='manga-title stats'>
-        <MangaInfoRow
-          icon={<GrView />}
-          value={manga.numViews + ' lượt xem' || 0}
-        />
-        <MangaInfoRow
-          icon={<FaThumbsUp />}
-          value={manga.numLikes + ' lượt thích' || 0}
-        />
+        <MangaInfoRow icon={<GrView />} value={manga.numViews + ' lượt xem' || 0} />
+        <MangaInfoRow icon={<FaThumbsUp />} value={manga.numLikes + ' lượt thích' || 0} />
         <MangaInfoRow
           icon={<FaHeart />}
           value={manga.numFollows + ' lượt theo dõi' || 0}
         />
-        <MangaInfoRow
-          icon={<FaClock />}
-          value={formatDate(manga.updateAt) || ''}
-        />
+        <MangaInfoRow icon={<FaClock />} value={formatDate(manga.updateAt) || ''} />
       </div>
       <div className='manga-detail'>
         <div className='manga-cover-image'>
@@ -93,7 +84,7 @@ export default function MangaDetail({ manga }) {
           <MangaInfoRow
             icon={<FaUser />}
             label={'Tác giả'}
-            value={manga.authorName || 'N/A'}
+            value={manga.author?.authorName || 'N/A'}
           />
           <MangaInfoRow
             icon={<FaRss />}

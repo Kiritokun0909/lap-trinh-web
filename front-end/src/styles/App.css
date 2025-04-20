@@ -34,6 +34,10 @@ body {
   .main__container {
     flex: 1;
   }
+
+  .main-content {
+    padding: 0px 0px 24px;
+  }
 }
 
 .dark-mode {

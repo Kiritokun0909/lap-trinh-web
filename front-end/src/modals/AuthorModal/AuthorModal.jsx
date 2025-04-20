@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import '../GenreModal/GenreModal.css';
-import './AuthorModal.css';
+import '../Modal.css';
+
 import { DEFAULT_AUTHOR_IMAGE_URL } from '../../utils/utils';
 import { uploadImage } from '../../api/uploadApi';
 import { toast } from 'react-toastify';
@@ -82,7 +82,7 @@ export default function AuthorModal({ author, onAdd, onUpdate, onDelete, onClose
           onChange={handleImageChange}
         />
 
-        <button type='button' onClick={handleButtonClick} className='change-image'>
+        <button type='button' onClick={handleButtonClick} className='change-image-btn'>
           Chọn ảnh
         </button>
 
@@ -100,14 +100,15 @@ export default function AuthorModal({ author, onAdd, onUpdate, onDelete, onClose
         />
 
         <div className='modal-button'>
-          <button type='submit' className='accept-button'>
-            {isAdd ? 'Thêm' : 'Cập nhật'}
-          </button>
           {!isAdd && (
-            <button type='button' className='cancel-button' onClick={handleDeleteAuthor}>
+            <button type='button' className='delete-button' onClick={handleDeleteAuthor}>
               Xoá
             </button>
           )}
+          <button type='submit' className='accept-button'>
+            {isAdd ? 'Thêm' : 'Cập nhật'}
+          </button>
+
           <button type='button' className='cancel-button' onClick={onClose}>
             Huỷ
           </button>

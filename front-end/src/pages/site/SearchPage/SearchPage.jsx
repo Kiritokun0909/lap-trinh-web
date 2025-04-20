@@ -9,6 +9,8 @@ import { getGenres } from '../../../api/genreApi';
 import HandleCode from '../../../utils/HandleCode';
 import './SearchPage.css';
 import MangaList from '../../../components/MangaList/MangaList';
+import Pagination from '../../../components/Pagination/Pagination';
+import { DEFAULT_ITEM_PER_PAGE } from '../../../utils/utils';
 
 const SEARCH_PAGE_TITLE = 'Tìm kiếm';
 
@@ -120,6 +122,8 @@ function SearchInput({
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [searchResults, setSearchResults] = useState([]);
 
   const [listGenres, setListGenres] = useState([]);
@@ -137,8 +141,9 @@ export default function SearchPage() {
 
     const fetchMangas = async () => {
       try {
-        const response = await getMangas(1, 10);
-        setSearchResults(response.items);
+        const data = await getMangas(currentPage, DEFAULT_ITEM_PER_PAGE, searchName);
+        setSearchResults(data.items);
+        setTotalPages(data.totalPages);
       } catch (error) {
         console.error('Failed to fetch mangas:', error);
       }
@@ -151,7 +156,7 @@ export default function SearchPage() {
     fetchGenres();
 
     // Update filters from URL params
-    setSearchName(searchParams.get('keyword') || '');
+    if (searchName === '') setSearchName(searchParams.get('keyword') || '');
     setPublishedYear(searchParams.get('year') || '');
     setSelectedGenreId(searchParams.get('genreId') || '');
     setSelectedFilterId(
@@ -160,7 +165,7 @@ export default function SearchPage() {
 
     // Fetch mangas
     fetchMangas();
-  }, [searchParams]);
+  }, [searchParams, searchName, currentPage]);
 
   return (
     <div className='search-page__container'>
@@ -181,6 +186,20 @@ export default function SearchPage() {
       />
 
       {searchResults.length > 0 && <MangaList mangas={searchResults} />}
+
+      {searchResults.length === 0 && (
+        <div className='search-page__no-result'>
+          <h2>Không tìm thấy truyện</h2>
+        </div>
+      )}
+
+      {searchResults.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 
 const API_BASE_URL = 'http://localhost:5000';
@@ -51,10 +52,7 @@ axiosClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (
-      error.response?.status === 401 &&
-      originalRequest.url.includes('/login')
-    ) {
+    if (error.response?.status === 401 && originalRequest.url.includes('/login')) {
       return Promise.reject(error);
     }
 
@@ -64,9 +62,7 @@ axiosClient.interceptors.response.use(
       const newAccessToken = await refreshAccessToken();
       if (newAccessToken) {
         localStorage.setItem('accessToken', newAccessToken);
-        axiosClient.defaults.headers.common[
-          'Authorization'
-        ] = `Bearer ${newAccessToken}`;
+        axiosClient.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axiosClient(originalRequest); // Retry the failed request
       }

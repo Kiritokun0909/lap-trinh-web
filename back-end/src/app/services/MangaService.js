@@ -1,12 +1,13 @@
 const { Op } = require('sequelize');
-const db = require('../../configs/DbPoolConfig');
-const { mangas, chapters, genres, user_chapter_history } =
+const { mangas, manga_genres, authors, chapters, genres, user_chapter_history } =
   require('../../models/init-models')(require('../../configs/DbConfig'));
 const { formatISODate } = require('../../utils/DateUtil');
-const { ROLE_ADMIN, ROLE_USER } = require('../../utils/HandleCode');
+const { ROLE_ADMIN } = require('../../utils/HandleCode');
 const convertKeysToCamelCase = require('../../utils/CamelCaseUtil');
 const HandleCode = require('../../utils/HandleCode');
+
 class MangaService {
+  //#region Get All Mangas
   async getAllMangas(search_query, page = 1, limit = 10, user = null) {
     page = parseInt(page);
     limit = parseInt(limit);
@@ -51,6 +52,11 @@ class MangaService {
             order: [['PublishedDate', 'DESC']],
             attributes: { exclude: ['MangaId'] },
           },
+          {
+            model: authors,
+            as: 'Author',
+            attributes: ['AuthorId', 'AuthorName'],
+          },
         ],
         offset,
         limit,
@@ -58,7 +64,6 @@ class MangaService {
 
       const transformedRows = rows.map((row) => {
         const manga = row.toJSON();
-        manga.Genres = manga.GenreId_genres;
 
         manga.Chapters = manga.Chapters.map((chapter) => {
           chapter.PublishedDate = formatISODate(chapter.PublishedDate);
@@ -67,7 +72,10 @@ class MangaService {
         });
 
         manga.UpdateAt = formatISODate(manga.UpdateAt);
+
+        manga.Genres = manga.GenreId_genres;
         delete manga.GenreId_genres;
+
         return manga;
       });
 
@@ -78,11 +86,13 @@ class MangaService {
         items: convertKeysToCamelCase(transformedRows),
       };
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
+  //#endregion
 
-  async getMangaById(mangaId, user) {
+  //region Get Manga By MangaId
+  async getMangaById(mangaId, user = null) {
     try {
       const whereClause = {};
       if (user == null || user.roleId !== ROLE_ADMIN) {
@@ -97,6 +107,11 @@ class MangaService {
             as: 'GenreId_genres',
             attributes: ['GenreId', 'GenreName'],
           },
+          {
+            model: authors,
+            as: 'Author',
+            attributes: ['AuthorId', 'AuthorName'],
+          },
         ],
       });
 
@@ -105,26 +120,34 @@ class MangaService {
       }
 
       const mangaData = manga.toJSON();
+
+      mangaData.CreateAt = formatISODate(mangaData.CreateAt);
+      mangaData.UpdateAt = formatISODate(mangaData.UpdateAt);
+
       const mangaGenres = mangaData.GenreId_genres.map((genre) => {
         delete genre.manga_genres;
         return genre;
       });
       mangaData.Genres = mangaGenres;
       delete mangaData.GenreId_genres;
-      mangaData.CreateAt = formatISODate(mangaData.CreateAt);
-      mangaData.UpdateAt = formatISODate(mangaData.UpdateAt);
+
+      delete mangaData.AuthorId;
+
       return convertKeysToCamelCase(mangaData);
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
+  //endregion
 
+  //#region Get All Chapters Of Manga By MangaId
   async getAllChaptersOfMangaForUser(mangaId, user) {
     try {
       const chapterList = await this.getAllChaptersOfMangaPublic(mangaId);
       const readingHistory = await user_chapter_history.findAll({
         where: { UserId: user.userId },
       });
+
       const transformedChapterList = await Promise.all(
         chapterList.map(async (chapterData) => {
           // const chapterData = chapter.toJSON();
@@ -135,6 +158,7 @@ class MangaService {
           return chapterData;
         })
       );
+
       return transformedChapterList;
     } catch (error) {
       throw new Error(error);
@@ -161,7 +185,7 @@ class MangaService {
 
       return convertKeysToCamelCase(transformedChapterList);
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
 
@@ -172,31 +196,144 @@ class MangaService {
       return await this.getAllChaptersOfMangaPublic(mangaId);
     }
   }
+  //#endregion
 
+  //#region Add-Update-Delete Manga
+  async addManga(
+    mangaName = '',
+    otherName = '',
+    coverImageUrl = '',
+    publishedYear = '',
+    description = '',
+    ageLimit = '',
+    authorId
+  ) {
+    try {
+      console.log('>>>> data: ', mangaName);
+      const data = {};
+
+      if (mangaName.trim()) data.MangaName = mangaName;
+      if (otherName.trim()) data.OtherName = otherName;
+      if (coverImageUrl.trim()) data.CoverImageUrl = coverImageUrl;
+      if (publishedYear.trim()) data.PublishedYear = publishedYear;
+      if (description.trim()) data.Description = description;
+      if (ageLimit.trim()) data.AgeLimit = ageLimit;
+      if (authorId?.toString().trim()) data.AuthorId = authorId;
+
+      if (Object.keys(data).length === 0) {
+        return { code: HandleCode.NO_FIELDS_TO_UPDATE };
+      }
+
+      // console.log('>>>> data: ', data);
+
+      const manga = await mangas.create(data);
+      return { mangaId: manga.MangaId };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateManga(
+    mangaId,
+    mangaName,
+    otherName,
+    coverImageUrl,
+    publishedYear,
+    description,
+    ageLimit,
+    authorId
+  ) {
+    try {
+      const manga = await mangas.findByPk(mangaId);
+      if (!manga) {
+        return { code: HandleCode.NOT_FOUND }; // Manga does not exist
+      }
+
+      const data = {};
+
+      if (mangaName?.trim()) data.MangaName = mangaName;
+      if (otherName?.trim()) data.OtherName = otherName;
+      if (coverImageUrl?.trim()) data.CoverImageUrl = coverImageUrl;
+      if (publishedYear && publishedYear > 1900) data.PublishedYear = publishedYear;
+      if (description?.trim()) data.Description = description;
+      if (typeof ageLimit === 'number' && ageLimit >= 0) data.AgeLimit = ageLimit;
+      if (authorId !== undefined && authorId !== null) data.AuthorId = authorId;
+
+      if (Object.keys(data).length === 0) {
+        return { code: HandleCode.NO_FIELDS_TO_UPDATE };
+      }
+
+      await mangas.update(data, {
+        where: { MangaId: mangaId },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteManga(mangaId) {
+    try {
+      const manga = await mangas.findByPk(mangaId);
+      if (!manga) {
+        return { code: HandleCode.NOT_FOUND }; // Manga does not exist
+      }
+
+      await mangas.destroy({
+        where: { MangaId: mangaId },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+  //#endregion
+
+  //#region Update Manga Like-Follow
   async updateMangaLikeFollow(mangaId, type = 'like') {
     try {
-      const table = type === 'like' ? 'Favorites' : 'Following';
+      const table = type === 'like' ? 'Favorite' : 'Following';
       const field = type === 'like' ? 'NumLikes' : 'NumFollows';
 
       // Count the total number of rows in the relevant table for the given mangaId
-      const [[{ count }]] = await db.query(
-        `SELECT COUNT(*) AS count FROM ${table} WHERE MangaId = ?`,
-        [mangaId]
-      );
+      const count = await table.count({
+        where: { MangaId: mangaId },
+      });
 
       // Update the field in the mangas table with the new count
-      const [rows] = await db.query(
-        `UPDATE mangas SET ${field} = ? WHERE MangaId = ?`,
-        [count, mangaId]
+      const [updatedRows] = await mangas.update(
+        { [field]: count },
+        { where: { MangaId: mangaId } }
       );
 
-      if (rows.affectedRows === 0) {
+      if (updatedRows === 0) {
         return { code: HandleCode.NOT_FOUND };
       }
     } catch (err) {
       throw err;
     }
   }
+  //#endregion
+
+  //#region Update-Manga-Genres
+  async updateMangaGenres(mangaId, genreIds) {
+    try {
+      await manga_genres.destroy({
+        where: { MangaId: mangaId },
+      });
+
+      if (genreIds && genreIds.length > 0) {
+        const newEntries = genreIds.map((genreId) => ({
+          MangaId: mangaId,
+          GenreId: genreId,
+        }));
+
+        await manga_genres.bulkCreate(newEntries);
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  //#endregion
 }
 
 module.exports = new MangaService();

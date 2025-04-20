@@ -39,8 +39,9 @@ export default function MangaPage() {
     const fetchManga = async () => {
       try {
         const data = await getMangaById(mangaId);
-        setManga(data);
         document.title = data.mangaName;
+        setManga(data);
+        // console.log(data);
       } catch (err) {
         toast.error(err.message);
         navigate('/');
@@ -72,8 +73,8 @@ export default function MangaPage() {
 
     fetchManga();
     fetchChapters();
-    fetchUserLikeFollowManga();
-  }, [mangaId, navigate]);
+    if (isLoggedIn) fetchUserLikeFollowManga();
+  }, [mangaId, navigate, isLoggedIn]);
 
   const handleLikeFollow = (type) => async () => {
     if (!isLoggedIn) {
@@ -110,10 +111,7 @@ export default function MangaPage() {
       <MangaDetail manga={manga} />
       <div className='manga-page__btn-group'>
         <LikeButton isLiked={isLiked} onChange={handleLikeFollow('like')} />
-        <FollowButton
-          isFollowed={isFollowed}
-          onChange={handleLikeFollow('follow')}
-        />
+        <FollowButton isFollowed={isFollowed} onChange={handleLikeFollow('follow')} />
       </div>
       <MangaDescription manga={manga} />
       <ChapterList chapters={chapters} />

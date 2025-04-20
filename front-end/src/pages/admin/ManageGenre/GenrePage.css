@@ -3,7 +3,8 @@
   display: flex;
   flex-direction: column;
   padding: 16px;
-  gap: 16px;
+  gap: 12px;
+  min-height: 85vh;
 }
 
 .page__header {

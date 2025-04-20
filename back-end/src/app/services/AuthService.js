@@ -30,13 +30,21 @@ class AuthService {
         throw new Error(JSON.stringify(Messages.ERROR.INVALID_PASSWORD));
       }
 
-      const accessToken = jwt.sign({ userId: user.UserId, roleId: user.RoleId }, process.env.JWT_ACCESS_SECRET, {
-        expiresIn: '15m',
-      });
+      const accessToken = jwt.sign(
+        { userId: user.UserId, roleId: user.RoleId },
+        process.env.JWT_ACCESS_SECRET,
+        {
+          expiresIn: '15m',
+        }
+      );
 
-      const refreshToken = jwt.sign({ userId: user.UserId, roleId: user.RoleId }, process.env.JWT_REFRESH_SECRET, {
-        expiresIn: '7d',
-      });
+      const refreshToken = jwt.sign(
+        { userId: user.UserId, roleId: user.RoleId },
+        process.env.JWT_REFRESH_SECRET,
+        {
+          expiresIn: '7d',
+        }
+      );
 
       const roleId = user.RoleId;
 
@@ -49,9 +57,13 @@ class AuthService {
   async refreshToken(refreshToken) {
     try {
       const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-      const accessToken = jwt.sign({ userId: decoded.userId, roleId: decoded.roleId }, process.env.JWT_ACCESS_SECRET, {
-        expiresIn: '15m',
-      });
+      const accessToken = jwt.sign(
+        { userId: decoded.userId, roleId: decoded.roleId },
+        process.env.JWT_ACCESS_SECRET,
+        {
+          expiresIn: '15m',
+        }
+      );
 
       return accessToken;
     } catch (error) {

@@ -1,6 +1,6 @@
 import axiosClient from './axiosClient';
 
-const GET_LIST_AUTHORS_URL = '/authors/';
+const GET_LIST_AUTHORS_URL = '/authors';
 const ADD_AUTHOR_URL = '/authors/';
 const UPDATE_AUTHOR_URL = '/authors/';
 const DELETE_AUTHOR_URL = '/authors/';

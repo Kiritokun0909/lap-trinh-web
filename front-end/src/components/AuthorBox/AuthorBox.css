@@ -3,9 +3,9 @@
 }
 
 .author-box__container img {
-  width: 12rem;
-  height: 12rem;
-  border-radius: 6px;
+  width: 160px;
+  height: 200px;
+  border-radius: 4px;
 }
 
 .author-box__container a {

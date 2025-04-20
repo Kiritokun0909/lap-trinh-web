@@ -14,9 +14,11 @@ import AuthorModal from '../../../modals/AuthorModal/AuthorModal';
 import { DEFAULT_ITEM_PER_PAGE } from '../../../utils/utils';
 import { MdOutlineAdd } from 'react-icons/md';
 
+import Pagination from '../../../components/Pagination/Pagination';
+
 const PAGE_TITLE = 'Quản lý tác giả';
 
-export default function AuthroPage() {
+export default function AuthorPage() {
   const [authors, setAuthors] = useState([]);
 
   const [keyword, setKeyword] = useState('');
@@ -83,7 +85,7 @@ export default function AuthroPage() {
     }
   };
 
-  const updateSelectedGenre = async (authorId, author) => {
+  const updateSelected = async (authorId, author) => {
     if (!validateAuthor(author)) {
       return;
     }
@@ -100,7 +102,7 @@ export default function AuthroPage() {
     }
   };
 
-  const deleteSelectedGenre = async (authorId) => {
+  const deleteSelected = async (authorId) => {
     try {
       await deleteAuthor(authorId);
       toast.success('Xoá tác giả thành công!');
@@ -119,8 +121,8 @@ export default function AuthroPage() {
         <AuthorModal
           author={selectedAuthor}
           onAdd={addNewAuthor}
-          onUpdate={updateSelectedGenre}
-          onDelete={deleteSelectedGenre}
+          onUpdate={updateSelected}
+          onDelete={deleteSelected}
           onClose={() => setShowModal(false)}
         />
       )}
@@ -146,6 +148,12 @@ export default function AuthroPage() {
       </div>
 
       <AuthorList authors={authors} openModal={openModal} />
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 }
