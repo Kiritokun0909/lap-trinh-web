@@ -9,6 +9,7 @@ module.exports = {
   //ROLE ENUM
   ROLE_ADMIN: 1,
   ROLE_USER: 2,
+  GUEST: 3,
 
   //ACCOUNT STATUS ENUM
   ACCOUNT_STATUS_ACTIVE: 'active',
