@@ -10,24 +10,45 @@ class TokenUtil {
   }
 
   decodeToken(token) {
-    if (!token) {
-      return null;
+    try {
+      if (!token) {
+        return null;
+      }
+
+      return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    } catch (error) {
+      console.error('Token decoding error:', error);
+      throw new Error(error.message);
     }
-    return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
   }
 
   getUserIdFromToken = (token) => {
-    const decoded = this.decodeToken(token);
-    return decoded ? decoded.userId : null;
+    try {
+      const decoded = this.decodeToken(token);
+      return decoded ? decoded.userId : null;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      throw new Error(error.message);
+    }
   };
 
   getUserRoleFromToken = (token) => {
-    const decoded = this.decodeToken(token);
-    return decoded ? decoded.roleId : null;
+    try {
+      const decoded = this.decodeToken(token);
+      return decoded ? decoded.roleId : null;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      throw new Error(error.message);
+    }
   };
 
   getUserFromToken = (token) => {
-    return this.decodeToken(token);
+    try {
+      return this.decodeToken(token);
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      throw new Error(error.message);
+    }
   };
 }
 
