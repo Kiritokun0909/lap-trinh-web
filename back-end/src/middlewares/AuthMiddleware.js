@@ -30,13 +30,9 @@ function AuthMiddleware(allowedRoles = []) {
       next();
     } catch (error) {
       if (error.name === 'TokenExpiredError') {
-        return res
-          .status(StatusCodes.UNAUTHORIZED)
-          .send(Messages.ERROR.TOKEN_EXPIRED);
+        return res.status(StatusCodes.UNAUTHORIZED).send(Messages.ERROR.TOKEN_EXPIRED);
       } else if (error.name === 'JsonWebTokenError') {
-        return res
-          .status(StatusCodes.UNAUTHORIZED)
-          .send(Messages.ERROR.TOKEN_INVALID);
+        return res.status(StatusCodes.UNAUTHORIZED).send(Messages.ERROR.TOKEN_INVALID);
       }
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
     }

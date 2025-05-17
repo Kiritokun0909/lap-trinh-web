@@ -1,4 +1,5 @@
 import axiosClient from './axiosClient';
+import { handleApiError } from '../utils/errorHandler';
 
 const GET_LIST_AUTHORS_URL = '/authors';
 const ADD_AUTHOR_URL = '/authors/';
@@ -12,11 +13,7 @@ export const getAuthors = async (keyword = '', page = 1, limit = 10) => {
     );
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err);
   }
 };
 
@@ -29,11 +26,7 @@ export const addAuthor = async (avatar = '', authorName = '', biography = '') =>
     });
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err);
   }
 };
 
@@ -51,15 +44,9 @@ export const updateAuthor = async (
     });
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    if (err.response && err.response.status === 404) {
-      throw new Error('Không tìm thấy tác giả.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err, {
+      404: 'Không tìm thấy tác giả.',
+    });
   }
 };
 
@@ -68,14 +55,8 @@ export const deleteAuthor = async (authorId) => {
     const response = await axiosClient.delete(DELETE_AUTHOR_URL + authorId);
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    if (err.response && err.response.status === 404) {
-      throw new Error('Không tìm thấy tác giả.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err, {
+      404: 'Không tìm thấy tác giả.',
+    });
   }
 };

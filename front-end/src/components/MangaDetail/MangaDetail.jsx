@@ -26,7 +26,7 @@ function MangaInfoRow({ icon, label, value }) {
   );
 }
 
-function MangaGenres({ genres }) {
+function MangaGenres({ genres, isAdmin = false }) {
   return (
     <div className='info-row'>
       <div className='info-label'>
@@ -38,7 +38,7 @@ function MangaGenres({ genres }) {
           genres.map((genre) => (
             <Link
               key={genre.genreId}
-              to={`/search?genreId=${genre.genreId}`}
+              to={isAdmin ? `#` : `/search?genreId=${genre.genreId}`}
               className='genre-button'
             >
               {genre.genreName}
@@ -49,7 +49,7 @@ function MangaGenres({ genres }) {
   );
 }
 
-export default function MangaDetail({ manga }) {
+export default function MangaDetail({ manga, isAdmin = false }) {
   if (!manga) {
     return <p>Đang tải...</p>;
   }
@@ -96,7 +96,7 @@ export default function MangaDetail({ manga }) {
             label={'Nội dung'}
             value={manga.ageLimit + '+' || 'N/A'}
           />
-          <MangaGenres genres={manga.genres || []} />
+          <MangaGenres genres={manga.genres || []} isAdmin={isAdmin} />
         </div>
       </div>
     </>

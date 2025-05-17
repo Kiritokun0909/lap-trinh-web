@@ -12,6 +12,8 @@ const genreRouter = require('./GenreRoute.js');
 const uploadRouter = require('./UploadRoute');
 const authorRoute = require('./AuthorRoute');
 
+const adminRouter = require('./AdminRoute');
+
 function route(app) {
   app.use('/', siteRouter);
 
@@ -26,6 +28,8 @@ function route(app) {
 
   app.use('/upload', uploadRouter);
   app.use('/authors', authorRoute);
+
+  app.use('/admin', adminRouter);
 }
 
 module.exports = route;

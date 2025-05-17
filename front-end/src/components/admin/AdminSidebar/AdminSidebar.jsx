@@ -31,7 +31,7 @@ export default function AdminSidebar() {
       <FunctionRow title='Quản lý thể loại' link='/admin/manage-genres' />
       <FunctionRow title='Quản lý tác giả' link='/admin/manage-authors' />
       <FunctionRow title='Quản lý truyện' link='/admin/manage-mangas' />
-      <FunctionRow title='Quản lý người dùng' link='/admin/manage-customer' />
+      <FunctionRow title='Quản lý người dùng' link='/admin/manage-list-user' />
       <FunctionRow title='Thống kê' link='/admin/statistic' />
       <FunctionRow title='Quản lý tài khoản' link='/admin/account' />
       <FunctionRow title='Đổi mật khẩu' link='/admin/password' />

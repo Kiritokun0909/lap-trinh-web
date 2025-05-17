@@ -4,6 +4,7 @@ const { getHeaderToken, getUserFromToken } = require('../../utils/TokenUtil');
 const Messages = require('../../utils/Messages');
 const HandleCode = require('../../utils/HandleCode');
 const { parse } = require('dotenv');
+const { get } = require('../../routes/MangaRoute');
 class MangaController {
   async getAllMangas(req, res) {
     try {
@@ -26,14 +27,17 @@ class MangaController {
   async getMangaById(req, res) {
     try {
       const { mangaId } = req.params;
-      // const user = getUserFromToken(getHeaderToken(req));
+      // const user1 = getUserFromToken(getHeaderToken(req));
       const user = req?.user;
+      // console.log('>>> user: ', user);
       const manga = await MangaService.getMangaById(mangaId, user);
+      // console.log('>>> manga: ', manga);
       if (!manga) {
         return res
           .status(StatusCodes.NOT_FOUND)
           .json({ message: ReasonPhrases.NOT_FOUND });
       }
+
       return res.status(StatusCodes.OK).json(manga);
     } catch (error) {
       return res
@@ -68,8 +72,6 @@ class MangaController {
       authorId,
       genreIds,
     } = req.body;
-
-    console.log('>>> req.body: ', mangaName);
 
     try {
       const result = await MangaService.addManga(
@@ -144,6 +146,36 @@ class MangaController {
       }
 
       return res.status(StatusCodes.OK).json({ message: 'Delete manga successfully.' });
+    } catch (err) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: err.message });
+    }
+  }
+
+  async updateMangaHideStatus(req, res) {
+    const { mangaId } = req.params;
+    const { isHide } = req.body;
+
+    if (
+      isHide !== HandleCode.MANGA_HIDE_STATUS &&
+      isHide !== HandleCode.MANGA_SHOW_STATUS
+    ) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: ReasonPhrases.BAD_REQUEST });
+    }
+
+    try {
+      const result = await MangaService.updateMangaHideStatus(parseInt(mangaId), isHide);
+
+      if (result && result.code === HandleCode.NOT_FOUND) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ message: ReasonPhrases.NOT_FOUND });
+      }
+
+      return res
+        .status(StatusCodes.OK)
+        .json({ message: 'Update manga hide status successfully.' });
     } catch (err) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: err.message });
     }

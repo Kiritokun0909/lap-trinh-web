@@ -1,9 +1,10 @@
-import axiosClient from "./axiosClient";
+import axiosClient from './axiosClient';
+import { handleApiError } from '../utils/errorHandler';
 
-const GET_GENRES_URL = "/genres";
-const ADD_GENRE_URL = "/genres";
-const UPDATE_GENRE_URL = "/genres";
-const DELETE_GENRE_URL = "/genres";
+const GET_GENRES_URL = '/genres';
+const ADD_GENRE_URL = '/genres';
+const UPDATE_GENRE_URL = '/genres';
+const DELETE_GENRE_URL = '/genres';
 
 //#region get-genre
 export const getGenres = async () => {
@@ -11,7 +12,7 @@ export const getGenres = async () => {
     const response = await axiosClient.get(GET_GENRES_URL);
     return response.data;
   } catch (err) {
-    console.error("Error fetching list genre:", err);
+    handleApiError(err);
   }
 };
 //#endregion
@@ -25,17 +26,9 @@ export const addGenre = async (genreName) => {
 
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error("Hệ thống không phản hồi.");
-    }
-
-    if (err.response && err.response.status === 400) {
-      throw new Error(
-        "Đã có tên thể loại này, vui lòng đặt tên khác và thử lại."
-      );
-    }
-
-    throw new Error("Thêm thể loại mới thất bại, vui lòng thử lại.");
+    handleApiError(err, {
+      400: 'Đã có tên thể loại này, vui lòng đặt tên khác và thử lại.',
+    });
   }
 };
 //#endregion
@@ -49,21 +42,9 @@ export const updateGenre = async (genreId, newGenreName) => {
 
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error("Hệ thống không phản hồi.");
-    }
-
-    if (err.response && err.response.status === 404) {
-      throw new Error("Không tìm thấy thể loại này.");
-    }
-
-    if (err.response && err.response.status === 400) {
-      throw new Error(
-        "Đã có tên thể loại này, vui lòng đặt tên khác và thử lại."
-      );
-    }
-
-    throw new Error("Chỉnh sửa tên thể loại thất bại, vui lòng thử lại.");
+    handleApiError(err, {
+      400: 'Đã có tên thể loại này, vui lòng đặt tên khác và thử lại.',
+    });
   }
 };
 //#endregion
@@ -72,22 +53,14 @@ export const updateGenre = async (genreId, newGenreName) => {
 export const deleteGenre = async (genreIds) => {
   try {
     const responses = await Promise.all(
-      genreIds.map((genreId) =>
-        axiosClient.delete(`${DELETE_GENRE_URL}/${genreId}`)
-      )
+      genreIds.map((genreId) => axiosClient.delete(`${DELETE_GENRE_URL}/${genreId}`))
     );
 
     return responses.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error("Hệ thống không phản hồi.");
-    }
-
-    if (err.response && err.response.status === 404) {
-      throw new Error("Không tìm thấy thể loại này.");
-    }
-
-    throw new Error("Xoá thể loại thất bại, vui lòng thử lại.");
+    handleApiError(err, {
+      404: 'Không tìm thấy thể loại này.',
+    });
   }
 };
 //#endregion

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 
 const API_BASE_URL = 'http://localhost:5000';

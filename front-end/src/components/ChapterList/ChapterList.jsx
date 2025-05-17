@@ -5,7 +5,7 @@ import './ChapterList.css';
 import { Link } from 'react-router-dom';
 import { formatFullDate } from '../../utils/utils';
 
-export default function ChapterList({ chapters }) {
+export default function ChapterList({ chapters, isAdmin = false }) {
   return (
     <>
       <div className='manga-description chapter-title'>
@@ -21,7 +21,13 @@ export default function ChapterList({ chapters }) {
           chapters.map((chapter) => (
             <div key={chapter.chapterId} className='chapter-row'>
               <div className='chapter-name'>
-                <Link to={`/chapter/${chapter.chapterId}`}>
+                <Link
+                  to={
+                    isAdmin
+                      ? `/admin/chapter/${chapter.chapterId}`
+                      : `/chapter/${chapter.chapterId}`
+                  }
+                >
                   Chapter {chapter.chapterNumber}
                 </Link>
               </div>

@@ -1,4 +1,5 @@
 import axiosClient from './axiosClient';
+import { handleApiError } from '../utils/errorHandler';
 
 //#region get-list-manga
 export const getMangas = async (page, limit, keyword = '') => {
@@ -6,34 +7,22 @@ export const getMangas = async (page, limit, keyword = '') => {
     const response = await axiosClient.get(
       `/mangas?page=${page}&limit=${limit}&search_query=${keyword}`
     );
-
     return response.data;
-  } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+  } catch (error) {
+    handleApiError(error);
   }
 };
 //#endregion
 
-//#region get-mangaa-by-id
+//#region get-manga-by-id
 export const getMangaById = async (mangaId) => {
   try {
     const response = await axiosClient.get(`/mangas/${mangaId}`);
-
     return response.data;
-  } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    if (err.response && err.response.status === 404) {
-      throw new Error('Không tìm thấy truyện.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+  } catch (error) {
+    handleApiError(error, {
+      404: 'Không tìm thấy truyện.',
+    });
   }
 };
 //#endregion
@@ -51,18 +40,11 @@ export const createManga = async (manga) => {
       authorId: manga?.author?.authorId,
       genreIds: manga?.genres,
     });
-
     return response.data;
-  } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    if (err.response && err.response.status === 400) {
-      throw new Error('Tạo truyện thất bài, vui lòng thử lại.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+  } catch (error) {
+    handleApiError(error, {
+      400: 'Tạo truyện thất bại, vui lòng thử lại.',
+    });
   }
 };
 //#endregion
@@ -80,22 +62,12 @@ export const updateManga = async (manga) => {
       authorId: manga?.author?.authorId,
       genreIds: manga?.genres,
     });
-
     return response.data;
-  } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    if (err.response && err.response.status === 400) {
-      throw new Error('Cập nhật truyện thất bại, vui lòng thử lại.');
-    }
-
-    if (err.response && err.response.status === 404) {
-      throw new Error('Không tìm thấy truyện.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+  } catch (error) {
+    handleApiError(error, {
+      400: 'Cập nhật truyện thất bại, vui lòng thử lại.',
+      404: 'Không tìm thấy truyện.',
+    });
   }
 };
 //#endregion
@@ -104,18 +76,24 @@ export const updateManga = async (manga) => {
 export const deleteManga = async (mangaId) => {
   try {
     const response = await axiosClient.delete(`/mangas/${mangaId}`);
-
     return response.data;
-  } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
+  } catch (error) {
+    handleApiError(error, {
+      404: 'Không tìm thấy truyện.',
+    });
+  }
+};
+//#endregion
 
-    if (err.response && err.response.status === 404) {
-      throw new Error('Không tìm thấy truyện.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+//#region update-manga-hide-status
+export const updateMangaHideStatus = async (mangaId, isHide) => {
+  try {
+    const response = await axiosClient.put(`/mangas/hide/${mangaId}`, { isHide: isHide });
+    return response.data;
+  } catch (error) {
+    handleApiError(error, {
+      404: 'Không tìm thấy truyện.',
+    });
   }
 };
 //#endregion

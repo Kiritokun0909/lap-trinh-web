@@ -96,7 +96,7 @@ class MangaService {
     try {
       const whereClause = {};
       if (user == null || user.roleId !== ROLE_ADMIN) {
-        whereClause.IsHide = false;
+        whereClause.IsHide = HandleCode.MANGA_SHOW_STATUS;
       }
 
       const manga = await mangas.findOne({
@@ -333,6 +333,43 @@ class MangaService {
     }
   }
 
+  //#endregion
+
+  //region Update-Manga-Hide-Status
+  async updateMangaHideStatus(mangaId, isHide = HandleCode.MANGA_HIDE_STATUS) {
+    try {
+      await mangas.update({ IsHide: isHide }, { where: { MangaId: mangaId } });
+    } catch (err) {
+      throw err;
+    }
+  }
+  //#endregion
+
+  //region Update-Manga-Num-Chapters
+  async updateMangaNumChapters(mangaId) {
+    try {
+      const count = await chapters.count({
+        where: { MangaId: mangaId },
+      });
+
+      await mangas.update({ NumChapters: count }, { where: { MangaId: mangaId } });
+    } catch (err) {
+      throw err;
+    }
+  }
+  //#endregion
+
+  //#region Update-Manga-Newest-Chapter-Number
+  async updateMangaNewestChapterNumber(mangaId, chapterNumber) {
+    try {
+      await mangas.update(
+        { NewestChapterNumber: chapterNumber },
+        { where: { MangaId: mangaId } }
+      );
+    } catch (err) {
+      throw err;
+    }
+  }
   //#endregion
 }
 

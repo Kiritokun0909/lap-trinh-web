@@ -1,5 +1,6 @@
 import HandleCode from '../utils/HandleCode';
 import axiosClient from './axiosClient';
+import { handleApiError } from '../utils/errorHandler';
 
 const GET_INFO_URL = '/user';
 const UPLOAD_AVATAR_URL = '/user/upload';
@@ -26,11 +27,7 @@ export const uploadAvatar = async (fileAvatar) => {
     const response = await axiosClient.post(UPLOAD_AVATAR_URL, formData);
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err);
   }
 };
 
@@ -39,15 +36,9 @@ export const getUserInfo = async () => {
     const response = await axiosClient.get(GET_INFO_URL);
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    if (err.response && err.response.status === 404) {
-      throw new Error('Không tim thấy người dùng.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err, {
+      404: 'Không tìm thấy người dùng.',
+    });
   }
 };
 
@@ -56,19 +47,10 @@ export const changeUserEmail = async (email) => {
     const response = await axiosClient.put(UPDATE_EMAIL_URL, { email: email });
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    if (err.response && err.response.status === 404) {
-      throw new Error('Không tim thấy người dùng.');
-    }
-
-    if (err.response && err.response.status === 409) {
-      throw new Error('Email đã được sử dụng để đăng ký. Vui lòng dùng email khác.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err, {
+      404: 'Không tìm thấy người dùng.',
+      409: 'Email đã được sử dụng để đăng ký. Vui lòng dùng email khác.',
+    });
   }
 };
 
@@ -80,36 +62,24 @@ export const changeUserPassword = async (oldPassword, newPassword) => {
     });
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    if (err.response && err.response.status === 404) {
-      throw new Error('Không tim thấy người dùng.');
-    }
-
-    if (err.response && err.response.status === 400) {
-      throw new Error('Mật khẩu cũ không đúng.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err, {
+      404: 'Không tìm thấy người dùng.',
+      400: 'Mật khẩu cũ không đúng.',
+    });
   }
 };
 
 export const changeUserInfo = async (username, avatar) => {
   try {
-    const response = await axiosClient.put(UPDATE_INFO_URL, { username: username, avatar: avatar });
+    const response = await axiosClient.put(UPDATE_INFO_URL, {
+      username: username,
+      avatar: avatar,
+    });
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    if (err.response && err.response.status === 404) {
-      throw new Error('Không tim thấy người dùng.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err, {
+      404: 'Không tìm thấy người dùng.',
+    });
   }
 };
 
@@ -120,11 +90,9 @@ export const checkUserLikeFollowManga = async (mangaId, type = 'like') => {
     const response = await axiosClient.get(`${url}${mangaId}`);
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err, {
+      404: 'Không tìm thấy truyện.',
+    });
   }
 };
 
@@ -134,15 +102,9 @@ export const likeFollowManga = async (mangaId, type = 'like') => {
     const response = await axiosClient.post(`${url}${mangaId}`);
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    if (err.response && err.response.status === 409) {
-      throw new Error('Bạn đã thích/theo dõi truyện này.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err, {
+      409: 'Bạn đã thích/theo dõi truyện này.',
+    });
   }
 };
 
@@ -152,15 +114,9 @@ export const unlikeUnfollowManga = async (mangaId, type = 'like') => {
     const response = await axiosClient.delete(`${url}${mangaId}`);
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    if (err.response && err.response.status === 404) {
-      throw new Error('Bạn đã huỷ thích/theo dõi truyện này.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err, {
+      404: 'Bạn đã huỷ thích/theo dõi truyện này.',
+    });
   }
 };
 
@@ -179,10 +135,6 @@ export const getListLikeFollowManga = async (
     );
     return response.data;
   } catch (err) {
-    if (!err?.response) {
-      throw new Error('Hệ thống không phản hồi.');
-    }
-
-    throw new Error('Lỗi hệ thống, vui lòng thử lại sau.');
+    handleApiError(err);
   }
 };
