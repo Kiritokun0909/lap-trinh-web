@@ -67,19 +67,19 @@ class CommentService {
             ],
             //order: [['CreateAt', 'ASC']],
           });
-          // const user = await users.findOne({
-          //   where: { UserId: comment.UserId },
-          //   attributes: ['UserId', 'Username', 'Avatar'],
-          // });
+          const user = await users.findOne({
+            where: { UserId: comment.UserId },
+            attributes: ['UserId', 'Username', 'Avatar'],
+          });
 
           const formattedComment = {
             ...comment.get(),
-            // User: user ? convertKeysToCamelCase(user.get()) : null,
+            User: user ? convertKeysToCamelCase(user.get()) : null,
             Context: comment.IsDeleted && !showDeletedCommentContext ? 'Bình luận đã bị xóa' : comment.Context,
             CreatedAt: formatISODate(comment.CreatedAt),
             UpdatedAt: formatISODate(comment.UpdatedAt),
           };
-          // delete formattedComment.UserId;
+          delete formattedComment.UserId;
           const formattedReplies = replies.map((reply) => {
             return {
               ...reply.get(),
@@ -222,14 +222,21 @@ class CommentService {
               'CommentParentId',
             ],
           });
+          const user = await users.findOne({
+            where: { UserId: comment.UserId },
+            attributes: ['UserId', 'Username', 'Avatar'],
+          });
 
           const formattedComment = {
             ...comment.get(),
+            User: user ? convertKeysToCamelCase(user.get()) : null,
 
             Context: comment.IsDeleted && !showDeletedCommentContext ? 'Bình luận đã bị xóa' : comment.Context,
             CreatedAt: formatISODate(comment.CreatedAt),
             UpdatedAt: formatISODate(comment.UpdatedAt),
           };
+
+          delete formattedComment.UserId;
 
           const formattedReplies = replies.map((reply) => {
             return {
