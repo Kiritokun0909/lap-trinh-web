@@ -23,7 +23,10 @@ function OptionalAuthMiddleware(req, res, next) {
       return res.status(StatusCodes.UNAUTHORIZED).send(Messages.ERROR.TOKEN_EXPIRED);
     } else if (error.name === 'JsonWebTokenError') {
       return res.status(StatusCodes.UNAUTHORIZED).send(Messages.ERROR.TOKEN_INVALID);
+    } else if (error.message === 'jwt expired') {
+      return res.status(StatusCodes.UNAUTHORIZED).send(Messages.ERROR.TOKEN_INVALID);
     }
+
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }

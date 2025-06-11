@@ -2,21 +2,36 @@ const { get } = require('../../routes/CommentRoute');
 const CommentService = require('../services/CommentService');
 const { StatusCodes } = require('http-status-codes');
 
-const { getHeaderToken, getUserFromToken, getUserIdFromToken } = require('../../utils/TokenUtil');
+const {
+  getHeaderToken,
+  getUserFromToken,
+  getUserIdFromToken,
+} = require('../../utils/TokenUtil');
 const Messages = require('../../utils/Messages');
 const { formatISODate } = require('../../utils/DateUtil');
 class CommentController {
   async addChapterComment(req, res) {
-    const { chapterId, userId, context, commentParentId } = req.body;
+    const { chapterId, context, commentParentId } = req.body;
+    const userId = getUserIdFromToken(getHeaderToken(req));
+
     try {
-      const newComment = await CommentService.addChapterComment(chapterId, userId, context, commentParentId);
+      const newComment = await CommentService.addChapterComment(
+        chapterId,
+        userId,
+        context,
+        commentParentId
+      );
       if (!newComment) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Failed to add comment' });
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: 'Failed to add comment' });
       }
       res.status(StatusCodes.CREATED).json({ message: 'Comment added successfully' });
     } catch (error) {
       console.error('Error adding comment:', error);
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to add comment' });
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to add comment' });
     }
   }
   async getChapterCommentsWithReplies(req, res) {
@@ -25,7 +40,12 @@ class CommentController {
     const userId = getUserIdFromToken(getHeaderToken(req));
 
     try {
-      const comments = await CommentService.getChapterCommentsWithReplies(chapterId, page, limit, userId);
+      const comments = await CommentService.getChapterCommentsWithReplies(
+        chapterId,
+        page,
+        limit,
+        userId
+      );
       res.status(StatusCodes.OK).json(comments);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -72,7 +92,12 @@ class CommentController {
     const userId = getUserIdFromToken(getHeaderToken(req));
 
     try {
-      const comments = await CommentService.getMangaCommentsWithReplies(mangaId, page, limit, userId);
+      const comments = await CommentService.getMangaCommentsWithReplies(
+        mangaId,
+        page,
+        limit,
+        userId
+      );
       res.status(StatusCodes.OK).json(comments);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -80,16 +105,28 @@ class CommentController {
     }
   }
   async addMangaComment(req, res) {
-    const { mangaId, userId, context, commentParentId } = req.body;
+    const { mangaId, context, commentParentId } = req.body;
+
+    const userId = getUserIdFromToken(getHeaderToken(req));
+
     try {
-      const newComment = await CommentService.addMangaComment(mangaId, userId, context, commentParentId);
+      const newComment = await CommentService.addMangaComment(
+        mangaId,
+        userId,
+        context,
+        commentParentId
+      );
       if (!newComment) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Failed to add comment' });
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: 'Failed to add comment' });
       }
       res.status(StatusCodes.CREATED).json({ message: 'Comment added successfully' });
     } catch (error) {
       console.error('Error adding comment:', error);
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Failed to add comment' });
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to add comment' });
     }
   }
   async updateMangaComment(req, res) {

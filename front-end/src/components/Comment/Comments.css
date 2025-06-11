@@ -1,37 +1,135 @@
+.comment-container {
+  margin: 6px 0;
+}
+
+.comment {
+  display: flex;
+  gap: 12px;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.comment-username {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.comment-text {
+  background-color: #f0f2f5;
+  padding: 8px 12px;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+  color: black;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 16px;
+  margin-left: 12px;
+  color: #65676b;
+  font-size: 0.9rem;
+}
+
+.dark-mode .comment-actions {
+  color: white;
+}
+
+.comment-action {
+  cursor: pointer;
+}
+
+.comment-action:hover {
+  text-decoration: underline;
+}
+
+.replies-container {
+  margin-left: 48px;
+  margin-top: 8px;
+}
+
+.reply {
+  display: flex;
+  gap: 12px;
+  margin-left: 12px;
+}
+
+.show-replies-btn {
+  color: #65676b;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 4px 0 4px 62px;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.dark-mode .show-replies-btn {
+  color: white;
+}
+
+.show-replies-btn:hover {
+  text-decoration: underline;
+}
+
 .user-comment {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  margin-top: 6px;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
-.user-comment textarea {
-  padding: 16px 12px 16px 20px;
-  width: 100%;
-  resize: none;
-  height: 90px;
-  box-sizing: border-box;
+.comment-textarea {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 16px;
+  resize: none;
+  min-height: 90px;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.comment-textarea:focus {
+  outline: none;
+  border-color: #1877f2;
+}
+
+.comment-btn-container {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .comment-btn {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
   align-items: center;
-  padding: 8px 12px;
-  gap: 4px;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #1877f2;
   color: white;
-  font-size: 16px;
-  font-weight: 600;
   border: none;
-  border-radius: 4px;
+  border-radius: 20px;
   cursor: pointer;
-  background-color: #209cee;
-  margin-top: 6px;
+  font-weight: 600;
 }
 
 .comment-btn:hover {
-  background-color: #1a8cbf;
+  background-color: #166fe5;
 }

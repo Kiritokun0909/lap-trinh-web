@@ -2,7 +2,6 @@ import { Route, Routes } from 'react-router-dom';
 
 import AdminLayout from '../layouts/AdminLayout.jsx';
 
-import ManageMangaPage from '../pages/admin/ManageMangasPage';
 import AccountPage from '../pages/account/AccountPage/AccountPage';
 import PasswordPage from '../pages/account/PasswordPage/PasswordPage';
 import GenrePage from '../pages/admin/ManageGenre/GenrePage';
@@ -12,6 +11,8 @@ import MangaPage from '../pages/admin/ManageManga/MangaPage.jsx';
 import AddUpdateMangaPage from '../pages/admin/AddUpdateManga/AddUpdateMangaPage.jsx';
 import AddUpdateChapterPage from '../pages/admin/AddUpdateChapter/AddUpdateChapterPage.jsx';
 import ManageListUserPage from '../pages/admin/ManageListUser/ManageListUserPage.jsx';
+import StatisticPage from '../pages/admin/Statistic/StatisticPage.jsx';
+
 export default function AdminRoute() {
   return (
     <Routes>
@@ -25,7 +26,7 @@ export default function AdminRoute() {
         <Route path='/chapter/:chapterId' element={<AddUpdateChapterPage />} />
 
         <Route path='/manage-list-user' element={<ManageListUserPage />} />
-        <Route path='/statistic' element={<ManageMangaPage />} />
+        <Route path='/statistic' element={<StatisticPage />} />
         <Route path='/account' element={<AccountPage />} />
         <Route path='/password' element={<PasswordPage />} />
         <Route path='/*' element={<ListMangaPage />} />

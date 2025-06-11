@@ -7,6 +7,8 @@ import { getImagesByChapterId } from '../../../api/chapterApi';
 import { formatFullDate } from '../../../utils/utils';
 import './ChapterPage.css';
 import Comments from '../../../components/Comment/Comments';
+import { getListCommentByChapterId, postChapterComment } from '../../../api/commentApi';
+import { useAuth } from '../../../context/AuthContext';
 
 function ChapterNavigation({ chapter }) {
   return (
@@ -36,7 +38,13 @@ function ChapterNavigation({ chapter }) {
 
 export default function ChapterPage() {
   const chapterId = useParams().chapterId;
+  const { isLoggedIn } = useAuth();
+
   const [chapter, setChapter] = useState({});
+
+  const [comments, setComments] = useState([]);
+  const [currentCommentPage, setCurrentCommentPage] = useState(1);
+  const [totalCommentPages, setTotalCommentPages] = useState(1);
 
   const navigate = useNavigate();
 
@@ -57,14 +65,42 @@ export default function ChapterPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [chapterId, navigate]);
 
+  useEffect(() => {
+    fetchComments();
+  }, [chapterId, currentCommentPage]);
+
+  const fetchComments = async () => {
+    try {
+      const data = await getListCommentByChapterId(chapterId, currentCommentPage, 5);
+      setComments(data.comments);
+      setTotalCommentPages(data.totalPages);
+    } catch (err) {
+      console.error('Failed to get comments by manga id: ', err);
+    }
+  };
+
+  const handlePostComment = async (commentParentId, context) => {
+    if (!isLoggedIn) {
+      toast.error('Vui lòng đăng nhập để sử dụng chức năng này.');
+      return;
+    }
+
+    try {
+      await postChapterComment(chapterId, commentParentId, context);
+      toast.success('Gửi bình luận thành công.');
+      fetchComments();
+    } catch (err) {
+      console.error('Failed to post comment: ', err);
+    }
+  };
+
   return (
     <div className='chapter__container'>
       <div className='chapter__title'>
         <h2>
           <Link to={`/manga/${chapter?.mangaId}`}>{chapter?.mangaName}</Link>
           {' - '}Chap {chapter?.chapterNumber}
-          {chapter?.updateAt &&
-            ` (Cập nhật lúc: ${formatFullDate(chapter?.updateAt)})`}
+          {chapter?.updateAt && ` (Cập nhật lúc: ${formatFullDate(chapter?.updateAt)})`}
         </h2>
       </div>
 
@@ -81,7 +117,13 @@ export default function ChapterPage() {
 
       <ChapterNavigation chapter={chapter} />
 
-      <Comments />
+      <Comments
+        handlePostComment={handlePostComment}
+        comments={comments}
+        currentPage={currentCommentPage}
+        totalPages={totalCommentPages}
+        setCurrentPage={setCurrentCommentPage}
+      />
     </div>
   );
 }

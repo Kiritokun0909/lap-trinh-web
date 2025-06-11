@@ -9,8 +9,8 @@ class MangaController {
   async getAllMangas(req, res) {
     try {
       const { search_query, page, limit } = req.query;
-      // const user = getUserFromToken(getHeaderToken(req));
-      const user = req?.user;
+      const user = getUserFromToken(getHeaderToken(req));
+      // const user = req?.user;
       const mangaList = await MangaService.getAllMangas(search_query, page, limit, user);
 
       return res.status(StatusCodes.OK).json(mangaList);

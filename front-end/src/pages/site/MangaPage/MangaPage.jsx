@@ -21,6 +21,7 @@ import {
   likeFollowManga,
   unlikeUnfollowManga,
 } from '../../../api/userApi';
+import { getListCommentByMangaId, postMangaComment } from '../../../api/commentApi';
 
 export default function MangaPage() {
   const mangaId = useParams().mangaId;
@@ -32,6 +33,10 @@ export default function MangaPage() {
 
   const [isLiked, setIsLiked] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
+
+  const [comments, setComments] = useState([]);
+  const [currentCommentPage, setCurrentCommentPage] = useState(1);
+  const [totalCommentPages, setTotalCommentPages] = useState(1);
 
   const navigate = useNavigate();
 
@@ -76,6 +81,20 @@ export default function MangaPage() {
     if (isLoggedIn) fetchUserLikeFollowManga();
   }, [mangaId, navigate, isLoggedIn]);
 
+  useEffect(() => {
+    fetchComments();
+  }, [mangaId, currentCommentPage]);
+
+  const fetchComments = async () => {
+    try {
+      const data = await getListCommentByMangaId(mangaId, currentCommentPage, 5);
+      setComments(data.comments);
+      setTotalCommentPages(data.totalPages);
+    } catch (err) {
+      console.error('Failed to get comments by manga id: ', err);
+    }
+  };
+
   const handleLikeFollow = (type) => async () => {
     if (!isLoggedIn) {
       toast.error('Vui lòng đăng nhập để sử dụng chức năng này.');
@@ -106,6 +125,24 @@ export default function MangaPage() {
     }
   };
 
+  const handlePostComment = async (commentParentId, context) => {
+    if (!isLoggedIn) {
+      toast.error('Vui lòng đăng nhập để sử dụng chức năng này.');
+      return;
+    }
+
+    console.log(commentParentId, context);
+    // return;
+
+    try {
+      await postMangaComment(mangaId, commentParentId, context);
+      toast.success('Gửi bình luận thành công.');
+      fetchComments();
+    } catch (err) {
+      console.error('Failed to post comment: ', err);
+    }
+  };
+
   return (
     <div className='manga-page'>
       <MangaDetail manga={manga} />
@@ -115,7 +152,13 @@ export default function MangaPage() {
       </div>
       <MangaDescription manga={manga} />
       <ChapterList chapters={chapters} />
-      <Comments />
+      <Comments
+        handlePostComment={handlePostComment}
+        comments={comments}
+        currentPage={currentCommentPage}
+        totalPages={totalCommentPages}
+        setCurrentPage={setCurrentCommentPage}
+      />
     </div>
   );
 }

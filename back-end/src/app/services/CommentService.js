@@ -13,8 +13,11 @@ class CommentService {
       }
       let commentRootId = null;
       if (commentParentId !== null) {
-        const parentComment = await chapter_comments.findOne({ where: { CommentId: commentParentId } });
+        const parentComment = await chapter_comments.findOne({
+          where: { CommentId: commentParentId },
+        });
         commentRootId = parentComment.CommentRootId || commentParentId;
+        commentParentId = commentParentId == commentRootId ? null : commentParentId;
       }
       const newComment = await chapter_comments.create({
         ChapterId: chapterId,
@@ -36,16 +39,27 @@ class CommentService {
       const offset = (page - 1) * limit;
 
       const { count, rows } = await chapter_comments.findAndCountAll({
-        where: { ChapterId: chapterId, CommentParentId: null },
+        where: { ChapterId: chapterId, CommentRootId: null },
         limit,
         offset,
         order: [['CreatedAt', 'DESC']],
-        attributes: ['CommentId', 'UserId', 'Context', 'CreatedAt', 'UpdatedAt', 'IsUpdated', 'IsDeleted'],
+        attributes: [
+          'CommentId',
+          'UserId',
+          'Context',
+          'CreatedAt',
+          'UpdatedAt',
+          'IsUpdated',
+          'IsDeleted',
+        ],
       });
 
       let showDeletedCommentContext = false;
       if (userId) {
-        const user = await users.findOne({ where: { UserId: userId }, attributes: ['UserId', 'RoleId'] });
+        const user = await users.findOne({
+          where: { UserId: userId },
+          attributes: ['UserId', 'RoleId'],
+        });
         if (user && user.RoleId === ROLE_ADMIN) {
           showDeletedCommentContext = true;
         }
@@ -75,19 +89,32 @@ class CommentService {
           const formattedComment = {
             ...comment.get(),
             User: user ? convertKeysToCamelCase(user.get()) : null,
-            Context: comment.IsDeleted && !showDeletedCommentContext ? 'Bình luận đã bị xóa' : comment.Context,
+            Context:
+              comment.IsDeleted && !showDeletedCommentContext
+                ? 'Bình luận đã bị xóa'
+                : comment.Context,
             CreatedAt: formatISODate(comment.CreatedAt),
             UpdatedAt: formatISODate(comment.UpdatedAt),
           };
+
           delete formattedComment.UserId;
+
           const formattedReplies = replies.map((reply) => {
             return {
               ...reply.get(),
-              Context: reply.IsDeleted && !showDeletedCommentContext ? 'Bình luận đã bị xóa' : reply.Context,
+
+              User: user ? convertKeysToCamelCase(user.get()) : null,
+
+              Context:
+                reply.IsDeleted && !showDeletedCommentContext
+                  ? 'Bình luận đã bị xóa'
+                  : reply.Context,
               CreatedAt: formatISODate(reply.CreatedAt),
               UpdatedAt: formatISODate(reply.UpdatedAt),
             };
           });
+
+          delete formattedReplies.UserId;
 
           return {
             ...formattedComment,
@@ -100,7 +127,7 @@ class CommentService {
         totalItems: count,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
-        comments: commentsWithReplies,
+        comments: convertKeysToCamelCase(commentsWithReplies),
       };
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -117,7 +144,9 @@ class CommentService {
         throw new Error('Comment ID and context are required');
       }
 
-      const comment = await chapter_comments.findOne({ where: { CommentId: commentId, UserId: userId } });
+      const comment = await chapter_comments.findOne({
+        where: { CommentId: commentId, UserId: userId },
+      });
       if (!comment) {
         throw new Error('User not authorized to update this comment');
       }
@@ -140,7 +169,10 @@ class CommentService {
         throw new Error('Comment ID is required');
       }
       const whereClause = { CommentId: commentId };
-      const user = await users.findOne({ where: { UserId: userId }, attributes: ['UserId', 'RoleId'] });
+      const user = await users.findOne({
+        where: { UserId: userId },
+        attributes: ['UserId', 'RoleId'],
+      });
       if (user && user.RoleId === ROLE_USER) {
         whereClause.UserId = userId;
       }
@@ -149,12 +181,17 @@ class CommentService {
       if (!comment) {
         throw new Error('User not authorized to delete this comment');
       }
-      const isAnyReply = await chapter_comments.findOne({ where: { CommentParentId: commentId } });
+      const isAnyReply = await chapter_comments.findOne({
+        where: { CommentParentId: commentId },
+      });
       if (!isAnyReply) {
         await chapter_comments.destroy({ where: { CommentId: commentId } });
         return { success: true, message: 'Comment deleted successfully' };
       }
-      await chapter_comments.update({ IsDeleted: 1 }, { where: { CommentId: commentId } });
+      await chapter_comments.update(
+        { IsDeleted: 1 },
+        { where: { CommentId: commentId } }
+      );
       return { success: true, message: 'Comment deleted successfully' };
     } catch (error) {
       console.error('Error deleting comment:', error);
@@ -169,8 +206,11 @@ class CommentService {
       }
       let commentRootId = null;
       if (commentParentId !== null) {
-        const parentComment = await manga_comments.findOne({ where: { CommentId: commentParentId } });
+        const parentComment = await manga_comments.findOne({
+          where: { CommentId: commentParentId },
+        });
         commentRootId = parentComment.CommentRootId || commentParentId;
+        commentParentId = commentParentId == commentRootId ? null : commentParentId;
       }
       const newComment = await manga_comments.create({
         MangaId: mangaId,
@@ -192,16 +232,27 @@ class CommentService {
       const offset = (page - 1) * limit;
 
       const { count, rows } = await manga_comments.findAndCountAll({
-        where: { MangaId: mangaId, CommentParentId: null },
+        where: { MangaId: mangaId, CommentRootId: null },
         limit,
         offset,
         order: [['CreatedAt', 'DESC']],
-        attributes: ['CommentId', 'UserId', 'Context', 'CreatedAt', 'UpdatedAt', 'IsUpdated', 'IsDeleted'],
+        attributes: [
+          'CommentId',
+          'UserId',
+          'Context',
+          'CreatedAt',
+          'UpdatedAt',
+          'IsUpdated',
+          'IsDeleted',
+        ],
       });
 
       let showDeletedCommentContext = false;
       if (userId) {
-        const user = await users.findOne({ where: { UserId: userId }, attributes: ['UserId', 'RoleId'] });
+        const user = await users.findOne({
+          where: { UserId: userId },
+          attributes: ['UserId', 'RoleId'],
+        });
         if (user && user.RoleId === ROLE_ADMIN) {
           showDeletedCommentContext = true;
         }
@@ -220,6 +271,7 @@ class CommentService {
               'IsUpdated',
               'IsDeleted',
               'CommentParentId',
+              'CommentRootId',
             ],
           });
           const user = await users.findOne({
@@ -231,7 +283,10 @@ class CommentService {
             ...comment.get(),
             User: user ? convertKeysToCamelCase(user.get()) : null,
 
-            Context: comment.IsDeleted && !showDeletedCommentContext ? 'Bình luận đã bị xóa' : comment.Context,
+            Context:
+              comment.IsDeleted && !showDeletedCommentContext
+                ? 'Bình luận đã bị xóa'
+                : comment.Context,
             CreatedAt: formatISODate(comment.CreatedAt),
             UpdatedAt: formatISODate(comment.UpdatedAt),
           };
@@ -241,11 +296,19 @@ class CommentService {
           const formattedReplies = replies.map((reply) => {
             return {
               ...reply.get(),
-              Context: reply.IsDeleted && !showDeletedCommentContext ? 'Bình luận đã bị xóa' : reply.Context,
+
+              User: user ? convertKeysToCamelCase(user.get()) : null,
+
+              Context:
+                reply.IsDeleted && !showDeletedCommentContext
+                  ? 'Bình luận đã bị xóa'
+                  : reply.Context,
               CreatedAt: formatISODate(reply.CreatedAt),
               UpdatedAt: formatISODate(reply.UpdatedAt),
             };
           });
+
+          delete formattedReplies.UserId;
 
           return {
             ...formattedComment,
@@ -257,7 +320,7 @@ class CommentService {
         totalItems: count,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
-        comments: commentsWithReplies,
+        comments: convertKeysToCamelCase(commentsWithReplies),
       };
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -273,7 +336,9 @@ class CommentService {
         throw new Error('Comment ID and context are required');
       }
 
-      const comment = await manga_comments.findOne({ where: { CommentId: commentId, UserId: userId } });
+      const comment = await manga_comments.findOne({
+        where: { CommentId: commentId, UserId: userId },
+      });
       if (!comment) {
         throw new Error('User not authorized to update this comment');
       }
@@ -297,7 +362,10 @@ class CommentService {
         throw new Error('Comment ID is required');
       }
       const whereClause = { CommentId: commentId };
-      const user = await users.findOne({ where: { UserId: userId }, attributes: ['UserId', 'RoleId'] });
+      const user = await users.findOne({
+        where: { UserId: userId },
+        attributes: ['UserId', 'RoleId'],
+      });
       if (user && user.RoleId === ROLE_USER) {
         whereClause.UserId = userId;
       }
@@ -306,7 +374,9 @@ class CommentService {
       if (!comment) {
         throw new Error('User not authorized to delete this comment');
       }
-      const isAnyReply = await manga_comments.findOne({ where: { CommentParentId: commentId } });
+      const isAnyReply = await manga_comments.findOne({
+        where: { CommentParentId: commentId },
+      });
       if (!isAnyReply) {
         await manga_comments.destroy({ where: { CommentId: commentId } });
         return { success: true, message: 'Comment deleted successfully' };

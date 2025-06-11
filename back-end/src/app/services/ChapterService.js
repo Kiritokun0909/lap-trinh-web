@@ -74,17 +74,17 @@ class ChapterService {
         [mangaId]
       );
 
-      console.log(listChapterRows);
+      // console.log(listChapterRows);
       // console.log('length=', listChapterRows.length);
       const index = listChapterRows.findIndex(
         (chapter) => chapter.chapterId === chapterId
       );
-      console.log('curr index=', index);
+      // console.log('curr index=', index);
 
       const prev_index = index + 1 >= listChapterRows.length ? null : index + 1;
       const next_index = index - 1 < 0 ? null : index - 1;
-      console.log('Next index=', next_index);
-      console.log('Prev index=', prev_index);
+      // console.log('Next index=', next_index);
+      // console.log('Prev index=', prev_index);
 
       const prev_chapterid =
         prev_index === null ? prev_index : listChapterRows[prev_index].chapterId;

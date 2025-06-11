@@ -10,6 +10,7 @@ const chapterRouter = require('./ChapterRoute.js');
 const genreRouter = require('./GenreRoute.js');
 
 const commentRouter = require('./CommentRoute.js');
+const adminRouter = require('./AdminRoute.js');
 
 function route(app) {
   app.use('/', siteRouter);
@@ -24,6 +25,7 @@ function route(app) {
   app.use('/genres', genreRouter);
 
   app.use('/comments', commentRouter);
+  app.use('/admin', adminRouter);
 }
 
 module.exports = route;

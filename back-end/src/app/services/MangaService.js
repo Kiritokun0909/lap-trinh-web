@@ -1,6 +1,14 @@
 const { Op } = require('sequelize');
-const { mangas, manga_genres, authors, chapters, genres, user_chapter_history } =
-  require('../../models/init-models')(require('../../configs/DbConfig'));
+const {
+  mangas,
+  manga_genres,
+  authors,
+  chapters,
+  genres,
+  user_chapter_history,
+  favorites,
+  following,
+} = require('../../models/init-models')(require('../../configs/DbConfig'));
 const { formatISODate } = require('../../utils/DateUtil');
 const { ROLE_ADMIN } = require('../../utils/HandleCode');
 const convertKeysToCamelCase = require('../../utils/CamelCaseUtil');
@@ -290,7 +298,7 @@ class MangaService {
   //#region Update Manga Like-Follow
   async updateMangaLikeFollow(mangaId, type = 'like') {
     try {
-      const table = type === 'like' ? 'Favorite' : 'Following';
+      const table = type === 'like' ? favorites : following;
       const field = type === 'like' ? 'NumLikes' : 'NumFollows';
 
       // Count the total number of rows in the relevant table for the given mangaId
