@@ -9,10 +9,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { toast } from 'react-toastify';
 import MangaList from '../../../components/MangaList/MangaList';
+import HandleCode from '../../../utils/HandleCode';
 
 const HOME_PAGE_TITLE = 'Trang chủ';
 const NUMBER_OF_TOP_MANGAS = 10;
-const NUMBER_OF_NEW_UPDATES = 12;
+const NUMBER_OF_NEW_UPDATES = 15;
 
 function TopMangas({ topMangas }) {
   return (
@@ -56,8 +57,12 @@ export default function HomePage() {
 
   const fetchTopMangas = async () => {
     try {
-      const response = await getMangas(1, NUMBER_OF_TOP_MANGAS);
-      // console.log("Top mangas: ", response.items);
+      const response = await getMangas(
+        1,
+        NUMBER_OF_TOP_MANGAS,
+        '',
+        HandleCode.FILTER_BY_MANGA_NUM_LIKES_DESC
+      );
       setTopMangas(response.items);
     } catch (error) {
       toast.error(error.message);
@@ -67,7 +72,12 @@ export default function HomePage() {
 
   const fetchMangas = async () => {
     try {
-      const response = await getMangas(1, NUMBER_OF_NEW_UPDATES);
+      const response = await getMangas(
+        1,
+        NUMBER_OF_NEW_UPDATES,
+        '',
+        HandleCode.FILTER_BY_MANGA_UPDATE_AT_DESC
+      );
       setMangas(response.items);
     } catch (error) {
       console.error('Failed to fetch list manga: ', error);

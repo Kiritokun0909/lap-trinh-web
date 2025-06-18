@@ -1,15 +1,4 @@
-.add-update-chapter {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.add-update-chapter h1 {
-  margin-bottom: 24px;
-  color: #333;
-}
-
-/* Dropzone styles */
+/* ===== Dropzone Styles ===== */
 .dropzone {
   border: 2px dashed #ccc;
   border-radius: 8px;
@@ -26,19 +15,19 @@
   background-color: #e7f1ff;
 }
 
-.upload-icon {
-  font-size: 48px;
-  color: #6c757d;
-  margin-bottom: 16px;
-}
-
 .dropzone p {
   margin: 0;
   color: #6c757d;
   font-size: 16px;
 }
 
-/* Table styles */
+.upload-icon {
+  font-size: 48px;
+  color: #6c757d;
+  margin-bottom: 16px;
+}
+
+/* ===== Table Styles ===== */
 .images-table-container {
   overflow-x: auto;
   background-color: white;
@@ -71,14 +60,24 @@
   border-radius: 4px;
 }
 
-/* Action buttons */
+/* ===== Button Styles ===== */
+/* Action buttons container */
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+/* Individual action buttons */
 .action-buttons {
   display: flex;
   gap: 12px;
+  justify-content: center;
 }
 
-.change-button,
-.delete-button {
+/* Change button */
+.change-button {
   background: none;
   border: none;
   cursor: pointer;
@@ -88,82 +87,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.change-button {
   color: #007bff;
 }
 
 .change-button:hover {
   background-color: #e7f1ff;
-}
-
-.table-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 16px;
-}
-
-.delete-all-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
-}
-
-.delete-all-button:hover {
-  background-color: #c82333;
-}
-
-.delete-button:hover {
-  background-color: #ffe7e7;
-}
-
-/* Dark mode support */
-.dark-mode .add-update-chapter h1 {
-  color: #fff;
-}
-
-.dark-mode .dropzone {
-  background-color: #343a40;
-  border-color: #495057;
-}
-
-.dark-mode .dropzone.active {
-  border-color: #007bff;
-  background-color: #1a1f24;
-}
-
-.dark-mode .upload-icon,
-.dark-mode .dropzone p {
-  color: #adb5bd;
-}
-
-.dark-mode .images-table-container {
-  background-color: #343a40;
-}
-
-.dark-mode .images-table th {
-  background-color: #2b3035;
-  color: #e9ecef;
-}
-
-.dark-mode .images-table td {
-  border-bottom-color: #495057;
-  color: #e9ecef;
-}
-
-.dark-mode .change-button:hover {
-  background-color: #1a1f24;
-}
-
-.dark-mode .delete-button:hover {
-  background-color: #2b1f24;
 }

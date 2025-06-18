@@ -131,7 +131,7 @@ export default function MangaPage() {
       return;
     }
 
-    console.log(commentParentId, context);
+    // console.log(commentParentId, context);
     // return;
 
     try {

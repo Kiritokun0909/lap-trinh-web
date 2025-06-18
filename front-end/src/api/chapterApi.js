@@ -44,9 +44,10 @@ export const addChapter = async (mangaId, chapterNumber, imageUrls) => {
 //#endregion
 
 //#region update-chapter
-export const updateChapter = async (chapterId, imageUrls) => {
+export const updateChapter = async (chapterId, chapterNumber, imageUrls) => {
   try {
     const response = await axiosClient.put('/chapters/' + chapterId, {
+      chapterNumber: chapterNumber,
       chapterImages: imageUrls,
     });
     return response.data;

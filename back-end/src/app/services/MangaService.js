@@ -16,7 +16,15 @@ const HandleCode = require('../../utils/HandleCode');
 
 class MangaService {
   //#region Get All Mangas
-  async getAllMangas(search_query, page = 1, limit = 10, user = null) {
+  async getAllMangas(
+    search_query,
+    page = 1,
+    limit = 10,
+    user = null,
+    filter = HandleCode.FILTER_BY_MANGA_UPDATE_AT_DESC,
+    publishedYear = null,
+    genreId = null
+  ) {
     page = parseInt(page);
     limit = parseInt(limit);
 
@@ -28,6 +36,10 @@ class MangaService {
       whereClause.IsHide = false;
     }
 
+    if (publishedYear && !isNaN(publishedYear)) {
+      whereClause.PublishedYear = parseInt(publishedYear);
+    }
+
     if (search_query) {
       const keywords = search_query.split(' ').map((keyword) => `%${keyword}%`);
       whereClause[Op.and] = keywords.map((keyword) => ({
@@ -37,6 +49,39 @@ class MangaService {
         ],
       }));
     }
+
+    let order = [];
+
+    switch (filter) {
+      case HandleCode.FILTER_BY_MANGA_NUM_VIEWS_DESC:
+        order = [['NumViews', 'DESC']];
+        break;
+      case HandleCode.FILTER_BY_MANGA_NUM_LIKES_DESC:
+        order = [['NumLikes', 'DESC']];
+        break;
+      case HandleCode.FILTER_BY_MANGA_NUM_FOLLOWS_DESC:
+        order = [['NumFollows', 'DESC']];
+        break;
+      case 'default':
+      default:
+        order = [['UpdateAt', 'DESC']];
+    }
+
+    const genreInclude = genreId
+      ? {
+          model: genres,
+          as: 'GenreId_genres',
+          where: { GenreId: genreId },
+          attributes: ['GenreId', 'GenreName'],
+          through: { attributes: [] },
+          required: true,
+        }
+      : {
+          model: genres,
+          as: 'GenreId_genres',
+          attributes: ['GenreId', 'GenreName'],
+          through: { attributes: [] },
+        };
 
     try {
       const { count, rows } = await mangas.findAndCountAll({
@@ -65,9 +110,12 @@ class MangaService {
             as: 'Author',
             attributes: ['AuthorId', 'AuthorName'],
           },
+          genreInclude,
         ],
+        order,
         offset,
         limit,
+        distinct: true,
       });
 
       const transformedRows = rows.map((row) => {
@@ -217,7 +265,7 @@ class MangaService {
     authorId
   ) {
     try {
-      console.log('>>>> data: ', mangaName);
+      // console.log('>>>> data: ', mangaName);
       const data = {};
 
       if (mangaName.trim()) data.MangaName = mangaName;
@@ -374,6 +422,31 @@ class MangaService {
         { NewestChapterNumber: chapterNumber },
         { where: { MangaId: mangaId } }
       );
+    } catch (err) {
+      throw err;
+    }
+  }
+  //#endregion
+
+  //#region Update-Manga-Updated-At
+  async updateMangaUpdatedAt(mangaId) {
+    try {
+      await mangas.update(
+        {
+          UpdateAt: new Date(),
+        },
+        { where: { MangaId: mangaId } }
+      );
+    } catch (err) {
+      throw err;
+    }
+    //#endregion
+  }
+
+  //#region Update-Manga-Num-Views
+  async updateMangaNumViews(mangaId) {
+    try {
+      await mangas.increment('NumViews', { by: 1, where: { MangaId: mangaId } });
     } catch (err) {
       throw err;
     }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaComment, FaPaperPlane, FaReply, FaThumbsUp } from 'react-icons/fa';
+import { FaComment, FaPaperPlane, FaReply } from 'react-icons/fa';
 
 import '../MangaDescription/MangaDescription.css';
 import '../ChapterList/ChapterList.css';
@@ -92,12 +92,10 @@ export default function Comments({
   totalPages,
   setCurrentPage,
 }) {
-  const [replyTo, setReplyTo] = useState(null);
   const [userComment, setUserComment] = useState('');
   const [commentParentId, setCommentParentId] = useState(null);
 
   const handleReply = (comment) => {
-    setReplyTo(comment);
     setUserComment(`@${comment.user.username} `);
     setCommentParentId(comment.commentId);
   };

@@ -1,0 +1,26 @@
+.notification-link {
+  text-decoration: none;
+}
+
+.notification-item {
+  display: flex;
+  flex-direction: row;
+  padding: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.notification-item.read {
+  color: black;
+  background-color: #d1d5db;
+}
+
+.notification-image {
+  width: 8rem;
+}
+
+.notification-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem;
+}

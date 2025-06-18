@@ -3,15 +3,22 @@ const { StatusCodes, ReasonPhrases } = require('http-status-codes');
 const { getHeaderToken, getUserFromToken } = require('../../utils/TokenUtil');
 const Messages = require('../../utils/Messages');
 const HandleCode = require('../../utils/HandleCode');
-const { parse } = require('dotenv');
-const { get } = require('../../routes/MangaRoute');
+
 class MangaController {
   async getAllMangas(req, res) {
     try {
-      const { search_query, page, limit } = req.query;
+      const { search_query, page, limit, filter, publishedYear, genreId } = req.query;
       const user = getUserFromToken(getHeaderToken(req));
       // const user = req?.user;
-      const mangaList = await MangaService.getAllMangas(search_query, page, limit, user);
+      const mangaList = await MangaService.getAllMangas(
+        search_query,
+        page,
+        limit,
+        user,
+        filter,
+        publishedYear,
+        genreId
+      );
 
       return res.status(StatusCodes.OK).json(mangaList);
     } catch (error) {

@@ -12,7 +12,7 @@ const UserTable = ({ users, onBlockUser, onUnblockUser }) => {
             <th>Avatar</th>
             <th>Username</th>
             <th>Email</th>
-            <th>Actions</th>
+            <th>Hành động</th>
           </tr>
         </thead>
         <tbody>
@@ -35,14 +35,14 @@ const UserTable = ({ users, onBlockUser, onUnblockUser }) => {
                       className='unblock-btn'
                       onClick={() => onUnblockUser(user.userId)}
                     >
-                      Unblock
+                      Mở khoá
                     </button>
                   ) : (
                     <button
                       className='block-btn'
                       onClick={() => onBlockUser(user.userId)}
                     >
-                      Block
+                      Khoá
                     </button>
                   )}
                 </div>

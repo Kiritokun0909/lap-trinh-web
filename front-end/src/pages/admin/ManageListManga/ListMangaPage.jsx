@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { MdOutlineAdd } from 'react-icons/md';
 
-import { DEFAULT_ITEM_PER_PAGE } from '../../../utils/utils';
+import { ADMIN_DEFAULT_ITEM_PER_PAGE, DEFAULT_ITEM_PER_PAGE } from '../../../utils/utils';
 
 import { getMangas } from '../../../api/mangaApi';
 
@@ -27,7 +27,7 @@ export default function ListMangaPage() {
   useEffect(() => {
     const fetchMangas = async () => {
       try {
-        const data = await getMangas(currentPage, DEFAULT_ITEM_PER_PAGE, keyword);
+        const data = await getMangas(currentPage, ADMIN_DEFAULT_ITEM_PER_PAGE, keyword);
         setMangas(data.items);
         setTotalPages(data.totalPages);
       } catch (err) {

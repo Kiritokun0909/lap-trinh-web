@@ -4,9 +4,14 @@ import { MdEdit, MdDelete, MdCheck, MdOutlineAdd } from 'react-icons/md';
 
 import './GenreTable.css';
 
-export default function GenreTable({ genres, searchName, onUpdate, onDelete, openModal }) {
+export default function GenreTable({
+  genres,
+  searchName,
+  onUpdate,
+  onDelete,
+  openModal,
+}) {
   const [selectedGenres, setSelectedGenres] = useState([]);
-
   const [editingGenreId, setEditingGenreId] = useState(null);
   const [editedGenreName, setEditedGenreName] = useState('');
 
@@ -33,8 +38,8 @@ export default function GenreTable({ genres, searchName, onUpdate, onDelete, ope
     setEditedGenreName(genre.genreName);
   };
 
-  const handleSaveEdit = (genreId) => {
-    onUpdate(genreId, editedGenreName);
+  const handleSaveEdit = () => {
+    onUpdate({ genreId: editingGenreId, genreName: editedGenreName });
     setEditingGenreId(null);
   };
 
@@ -66,7 +71,8 @@ export default function GenreTable({ genres, searchName, onUpdate, onDelete, ope
                   type='checkbox'
                   onChange={handleSelectAll}
                   checked={
-                    selectedGenres.length === filteredGenres.length && filteredGenres.length > 0
+                    selectedGenres.length === filteredGenres.length &&
+                    filteredGenres.length > 0
                   }
                 />
               </th>
@@ -98,7 +104,7 @@ export default function GenreTable({ genres, searchName, onUpdate, onDelete, ope
                 </td>
                 <td>
                   {editingGenreId === genre.genreId ? (
-                    <button className='finish-button' onClick={() => handleSaveEdit(genre.genreId)}>
+                    <button className='finish-button' onClick={handleSaveEdit}>
                       <MdCheck />
                       Hoàn tất
                     </button>
@@ -108,7 +114,10 @@ export default function GenreTable({ genres, searchName, onUpdate, onDelete, ope
                         <MdEdit />
                         Cập nhật
                       </button>
-                      <button className='delete-button' onClick={() => onDelete([genre.genreId])}>
+                      <button
+                        className='delete-button'
+                        onClick={() => onDelete([genre.genreId])}
+                      >
                         <MdDelete />
                         Xóa
                       </button>

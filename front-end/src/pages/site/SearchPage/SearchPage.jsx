@@ -10,7 +10,6 @@ import HandleCode from '../../../utils/HandleCode';
 import './SearchPage.css';
 import MangaList from '../../../components/MangaList/MangaList';
 import Pagination from '../../../components/Pagination/Pagination';
-import { DEFAULT_ITEM_PER_PAGE } from '../../../utils/utils';
 
 const SEARCH_PAGE_TITLE = 'Tìm kiếm';
 
@@ -41,12 +40,11 @@ function SearchInput({
   listFilters,
   selectedFilterId,
   setSelectedFilterId,
+  onSearch,
+  onReset,
 }) {
   const handleReset = () => {
-    setSearchName('');
-    setPublishedYear('');
-    setSelectedGenreId(listGenres[0].genreId);
-    setSelectedFilterId(listFilters[0].id);
+    onReset();
   };
 
   return (
@@ -67,6 +65,7 @@ function SearchInput({
             value={selectedGenreId}
             onChange={(e) => setSelectedGenreId(e.target.value)}
           >
+            <option value='all'>Tất cả</option>
             {listGenres.map((genre) => (
               <option key={genre.genreId} value={genre.genreId}>
                 {genre.genreName}
@@ -109,7 +108,7 @@ function SearchInput({
             <span>Reset</span>
           </div>
         </button>
-        <button>
+        <button onClick={onSearch}>
           <div className='btn-icon'>
             <FaSearch />
             <span>Tìm kiếm</span>
@@ -130,8 +129,12 @@ export default function SearchPage() {
 
   const [searchName, setSearchName] = useState('');
   const [publishedYear, setPublishedYear] = useState('');
-  const [selectedGenreId, setSelectedGenreId] = useState('');
-  const [selectedFilterId, setSelectedFilterId] = useState('');
+  const [selectedGenreId, setSelectedGenreId] = useState(
+    searchParams.get('genreId') || 'all'
+  );
+  const [selectedFilterId, setSelectedFilterId] = useState(
+    searchParams.get('filterId') || HandleCode.FILTER_BY_MANGA_UPDATE_AT_DESC
+  );
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -139,33 +142,50 @@ export default function SearchPage() {
       setListGenres(data);
     };
 
-    const fetchMangas = async () => {
-      try {
-        const data = await getMangas(currentPage, DEFAULT_ITEM_PER_PAGE, searchName);
-        setSearchResults(data.items);
-        setTotalPages(data.totalPages);
-      } catch (error) {
-        console.error('Failed to fetch mangas:', error);
-      }
-    };
-
-    // Update title
     document.title = SEARCH_PAGE_TITLE;
-
-    // Fetch genres
     fetchGenres();
 
     // Update filters from URL params
     if (searchName === '') setSearchName(searchParams.get('keyword') || '');
     setPublishedYear(searchParams.get('year') || '');
-    setSelectedGenreId(searchParams.get('genreId') || '');
+    setSelectedGenreId(searchParams.get('genreId') || 'all');
     setSelectedFilterId(
       searchParams.get('filterId') || HandleCode.FILTER_BY_MANGA_UPDATE_AT_DESC
     );
+  }, [searchParams]);
 
-    // Fetch mangas
+  useEffect(() => {
     fetchMangas();
-  }, [searchParams, searchName, currentPage]);
+  }, [currentPage, searchName, selectedFilterId, publishedYear, selectedGenreId]);
+
+  const fetchMangas = async () => {
+    try {
+      const data = await getMangas(
+        currentPage,
+        15,
+        searchName,
+        selectedFilterId,
+        publishedYear,
+        selectedGenreId === 'all' ? '' : selectedGenreId
+      );
+      setSearchResults(data.items);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch mangas:', error);
+    }
+  };
+
+  const handleSearch = () => {
+    setCurrentPage(1);
+    fetchMangas();
+  };
+
+  const handleReset = () => {
+    setSearchName('');
+    setPublishedYear('');
+    setSelectedGenreId('all');
+    setSelectedFilterId(filterList[0].id);
+  };
 
   return (
     <div className='search-page__container'>
@@ -183,6 +203,8 @@ export default function SearchPage() {
         listFilters={filterList}
         selectedFilterId={selectedFilterId}
         setSelectedFilterId={setSelectedFilterId}
+        onSearch={handleSearch}
+        onReset={handleReset}
       />
 
       {searchResults.length > 0 && <MangaList mangas={searchResults} />}

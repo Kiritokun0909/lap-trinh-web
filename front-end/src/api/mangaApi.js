@@ -1,11 +1,19 @@
 import axiosClient from './axiosClient';
 import { handleApiError } from '../utils/errorHandler';
+import HandleCode from '../utils/HandleCode';
 
 //#region get-list-manga
-export const getMangas = async (page, limit, keyword = '') => {
+export const getMangas = async (
+  page,
+  limit,
+  keyword = '',
+  filter = HandleCode.FILTER_BY_MANGA_UPDATE_AT_DESC,
+  publishedYear = '',
+  genreId = ''
+) => {
   try {
     const response = await axiosClient.get(
-      `/mangas?page=${page}&limit=${limit}&search_query=${keyword}`
+      `/mangas?page=${page}&limit=${limit}&search_query=${keyword}&filter=${filter}&publishedYear=${publishedYear}&genreId=${genreId}`
     );
     return response.data;
   } catch (error) {

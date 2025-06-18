@@ -22,8 +22,8 @@ class AuthorController {
   //#region add-author
   async addAuthor(req, res) {
     const { avatar, authorName, biography } = req.body;
-    console.log('>>> req.body: ', req.body);
-    console.log('>>> ', avatar, authorName, biography);
+    // console.log('>>> req.body: ', req.body);
+    // console.log('>>> ', avatar, authorName, biography);
 
     try {
       await AuthorService.addAuthor(avatar, authorName, biography);

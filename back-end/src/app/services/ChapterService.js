@@ -1,11 +1,11 @@
 const db = require('../../configs/DbPoolConfig');
 const mangaService = require('./MangaService');
 const convertKeysToCamelCase = require('../../utils/CamelCaseUtil');
-const { chapters, chapter_images } = require('../../models/init-models')(
-  require('../../configs/DbConfig')
-);
+const { chapters, chapter_images, user_chapter_history } =
+  require('../../models/init-models')(require('../../configs/DbConfig'));
 
 class ChapterService {
+  //#region Add-User-Read-Chapter-History
   async setUserIsReadChapter(chapterId, userId) {
     try {
       if (!chapterId || !userId) {
@@ -27,6 +27,7 @@ class ChapterService {
       throw new Error(error.message);
     }
   }
+  //#endregion
 
   //#region Get-Chapter-By-Id
   async getImagesByChapterId(chapterId, user = null) {
@@ -121,9 +122,10 @@ class ChapterService {
 
       const chapterId = insertRow.insertId;
 
-      await this.updateChapter(chapterId, chapterImages);
+      await this.updateChapter(chapterId, chapterNumber, chapterImages);
       await mangaService.updateMangaNewestChapterNumber(mangaId, chapterNumber);
       await mangaService.updateMangaNumChapters(mangaId);
+      await mangaService.updateMangaUpdatedAt(mangaId);
 
       return { chapterId: chapterId };
     } catch (err) {
@@ -137,8 +139,12 @@ class ChapterService {
   //#endregion
 
   //#region Update-Chapter-Images
-  async updateChapter(chapterId, images) {
+  async updateChapter(chapterId, chapterNumber, images) {
     try {
+      await db.query(`UPDATE chapters SET chapterNumber = ? WHERE chapterId = ?`, [
+        chapterNumber,
+        chapterId,
+      ]);
       await db.query(`DELETE FROM chapter_images WHERE ChapterId = ?`, [chapterId]);
 
       for (let i = 0; i < images.length; i++) {

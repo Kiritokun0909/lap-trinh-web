@@ -7,7 +7,10 @@ export const DEFAULT_COVER_IMAGE_URL =
 export const DEFAULT_AUTHOR_IMAGE_URL =
   'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1';
 
-export const DEFAULT_ITEM_PER_PAGE = 10;
+export const ADMIN_DEFAULT_ITEM_PER_PAGE = 14;
+export const AUTHOR_DEFAULT_ITEM_PER_PAGE = 12;
+
+export const DEFAULT_ITEM_PER_PAGE = 20;
 
 export const formatDate = (date) => {
   return formatDistanceToNow(new Date(date), { addSuffix: true, locale: vi });

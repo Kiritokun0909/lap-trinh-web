@@ -1,11 +1,9 @@
 const ChapterService = require('../services/ChapterService');
+const MangaService = require('../services/MangaService');
+const NotificationService = require('../services/NotificationService');
 const { StatusCodes } = require('http-status-codes');
-const {
-  getHeaderToken,
-  getUserFromToken,
-  getUserIdFromToken,
-} = require('../../utils/TokenUtil');
-const { parse } = require('dotenv');
+const { getHeaderToken, getUserIdFromToken } = require('../../utils/TokenUtil');
+
 class ChapterController {
   //#region Get-Chapter-By-Id
   async getChapterImages(req, res) {
@@ -20,6 +18,9 @@ class ChapterController {
       if (!chapterImagesList) {
         return res.status(StatusCodes.NOT_FOUND).json({ message: 'Chapter not found' });
       }
+
+      await MangaService.updateMangaNumViews(parseInt(chapterImagesList.mangaId));
+      await ChapterService.setUserIsReadChapter(parseInt(chapterId), userId);
 
       return res.status(StatusCodes.OK).json(chapterImagesList);
     } catch (error) {
@@ -40,6 +41,7 @@ class ChapterController {
         parseInt(chapterNumber),
         chapterImages
       );
+      await NotificationService.notifyNewChapter(parseInt(mangaId));
       return res.status(StatusCodes.OK).json(result);
     } catch (error) {
       return res
@@ -52,10 +54,12 @@ class ChapterController {
   //#region Update-Chapter
   async updateChapter(req, res) {
     const { chapterId } = req.params;
-    const { chapterImages } = req.body;
+    const { chapterNumber, chapterImages } = req.body;
+
     try {
       const result = await ChapterService.updateChapter(
         parseInt(chapterId),
+        parseInt(chapterNumber),
         chapterImages
       );
       return res.status(StatusCodes.OK).json(result);

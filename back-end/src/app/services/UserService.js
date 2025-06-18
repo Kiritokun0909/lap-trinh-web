@@ -5,8 +5,10 @@ const HandleCode = require('../../utils/HandleCode');
 
 const { hashPassword, comparePassword } = require('../../utils/PasswordUtil');
 
-const { users } = require('../../models/init-models')(require('../../configs/DbConfig'));
+const { users, user_chapter_history, mangas, chapters } =
+  require('../../models/init-models')(require('../../configs/DbConfig'));
 const { Op } = require('sequelize');
+const { formatISODate } = require('../../utils/DateUtil');
 
 class UserService {
   //#region get-info
@@ -299,6 +301,75 @@ class UserService {
       throw err;
     }
   };
+  //#endregion
+
+  //#region get-user-chapters-history
+  getUserHistory = async (userId, page = 1, limit = 10) => {
+    try {
+      const offset = (page - 1) * limit;
+
+      const { count, rows } = await user_chapter_history.findAndCountAll({
+        where: { UserId: userId },
+        attributes: ['ChapterId', 'CreateAt'], // No MangaId here
+        include: [
+          {
+            model: chapters,
+            as: 'Chapter',
+            attributes: [
+              'ChapterId',
+              'ChapterName',
+              'ChapterNumber',
+              'PublishedDate',
+              'UpdateAt',
+              'MangaId',
+            ],
+            include: [
+              {
+                model: mangas,
+                as: 'Manga',
+                attributes: ['MangaId', 'MangaName', 'CoverImageUrl'],
+              },
+            ],
+          },
+        ],
+        order: [['CreateAt', 'DESC']],
+        offset,
+        limit,
+        distinct: true,
+      });
+
+      const transformedRows = rows.map((row) => {
+        const data = row.toJSON();
+        const chapter = data.Chapter;
+        const manga = chapter?.Manga;
+
+        return {
+          mangaId: manga?.MangaId,
+          mangaName: manga?.MangaName,
+          coverImageUrl: manga?.CoverImageUrl,
+          chapters: [
+            {
+              chapterId: chapter?.ChapterId,
+              chapterNumber: chapter?.ChapterNumber,
+              chapterName: chapter?.ChapterName,
+              publishedDate: formatISODate(chapter?.PublishedDate),
+              updateAt: formatISODate(chapter?.UpdateAt),
+            },
+          ],
+        };
+      });
+
+      return {
+        totalItems: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+        items: convertKeysToCamelCase(transformedRows),
+      };
+    } catch (err) {
+      throw err;
+    }
+  };
+
   //#endregion
 }
 

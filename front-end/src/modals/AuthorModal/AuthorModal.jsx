@@ -20,21 +20,18 @@ export default function AuthorModal({ author, onAdd, onUpdate, onDelete, onClose
 
   const handleAddNewAuthor = async (e) => {
     e.preventDefault();
-
     const newAuthor = { avatar, authorName, biography };
     onAdd(newAuthor);
   };
 
   const handleUpdateAuthor = async (e) => {
     e.preventDefault();
-
     const newAuthor = { avatar, authorName, biography };
     onUpdate(author.authorId, newAuthor);
   };
 
   const handleDeleteAuthor = async (e) => {
     e.preventDefault();
-
     onDelete(author.authorId);
   };
 

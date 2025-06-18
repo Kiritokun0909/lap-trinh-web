@@ -4,6 +4,8 @@ import UserTable from '../../../components/UserTable/UserTable';
 import { getListUser, toggleBlockUser } from '../../../api/adminApi';
 import HandleCode from '../../../utils/HandleCode';
 
+const PAGE_TITLE = 'Quản lý người dùng';
+
 export default function ManageListUserPage() {
   const [users, setUsers] = useState([]);
 
@@ -17,6 +19,8 @@ export default function ManageListUserPage() {
       setUsers(response.items);
       setTotalPages(response.totalPages);
     };
+
+    document.title = PAGE_TITLE;
     fetchUsers();
   }, [currentPage, searchQuery]);
 

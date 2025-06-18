@@ -30,6 +30,10 @@
   font-size: 20px;
 }
 
+.update-button {
+  background-color: #bfb417;
+}
+
 .delete-all-button {
   background-color: #d9534f;
 }
@@ -81,6 +85,8 @@
   justify-content: flex-start;
 }
 
+.delete-all-button,
+.update-button,
 .edit-button,
 .delete-button,
 .finish-button {
@@ -111,6 +117,8 @@
   color: white;
 }
 
+.delete-all-button:hover,
+.update-button:hover,
 .edit-button:hover,
 .delete-button:hover,
 .finish-button:hover {

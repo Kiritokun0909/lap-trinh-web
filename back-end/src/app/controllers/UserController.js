@@ -1,4 +1,5 @@
 const UserService = require('../services/UserService');
+const NotificationService = require('../services/NotificationService');
 const { StatusCodes } = require('http-status-codes');
 const Messages = require('../../utils/Messages');
 const { getUserFromToken, getHeaderToken } = require('../../utils/TokenUtil');
@@ -104,6 +105,7 @@ class UserController {
   }
   //#endregion
 
+  //#region like-follow-manga
   async checkUserLikeManga(req, res) {
     await checkUserLikeFollowManga(req, res, 'like');
   }
@@ -135,6 +137,7 @@ class UserController {
   async getListFollowManga(req, res) {
     await getListLikeFollowManga(req, res, 'follow');
   }
+  //#endregion
 
   async getUsers(req, res) {
     try {
@@ -180,8 +183,64 @@ class UserController {
         .json({ message: 'Failed to block/unblock user' });
     }
   }
+
+  //#region get-user-notification
+  async getNotification(req, res) {
+    const { page, limit } = req.query;
+    const userId = req.user?.userId;
+    try {
+      const result = await NotificationService.getNotifications(
+        parseInt(limit),
+        parseInt(page),
+        userId
+      );
+      res.status(200).json(result);
+    } catch (err) {
+      console.log('Failed to get notification:', err);
+      res.status(500).json({
+        message: 'Failed to get notification. Please try again later.',
+      });
+    }
+  }
+  //#endregion
+
+  //#region read-notification
+  async readNotification(req, res) {
+    const { notificationId } = req.params;
+    try {
+      const result = await NotificationService.readNotification(notificationId);
+      res.status(200).json(result);
+    } catch (err) {
+      console.log('Failed to read notification:', err);
+      res.status(500).json({
+        message: 'Failed to read notification. Please try again later.',
+      });
+    }
+  }
+  //#endregion
+
+  //#region get-user-history
+  async getUserHistory(req, res) {
+    const { page, limit } = req.query;
+    const userId = req.user?.userId;
+    try {
+      const result = await UserService.getUserHistory(
+        userId,
+        parseInt(page),
+        parseInt(limit)
+      );
+      res.status(200).json(result);
+    } catch (err) {
+      console.log('Failed to get user history:', err);
+      res.status(500).json({
+        message: 'Failed to get user history. Please try again later.',
+      });
+    }
+  }
+  //#endregion
 }
 
+//#region implement-function
 const checkUserLikeFollowManga = async (req, res, type = 'like') => {
   const { mangaId } = req.params;
   const userId = req.user?.userId;
@@ -280,5 +339,7 @@ const getListLikeFollowManga = async (req, res, type) => {
     });
   }
 };
+
+//#endregion
 
 module.exports = new UserController();

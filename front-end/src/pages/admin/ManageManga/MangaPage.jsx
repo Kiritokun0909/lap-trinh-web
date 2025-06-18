@@ -13,14 +13,41 @@ import { getListChapterByMangaId } from '../../../api/chapterApi';
 
 import './MangaPage.css';
 import HandleCode from '../../../utils/HandleCode';
+import { getListCommentByMangaId, postMangaComment } from '../../../api/commentApi';
+import { useAuth } from '../../../context/AuthContext';
+
+const CONFIRMATION_MESSAGES = {
+  DELETE: {
+    title: 'Xác nhận xóa truyện',
+    message:
+      'Bạn có chắc chắn muốn xóa truyện này không? Hành động này không thể hoàn tác.',
+  },
+  HIDE: {
+    title: 'Xác nhận ẩn truyện',
+    message:
+      'Bạn có chắc chắn muốn ẩn truyện này không? Truyện sẽ không hiển thị với người dùng.',
+  },
+  UNHIDE: {
+    title: 'Xác nhận hiện truyện',
+    message:
+      'Bạn có chắc chắn muốn hiện truyện này không? Truyện sẽ được hiển thị lại với người dùng.',
+  },
+};
 
 export default function MangaPage() {
   const mangaId = useParams().mangaId;
+
+  const { isLoggedIn } = useAuth();
+
   const [manga, setManga] = useState();
   const [chapters, setChapters] = useState([]);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const [actionType, setActionType] = useState(''); // 'delete' or 'hide'
+
+  const [comments, setComments] = useState([]);
+  const [currentCommentPage, setCurrentCommentPage] = useState(1);
+  const [totalCommentPages, setTotalCommentPages] = useState(1);
 
   const navigate = useNavigate();
 
@@ -50,6 +77,20 @@ export default function MangaPage() {
     fetchChapters();
   }, [mangaId, navigate]);
 
+  useEffect(() => {
+    fetchComments();
+  }, [mangaId, currentCommentPage]);
+
+  const fetchComments = async () => {
+    try {
+      const data = await getListCommentByMangaId(mangaId, currentCommentPage, 5);
+      setComments(data.comments);
+      setTotalCommentPages(data.totalPages);
+    } catch (err) {
+      console.error('Failed to get comments by manga id: ', err);
+    }
+  };
+
   const fetchManga = async () => {
     try {
       const data = await getMangaById(mangaId);
@@ -72,19 +113,20 @@ export default function MangaPage() {
   const handleDeleteManga = async () => {
     try {
       await deleteManga(mangaId);
-      toast.success('Xoá truyện thành công.');
+      toast.success('Xóa truyện thành công.');
       navigate('/admin/manage-mangas');
     } catch (err) {
-      toast.error('Không thể xoá truyện.');
+      toast.error('Không thể xóa truyện. Vui lòng thử lại sau.');
     }
   };
 
   const handleUpdateHideStatus = async (isHide) => {
     try {
       await updateMangaHideStatus(mangaId, isHide);
-      toast.success('Ẩn truyện thành công.');
+      toast.success(isHide ? 'Ẩn truyện thành công.' : 'Hiện truyện thành công.');
+      fetchManga();
     } catch (err) {
-      toast.error('Không thể ẩn truyện.');
+      toast.error('Không thể thay đổi trạng thái truyện. Vui lòng thử lại sau.');
     }
   };
 
@@ -99,22 +141,43 @@ export default function MangaPage() {
           : HandleCode.MANGA_HIDE_STATUS
       );
     }
-
     setActionType('');
-    fetchManga();
+  };
+
+  const getConfirmationContent = () => {
+    if (actionType === 'delete') {
+      return CONFIRMATION_MESSAGES.DELETE;
+    }
+    return manga?.isHide === HandleCode.MANGA_HIDE_STATUS
+      ? CONFIRMATION_MESSAGES.UNHIDE
+      : CONFIRMATION_MESSAGES.HIDE;
+  };
+
+  const handlePostComment = async (commentParentId, context) => {
+    if (!isLoggedIn) {
+      toast.error('Vui lòng đăng nhập để sử dụng chức năng này.');
+      return;
+    }
+    try {
+      await postMangaComment(mangaId, commentParentId, context);
+      toast.success('Gửi bình luận thành công.');
+      fetchComments();
+    } catch (err) {
+      console.error('Failed to post comment: ', err);
+    }
   };
 
   return (
     <div className='manga-page'>
       {showConfirm && (
         <ConfirmationBox
-          message={
-            actionType === 'delete'
-              ? 'Bạn có chắc muốn xoá truyện này không?'
-              : 'Bạn có chắc muốn ẩn truyện này không?'
-          }
+          title={getConfirmationContent().title}
+          message={getConfirmationContent().message}
           onConfirm={handleConfirm}
-          onCancel={() => setShowConfirm(false)}
+          onCancel={() => {
+            setShowConfirm(false);
+            setActionType('');
+          }}
         />
       )}
       <MangaDetail manga={manga} isAdmin={true} />
@@ -137,7 +200,7 @@ export default function MangaPage() {
           }}
           style={{ backgroundColor: 'red', color: 'white' }}
         >
-          Xoá truyện
+          Xóa truyện
         </button>
         <button
           className='function-btn'
@@ -152,7 +215,13 @@ export default function MangaPage() {
       </div>
       <MangaDescription manga={manga} />
       <ChapterList chapters={chapters} isAdmin={true} />
-      <Comments />
+      <Comments
+        handlePostComment={handlePostComment}
+        comments={comments}
+        currentPage={currentCommentPage}
+        totalPages={totalCommentPages}
+        setCurrentPage={setCurrentCommentPage}
+      />
     </div>
   );
 }

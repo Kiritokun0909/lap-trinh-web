@@ -138,3 +138,41 @@ export const getListLikeFollowManga = async (
     handleApiError(err);
   }
 };
+
+//#region get-list-notification
+export const getNotifications = async (page, limit) => {
+  try {
+    const response = await axiosClient.get(
+      `/user/notification?page=${page}&limit=${limit}`
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err);
+  }
+};
+//#endregion
+
+//#region read-notification
+export const readNotification = async (notificationId) => {
+  try {
+    const response = await axiosClient.put(
+      `/user/read-notification/${notificationId}`,
+      {}
+    );
+    return response.data;
+  } catch (err) {
+    handleApiError(err);
+  }
+};
+//#endregion
+
+//#region get-user-history
+export const getUserHistory = async (page = 1, limit = 5) => {
+  try {
+    const response = await axiosClient.get(`/user/history?page=${page}&limit=${limit}`);
+    return response.data;
+  } catch (err) {
+    handleApiError(err);
+  }
+};
+//#endregion

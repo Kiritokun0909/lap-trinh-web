@@ -11,12 +11,18 @@ import {
 import { toast } from 'react-toastify';
 import AuthorList from '../../../components/AuthorList/AuthorList';
 import AuthorModal from '../../../modals/AuthorModal/AuthorModal';
-import { DEFAULT_ITEM_PER_PAGE } from '../../../utils/utils';
+import ConfirmationBox from '../../../components/ConfirmationBox/ConfirmationBox';
+import { AUTHOR_DEFAULT_ITEM_PER_PAGE } from '../../../utils/utils';
 import { MdOutlineAdd } from 'react-icons/md';
 
 import Pagination from '../../../components/Pagination/Pagination';
 
 const PAGE_TITLE = 'Quản lý tác giả';
+
+const CONFIRMATION_TYPE = {
+  UPDATE: 'update',
+  DELETE: 'delete',
+};
 
 export default function AuthorPage() {
   const [authors, setAuthors] = useState([]);
@@ -25,16 +31,19 @@ export default function AuthorPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  const [selectedAuthorId, setSelectedAuthorId] = useState(null);
   const [selectedAuthor, setSelectedAuthor] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  const [showConfirmBox, setShowConfirmBox] = useState(false);
+  const [confirmType, setConfirmType] = useState(CONFIRMATION_TYPE.UPDATE);
 
   useEffect(() => {
     const fetchAuthors = async () => {
       try {
-        const data = await getAuthors(keyword, currentPage, DEFAULT_ITEM_PER_PAGE);
+        const data = await getAuthors(keyword, currentPage, AUTHOR_DEFAULT_ITEM_PER_PAGE);
         setAuthors(data.items);
         setTotalPages(data.totalPages);
-        // console.log(data);
       } catch (err) {
         toast.error(err.message);
       }
@@ -46,10 +55,9 @@ export default function AuthorPage() {
 
   const fetchAuthors = async () => {
     try {
-      const data = await getAuthors(keyword, currentPage, DEFAULT_ITEM_PER_PAGE);
+      const data = await getAuthors(keyword, currentPage, AUTHOR_DEFAULT_ITEM_PER_PAGE);
       setAuthors(data.items);
       setTotalPages(data.totalPages);
-      console.log(data);
     } catch (err) {
       toast.error(err.message);
     }
@@ -69,48 +77,55 @@ export default function AuthorPage() {
   };
 
   const addNewAuthor = async (author) => {
-    if (!validateAuthor(author)) {
-      return;
-    }
+    if (!validateAuthor(author)) return;
 
     try {
       await addAuthor(author.avatar, author.authorName, author.biography);
       toast.success('Thêm tác giả mới thành công!');
       setShowModal(false);
-
       fetchAuthors();
     } catch (err) {
-      // console.log(">>err ", err);
       toast.error(err.message);
     }
   };
 
-  const updateSelected = async (authorId, author) => {
-    if (!validateAuthor(author)) {
-      return;
-    }
+  const handleUpdateClick = (authorId, author) => {
+    setSelectedAuthorId(authorId);
+    setSelectedAuthor(author);
+    setShowConfirmBox(true);
+    setConfirmType(CONFIRMATION_TYPE.UPDATE);
+  };
+
+  const handleDeleteClick = (authorId) => {
+    setSelectedAuthor(authorId);
+    setShowConfirmBox(true);
+    setConfirmType(CONFIRMATION_TYPE.DELETE);
+  };
+
+  const updateSelectedAuthor = async (authorId, author) => {
+    if (!validateAuthor(author)) return;
 
     try {
       await updateAuthor(authorId, author.avatar, author.authorName, author.biography);
       toast.success('Cập nhật tác giả thành công!');
       setShowModal(false);
-
+      setShowConfirmBox(false);
+      setSelectedAuthor(null);
       fetchAuthors();
     } catch (err) {
-      // console.log(">>err ", err);
       toast.error(err.message);
     }
   };
 
-  const deleteSelected = async (authorId) => {
+  const deleteSelectedAuthor = async (authorId) => {
     try {
       await deleteAuthor(authorId);
       toast.success('Xoá tác giả thành công!');
       setShowModal(false);
-
+      setShowConfirmBox(false);
+      setSelectedAuthor(null);
       fetchAuthors();
     } catch (err) {
-      // console.log(">>err ", err);
       toast.error(err.message);
     }
   };
@@ -121,9 +136,35 @@ export default function AuthorPage() {
         <AuthorModal
           author={selectedAuthor}
           onAdd={addNewAuthor}
-          onUpdate={updateSelected}
-          onDelete={deleteSelected}
+          onUpdate={handleUpdateClick}
+          onDelete={handleDeleteClick}
           onClose={() => setShowModal(false)}
+        />
+      )}
+
+      {showConfirmBox && selectedAuthor && (
+        <ConfirmationBox
+          title={
+            confirmType === CONFIRMATION_TYPE.UPDATE
+              ? 'Xác nhận cập nhật'
+              : 'Xác nhận xoá'
+          }
+          message={
+            confirmType === CONFIRMATION_TYPE.UPDATE
+              ? `Bạn có chắc chắn muốn cập nhật tác giả này?`
+              : 'Bạn có chắc chắn muốn xoá tác giả này?'
+          }
+          onConfirm={() => {
+            if (confirmType === CONFIRMATION_TYPE.UPDATE) {
+              updateSelectedAuthor(selectedAuthorId, selectedAuthor);
+            } else {
+              deleteSelectedAuthor(selectedAuthor);
+            }
+          }}
+          onCancel={() => {
+            setShowConfirmBox(false);
+            setSelectedAuthor(null);
+          }}
         />
       )}
 

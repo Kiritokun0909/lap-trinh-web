@@ -50,8 +50,18 @@ function initModels(sequelize) {
     foreignKey: 'MangaId',
     otherKey: 'GenreId',
   });
-  mangas.belongsToMany(plans, { as: 'PlanId_plans', through: plan_mangas, foreignKey: 'MangaId', otherKey: 'PlanId' });
-  mangas.belongsToMany(users, { as: 'UserId_users', through: favorites, foreignKey: 'MangaId', otherKey: 'UserId' });
+  mangas.belongsToMany(plans, {
+    as: 'PlanId_plans',
+    through: plan_mangas,
+    foreignKey: 'MangaId',
+    otherKey: 'PlanId',
+  });
+  mangas.belongsToMany(users, {
+    as: 'UserId_users',
+    through: favorites,
+    foreignKey: 'MangaId',
+    otherKey: 'UserId',
+  });
   mangas.belongsToMany(users, {
     as: 'UserId_users_followings',
     through: following,
@@ -64,7 +74,12 @@ function initModels(sequelize) {
     foreignKey: 'PlanId',
     otherKey: 'MangaId',
   });
-  users.belongsToMany(mangas, { as: 'MangaId_mangas', through: favorites, foreignKey: 'UserId', otherKey: 'MangaId' });
+  users.belongsToMany(mangas, {
+    as: 'MangaId_mangas',
+    through: favorites,
+    foreignKey: 'UserId',
+    otherKey: 'MangaId',
+  });
   users.belongsToMany(mangas, {
     as: 'MangaId_mangas_followings',
     through: following,
@@ -78,7 +93,10 @@ function initModels(sequelize) {
   chapter_images.belongsTo(chapters, { as: 'Chapter', foreignKey: 'ChapterId' });
   chapters.hasMany(chapter_images, { as: 'chapter_images', foreignKey: 'ChapterId' });
   user_chapter_history.belongsTo(chapters, { as: 'Chapter', foreignKey: 'ChapterId' });
-  chapters.hasMany(user_chapter_history, { as: 'user_chapter_histories', foreignKey: 'ChapterId' });
+  chapters.hasMany(user_chapter_history, {
+    as: 'user_chapter_histories',
+    foreignKey: 'ChapterId',
+  });
   manga_genres.belongsTo(genres, { as: 'Genre', foreignKey: 'GenreId' });
   genres.hasMany(manga_genres, { as: 'manga_genres', foreignKey: 'GenreId' });
   chapters.belongsTo(mangas, { as: 'Manga', foreignKey: 'MangaId' });
@@ -112,7 +130,10 @@ function initModels(sequelize) {
   notifications.belongsTo(users, { as: 'User', foreignKey: 'UserId' });
   users.hasMany(notifications, { as: 'notifications', foreignKey: 'UserId' });
   user_chapter_history.belongsTo(users, { as: 'User', foreignKey: 'UserId' });
-  users.hasMany(user_chapter_history, { as: 'user_chapter_histories', foreignKey: 'UserId' });
+  users.hasMany(user_chapter_history, {
+    as: 'user_chapter_histories',
+    foreignKey: 'UserId',
+  });
   user_plans.belongsTo(users, { as: 'User', foreignKey: 'UserId' });
   users.hasMany(user_plans, { as: 'user_plans', foreignKey: 'UserId' });
 
