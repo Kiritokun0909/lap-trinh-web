@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  backend:
+    container_name: manga_website_backend
+    build: ./back-end
+    depends_on:
+      - db
+    env_file:
+      - ./back-end/docker.env
+
+  frontend:
+    container_name: manga_website_frontend
+    build: ./front-end
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
+
+  db:
+    image: mysql:8.0
+    container_name: manga_website_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
