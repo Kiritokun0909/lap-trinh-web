@@ -14,6 +14,18 @@ class StatisticController {
     }
   }
 
+  async getTopGenres(req, res) {
+    const { page, limit, filter } = req.query;
+    try {
+      const topGenres = await StatisticService.getTopGenres(page, limit, filter);
+      return res.status(StatusCodes.OK).json(topGenres);
+    } catch (error) {
+      return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message });
+    }
+  }
+
   async getTotalUserNumber(req, res) {
     try {
       const totalUserNumber = await StatisticService.getTotalUserNumber();

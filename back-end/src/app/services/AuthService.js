@@ -48,7 +48,7 @@ class AuthService {
 
       const roleId = user.RoleId;
 
-      return { accessToken, refreshToken, roleId };
+      return { accessToken, refreshToken, roleId, userId: user.UserId };
     } catch (error) {
       throw new Error(error.message);
     }
@@ -141,4 +141,3 @@ class AuthService {
 }
 
 module.exports = new AuthService();
-

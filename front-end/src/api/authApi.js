@@ -47,3 +47,30 @@ export const testAdmin = async () => {
   }
 };
 //#endregion
+
+//#region forgotPassword
+export const forgotPassword = async (email) => {
+  try {
+    const response = await axiosClient.post('/auth/send-otp', {
+      email: email,
+    });
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+//#endregion
+
+//#region forgotPassword
+export const resetPassword = async (email, otp) => {
+  try {
+    const response = await axiosClient.post('/auth/reset-password', {
+      email: email,
+      otp: otp,
+    });
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+//#endregion

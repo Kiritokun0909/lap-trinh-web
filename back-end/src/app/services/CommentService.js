@@ -17,8 +17,10 @@ class CommentService {
           where: { CommentId: commentParentId },
         });
         commentRootId = parentComment.CommentRootId || commentParentId;
-        commentParentId = commentParentId == commentRootId ? null : commentParentId;
+        commentParentId =
+          commentParentId == commentRootId ? commentRootId : commentParentId;
       }
+
       const newComment = await chapter_comments.create({
         ChapterId: chapterId,
         UserId: userId,
@@ -32,6 +34,8 @@ class CommentService {
       throw new Error('Failed to add comment');
     }
   }
+
+  //#region get-chapter-comments
   async getChapterCommentsWithReplies(chapterId, page = 1, limit = 10, userId = null) {
     try {
       page = parseInt(page, 10);
@@ -99,20 +103,25 @@ class CommentService {
 
           delete formattedComment.UserId;
 
-          const formattedReplies = replies.map((reply) => {
-            return {
-              ...reply.get(),
+          const formattedReplies = await Promise.all(
+            replies.map(async (reply) => {
+              const replyUser = await users.findOne({
+                where: { UserId: reply.UserId },
+                attributes: ['UserId', 'Username', 'Avatar'],
+              });
 
-              User: user ? convertKeysToCamelCase(user.get()) : null,
-
-              Context:
-                reply.IsDeleted && !showDeletedCommentContext
-                  ? 'Bình luận đã bị xóa'
-                  : reply.Context,
-              CreatedAt: formatISODate(reply.CreatedAt),
-              UpdatedAt: formatISODate(reply.UpdatedAt),
-            };
-          });
+              return {
+                ...reply.get(),
+                User: replyUser ? convertKeysToCamelCase(replyUser.get()) : null,
+                Context:
+                  reply.IsDeleted && !showDeletedCommentContext
+                    ? 'Bình luận đã bị xóa'
+                    : reply.Context,
+                CreatedAt: formatISODate(reply.CreatedAt),
+                UpdatedAt: formatISODate(reply.UpdatedAt),
+              };
+            })
+          );
 
           delete formattedReplies.UserId;
 
@@ -134,6 +143,7 @@ class CommentService {
       throw new Error('Failed to fetch comments');
     }
   }
+  //#endregion
 
   async updateChapterComment(commentId, context, userId) {
     try {
@@ -162,9 +172,6 @@ class CommentService {
   }
   async deleteChapterComment(commentId, userId) {
     try {
-      if (userId === null) {
-        throw new Error('User not authorized to delete this comment');
-      }
       if (!commentId) {
         throw new Error('Comment ID is required');
       }
@@ -210,8 +217,11 @@ class CommentService {
           where: { CommentId: commentParentId },
         });
         commentRootId = parentComment.CommentRootId || commentParentId;
-        commentParentId = commentParentId == commentRootId ? null : commentParentId;
+        commentParentId =
+          commentParentId == commentRootId ? commentRootId : parentComment.CommentId;
       }
+      console.log(commentParentId, commentRootId);
+
       const newComment = await manga_comments.create({
         MangaId: mangaId,
         UserId: userId,
@@ -225,6 +235,7 @@ class CommentService {
       throw new Error('Failed to add comment');
     }
   }
+  //#region get-manga-comments
   async getMangaCommentsWithReplies(mangaId, page = 1, limit = 10, userId = null) {
     try {
       page = parseInt(page, 10);
@@ -293,20 +304,25 @@ class CommentService {
 
           delete formattedComment.UserId;
 
-          const formattedReplies = replies.map((reply) => {
-            return {
-              ...reply.get(),
+          const formattedReplies = await Promise.all(
+            replies.map(async (reply) => {
+              const replyUser = await users.findOne({
+                where: { UserId: reply.UserId },
+                attributes: ['UserId', 'Username', 'Avatar'],
+              });
 
-              User: user ? convertKeysToCamelCase(user.get()) : null,
-
-              Context:
-                reply.IsDeleted && !showDeletedCommentContext
-                  ? 'Bình luận đã bị xóa'
-                  : reply.Context,
-              CreatedAt: formatISODate(reply.CreatedAt),
-              UpdatedAt: formatISODate(reply.UpdatedAt),
-            };
-          });
+              return {
+                ...reply.get(),
+                User: replyUser ? convertKeysToCamelCase(replyUser.get()) : null,
+                Context:
+                  reply.IsDeleted && !showDeletedCommentContext
+                    ? 'Bình luận đã bị xóa'
+                    : reply.Context,
+                CreatedAt: formatISODate(reply.CreatedAt),
+                UpdatedAt: formatISODate(reply.UpdatedAt),
+              };
+            })
+          );
 
           delete formattedReplies.UserId;
 
@@ -327,6 +343,7 @@ class CommentService {
       throw new Error('Failed to fetch comments');
     }
   }
+  //#endregion
   async updateMangaComment(commentId, context, userId) {
     try {
       if (userId === null) {
@@ -355,9 +372,6 @@ class CommentService {
 
   async deleteMangaComment(commentId, userId) {
     try {
-      if (userId === null) {
-        throw new Error('User not authorized to delete this comment');
-      }
       if (!commentId) {
         throw new Error('Comment ID is required');
       }

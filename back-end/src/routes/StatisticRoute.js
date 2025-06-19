@@ -12,6 +12,12 @@ router.get(
   StatisticController.getTopMangas
 );
 router.get(
+  '/top-genres',
+  OptionalAuthMiddleware,
+  AuthMiddleware([ROLE_ADMIN]),
+  StatisticController.getTopGenres
+);
+router.get(
   '/total-users',
   OptionalAuthMiddleware,
   StatisticController.getTotalUserNumber
@@ -21,17 +27,5 @@ router.get(
   OptionalAuthMiddleware,
   StatisticController.getTotalMangaNumber
 );
-// router.get('/:mangaId', OptionalAuthMiddleware, MangaController.getMangaById);
-// router.get('/:mangaId/chapters', MangaController.getAllChaptersOfManga);
-
-// router.post('/', AuthMiddleware([ROLE_ADMIN]), MangaController.addManga);
-// router.put('/:mangaId', AuthMiddleware([ROLE_ADMIN]), MangaController.updateManga);
-// router.delete('/:mangaId', AuthMiddleware([ROLE_ADMIN]), MangaController.deleteManga);
-
-// router.put(
-//   '/hide/:mangaId',
-//   AuthMiddleware([ROLE_ADMIN]),
-//   MangaController.updateMangaHideStatus
-// );
 
 module.exports = router;
