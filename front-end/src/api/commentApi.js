@@ -48,3 +48,21 @@ export const postChapterComment = async (chapterId, commentParentId, context) =>
     handleApiError(error);
   }
 };
+
+export const deleteChapterComment = async (commentId) => {
+  try {
+    const response = await axiosClient.delete(`/comments/chapters/` + commentId);
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export const deleteMangaComment = async (commentId) => {
+  try {
+    const response = await axiosClient.delete(`/comments/mangas/` + commentId);
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};

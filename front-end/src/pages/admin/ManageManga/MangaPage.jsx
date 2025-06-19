@@ -13,7 +13,11 @@ import { getListChapterByMangaId } from '../../../api/chapterApi';
 
 import './MangaPage.css';
 import HandleCode from '../../../utils/HandleCode';
-import { getListCommentByMangaId, postMangaComment } from '../../../api/commentApi';
+import {
+  deleteMangaComment,
+  getListCommentByMangaId,
+  postMangaComment,
+} from '../../../api/commentApi';
 import { useAuth } from '../../../context/AuthContext';
 
 const CONFIRMATION_MESSAGES = {
@@ -167,6 +171,20 @@ export default function MangaPage() {
     }
   };
 
+  const handleDeleteComment = async (commentId) => {
+    if (!isLoggedIn) {
+      toast.error('Vui lòng đăng nhập để sử dụng chức năng này.');
+      return;
+    }
+    try {
+      await deleteMangaComment(commentId);
+      toast.success('Xoá bình luận thành công.');
+      fetchComments();
+    } catch (err) {
+      console.error('Failed to delete comment: ', err);
+    }
+  };
+
   return (
     <div className='manga-page'>
       {showConfirm && (
@@ -217,6 +235,7 @@ export default function MangaPage() {
       <ChapterList chapters={chapters} isAdmin={true} />
       <Comments
         handlePostComment={handlePostComment}
+        handleDeleteComment={handleDeleteComment}
         comments={comments}
         currentPage={currentCommentPage}
         totalPages={totalCommentPages}

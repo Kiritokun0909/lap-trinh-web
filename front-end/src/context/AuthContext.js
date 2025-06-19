@@ -1,55 +1,60 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    !!localStorage.getItem("accessToken")
-  );
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('accessToken'));
   const [roleId, setRoleId] = useState(
-    localStorage.getItem("roleId")
-      ? Number(localStorage.getItem("roleId"))
-      : null
+    localStorage.getItem('roleId') ? Number(localStorage.getItem('roleId')) : null
+  );
+  const [userId, setUserId] = useState(
+    localStorage.getItem('roleId') ? Number(localStorage.getItem('userId')) : null
   );
 
-  const saveCredentials = (accessToken, roleId) => {
+  const saveCredentials = (accessToken, roleId, userId) => {
     try {
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("roleId", roleId);
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('roleId', roleId);
+      localStorage.setItem('userId', userId);
       setIsLoggedIn(true);
       setRoleId(roleId);
+      setUserId(userId);
       return true;
     } catch (err) {
-      console.error(">>> Save credentials:", err);
+      console.error('>>> Save credentials:', err);
     }
     return false;
   };
 
   const removeCredentials = () => {
     try {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("roleId");
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('roleId');
+      localStorage.removeItem('userId');
       setIsLoggedIn(false);
       setRoleId(null);
+      setUserId(null);
     } catch (err) {
-      console.error(">>> Remove credentials: ", err);
+      console.error('>>> Remove credentials: ', err);
     }
   };
 
   useEffect(() => {
     const handleStorageChange = () => {
-      const accessToken = localStorage.getItem("accessToken");
-      const roleId = localStorage.getItem("roleId");
+      const accessToken = localStorage.getItem('accessToken');
+      const roleId = localStorage.getItem('roleId');
+      const userId = localStorage.getItem('userId');
       setIsLoggedIn(!!accessToken);
       setRoleId(roleId ? parseInt(roleId) : null);
+      setUserId(userId ? parseInt(userId) : null);
     };
 
-    if (!isLoggedIn || !roleId) {
+    if (!isLoggedIn || !roleId || !userId) {
       removeCredentials();
     }
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, [isLoggedIn, roleId]);
 
   return (
@@ -57,6 +62,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         isLoggedIn,
         roleId,
+        userId,
         saveCredentials,
         removeCredentials,
       }}
@@ -69,7 +75,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within a AuthProvider");
+    throw new Error('useAuth must be used within a AuthProvider');
   }
   return context;
 };

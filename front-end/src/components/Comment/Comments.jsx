@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaComment, FaPaperPlane, FaReply } from 'react-icons/fa';
+import { FaComment, FaPaperPlane, FaReply, FaTrash } from 'react-icons/fa';
 
 import '../MangaDescription/MangaDescription.css';
 import '../ChapterList/ChapterList.css';
@@ -8,35 +8,95 @@ import Pagination from '../Pagination/Pagination';
 
 import { formatDate } from '../../utils/utils';
 import { DEFAULT_AUTHOR_IMAGE_URL } from '../../utils/utils';
+import { useAuth } from '../../context/AuthContext';
+import HandleCode from '../../utils/HandleCode';
 
-function CommentItem({ comment, onReply }) {
+function CommentContent({
+  avatar,
+  username,
+  context,
+  isDeleted,
+  createdAt,
+  onReply,
+  onDelete,
+  canReply,
+  canDelete,
+}) {
+  // Helper to render context with mention
+  const renderContext = () => {
+    const match = context?.match(/^(@\w+)\s(.*)$/);
+    if (match) {
+      return (
+        <span style={isDeleted ? { fontStyle: 'italic' } : {}}>
+          <span style={{ color: '#2563eb', fontWeight: 500 }}>{match[1]}</span> {match[2]}
+        </span>
+      );
+    } else {
+      return (
+        <span style={isDeleted ? { fontStyle: 'italic', color: 'gray' } : {}}>
+          {context}
+        </span>
+      );
+    }
+  };
+
+  return (
+    <>
+      <img
+        src={avatar ? avatar : DEFAULT_AUTHOR_IMAGE_URL}
+        alt={username}
+        className='comment-avatar'
+      />
+      <div className='comment-content'>
+        <div className='comment-text'>
+          <span className='comment-username'>{username}</span>
+          {renderContext()}
+        </div>
+        <div className='comment-actions'>
+          <span className='comment-action'>
+            <span className='comment-date'>{formatDate(createdAt)}</span>
+          </span>
+          {canReply && !isDeleted && (
+            <span className='comment-action' onClick={onReply}>
+              <FaReply /> Phản hồi
+            </span>
+          )}
+          {canDelete && !isDeleted && (
+            <span className='comment-action' onClick={onDelete}>
+              <FaTrash /> Xoá bình luận
+            </span>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+function CommentItem({ comment, onReply, onDelete }) {
+  const { roleId, userId } = useAuth();
   const [showReplies, setShowReplies] = useState(false);
   const hasReplies = comment.replies && comment.replies.length > 0;
+
+  const canReply = comment.isDeleted === 0;
+  const canDelete =
+    comment.isDeleted === 0 &&
+    (roleId === HandleCode.ROLE_ADMIN || comment.user.userId === userId);
 
   return (
     <div className='comment-container'>
       <div className='comment'>
-        <img
-          src={comment?.user?.avatar ? comment.user.avatar : DEFAULT_AUTHOR_IMAGE_URL}
-          alt={comment?.user?.username}
-          className='comment-avatar'
+        <CommentContent
+          avatar={comment?.user?.avatar}
+          username={comment?.user?.username}
+          context={comment.context}
+          isDeleted={comment.isDeleted === 1}
+          createdAt={comment.createdAt}
+          onReply={() => onReply(comment)}
+          onDelete={() => onDelete(comment.commentId)}
+          canReply={canReply}
+          canDelete={canDelete}
         />
-        <div className='comment-content'>
-          <div className='comment-text'>
-            <span className='comment-username'>{comment.user.username}</span>
-            <span>{comment.context}</span>
-          </div>
-          <div className='comment-actions'>
-            <span className='comment-action'>
-              <span className='comment-date'>{formatDate(comment.createdAt)}</span>
-            </span>
-            <span className='comment-action' onClick={() => onReply(comment)}>
-              <FaReply /> Phản hồi
-            </span>
-          </div>
-        </div>
       </div>
-
       {hasReplies && (
         <>
           {!showReplies && (
@@ -44,36 +104,29 @@ function CommentItem({ comment, onReply }) {
               Xem {comment.replies.length} phản hồi
             </button>
           )}
-
           {showReplies && (
             <div className='replies-container'>
-              {comment.replies.map((reply) => (
-                <div key={reply.commentId} className='reply'>
-                  <img
-                    src={
-                      reply?.user?.avatar ? reply.user.avatar : DEFAULT_AUTHOR_IMAGE_URL
-                    }
-                    alt={reply?.user?.username}
-                    className='comment-avatar'
-                  />
-                  <div className='comment-content'>
-                    <div className='comment-text'>
-                      <span className='comment-username'>{reply.user.username}</span>
-                      <span>{reply.context}</span>
-                    </div>
-                    <div className='comment-actions'>
-                      <span className='comment-action'>
-                        <span className='comment-date'>
-                          {formatDate(reply.createdAt)}
-                        </span>
-                      </span>
-                      <span className='comment-action' onClick={() => onReply(comment)}>
-                        <FaReply /> Phản hồi
-                      </span>
-                    </div>
+              {comment.replies.map((reply) => {
+                const replyCanReply = reply.isDeleted === 0;
+                const replyCanDelete =
+                  reply.isDeleted === 0 &&
+                  (roleId === HandleCode.ROLE_ADMIN || reply.userId === userId);
+                return (
+                  <div key={reply.commentId} className='reply'>
+                    <CommentContent
+                      avatar={reply?.user?.avatar}
+                      username={reply?.user?.username}
+                      context={reply.context}
+                      isDeleted={reply.isDeleted === 1}
+                      createdAt={reply.createdAt}
+                      onReply={() => onReply(reply)}
+                      onDelete={() => onDelete(reply.commentId)}
+                      canReply={replyCanReply}
+                      canDelete={replyCanDelete}
+                    />
                   </div>
-                </div>
-              ))}
+                );
+              })}
               <button className='show-replies-btn' onClick={() => setShowReplies(false)}>
                 Ẩn phản hồi
               </button>
@@ -87,6 +140,7 @@ function CommentItem({ comment, onReply }) {
 
 export default function Comments({
   handlePostComment,
+  handleDeleteComment,
   comments,
   currentPage,
   totalPages,
@@ -115,7 +169,13 @@ export default function Comments({
           className='comment-textarea'
           placeholder={'Viết bình luận mới...'}
           value={userComment}
-          onChange={(e) => setUserComment(e.target.value)}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setUserComment(newValue);
+            if (newValue.trim() === '') {
+              setCommentParentId(null);
+            }
+          }}
         />
         <div className='comment-btn-container'>
           <button
@@ -135,7 +195,12 @@ export default function Comments({
       </div>
       <div className='list-comment'>
         {comments.map((comment) => (
-          <CommentItem key={comment.commentId} comment={comment} onReply={handleReply} />
+          <CommentItem
+            key={comment.commentId}
+            comment={comment}
+            onReply={handleReply}
+            onDelete={handleDeleteComment}
+          />
         ))}
       </div>
       <Pagination

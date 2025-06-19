@@ -5,22 +5,50 @@
 .notification-item {
   display: flex;
   flex-direction: row;
-  padding: 0.5rem;
+  padding: 0.3rem 0.5rem;
   border-bottom: 1px solid #e5e7eb;
+  align-items: center;
+  font-size: 0.95rem;
+  min-height: 56px;
+  background: #fff;
+  transition: background 0.2s, color 0.2s;
+  color: black;
 }
 
 .notification-item.read {
-  color: black;
-  background-color: #d1d5db;
+  color: #444;
+  background-color: #b8b8bd;
 }
 
 .notification-image {
-  width: 8rem;
+  width: 5.5rem;
+  height: 7rem;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 0.7rem;
 }
 
 .notification-content {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.2rem 0;
+  gap: 0.2rem;
+}
+
+/* Dark mode support */
+.dark-mode .notification-item {
+  background: #18181b;
+  color: #e5e7eb;
+  border-bottom: 1px solid #27272a;
+}
+
+.dark-mode .notification-item.read {
+  background: #27272a;
+  color: #8a8a8f;
+}
+
+.dark-mode .notification-link {
+  color: inherit;
 }

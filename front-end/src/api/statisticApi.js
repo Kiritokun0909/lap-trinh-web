@@ -34,3 +34,18 @@ export const getTopMangas = async (
     handleApiError(error);
   }
 };
+
+export const getTopGenres = async (
+  page = 1,
+  limit = 5,
+  filterCode = HandleCode.STATISTIC_NUM_VIEWS_DESC
+) => {
+  try {
+    const response = await axiosClient.get(
+      `/statistic/top-genres?page=${page}&limit=${limit}&filter=${filterCode}`
+    );
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};

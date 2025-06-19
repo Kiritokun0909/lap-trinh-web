@@ -30,8 +30,8 @@ function LoginForm() {
   const login = async () => {
     try {
       const response = await loginAccount(email, password);
-      const { accessToken, roleId } = response;
-      saveCredentials(accessToken, roleId);
+      const { accessToken, roleId, userId } = response;
+      saveCredentials(accessToken, roleId, userId);
       toast.success('Đăng nhập thành công');
       if (response.roleId === HandleCode.ROLE_ADMIN) {
         navigate('/admin');

@@ -7,7 +7,11 @@ import { getImagesByChapterId } from '../../../api/chapterApi';
 import { formatFullDate } from '../../../utils/utils';
 import './ChapterPage.css';
 import Comments from '../../../components/Comment/Comments';
-import { getListCommentByChapterId, postChapterComment } from '../../../api/commentApi';
+import {
+  deleteChapterComment,
+  getListCommentByChapterId,
+  postChapterComment,
+} from '../../../api/commentApi';
 import { useAuth } from '../../../context/AuthContext';
 
 function ChapterNavigation({ chapter }) {
@@ -94,6 +98,20 @@ export default function ChapterPage() {
     }
   };
 
+  const handleDeleteComment = async (commentId) => {
+    if (!isLoggedIn) {
+      toast.error('Vui lòng đăng nhập để sử dụng chức năng này.');
+      return;
+    }
+    try {
+      await deleteChapterComment(commentId);
+      toast.success('Xoá bình luận thành công.');
+      fetchComments();
+    } catch (err) {
+      console.error('Failed to delete comment: ', err);
+    }
+  };
+
   return (
     <div className='chapter__container'>
       <div className='chapter__title'>
@@ -119,6 +137,7 @@ export default function ChapterPage() {
 
       <Comments
         handlePostComment={handlePostComment}
+        handleDeleteComment={handleDeleteComment}
         comments={comments}
         currentPage={currentCommentPage}
         totalPages={totalCommentPages}
